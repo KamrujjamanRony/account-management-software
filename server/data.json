@@ -1,0 +1,276 @@
+{
+  "test": [
+    {
+      "tName": "CBC",
+      "tCharge": 600,
+      "tLessItem": "Yes",
+      "tDefaultHnr": 5,
+      "tDefaultHnrAmtUnit": "%",
+      "tDefaultHnrAmt": 30,
+      "isDoctor": "",
+      "department": "",
+      "chrChange": "No",
+      "reportFileName": "file1",
+      "reportFee": "5",
+      "stickerName": "22222222",
+      "id": "b87e"
+    },
+    {
+      "tName": "RBS dffsd",
+      "tCharge": 60,
+      "tLessItem": "Yes",
+      "tDefaultHnr": 10,
+      "tDefaultHnrAmtUnit": "%",
+      "tDefaultHnrAmt": 6,
+      "isDoctor": "",
+      "department": "",
+      "chrChange": "No",
+      "reportFileName": "",
+      "reportFee": 0,
+      "stickerName": "",
+      "id": "4dbe"
+    },
+    {
+      "id": "468f",
+      "tName": "TSH",
+      "tCharge": 800,
+      "tLessItem": "Yes",
+      "tDefaultHnr": 0,
+      "tDefaultHnrAmtUnit": "%",
+      "tDefaultHnrAmt": 0,
+      "isVaqItem": "No",
+      "isDoctor": "",
+      "department": "",
+      "chrChange": "No",
+      "reportFileName": "",
+      "reportFee": 0,
+      "stickerName": ""
+    },
+    {
+      "tName": "Urine",
+      "tCharge": 300,
+      "tLessItem": "Yes",
+      "tDefaultHnr": 0,
+      "tDefaultHnrAmtUnit": "%",
+      "tDefaultHnrAmt": 0,
+      "isDoctor": "",
+      "department": "",
+      "chrChange": "No",
+      "reportFileName": "",
+      "reportFee": 0,
+      "stickerName": "ggggggggg",
+      "id": "f628"
+    },
+    {
+      "tName": "AAAb",
+      "tCharge": 500,
+      "tLessItem": "Yes",
+      "tDefaultHnr": 10,
+      "tDefaultHnrAmtUnit": "%",
+      "tDefaultHnrAmt": 50,
+      "isDoctor": "",
+      "department": "",
+      "chrChange": "No",
+      "reportFileName": "",
+      "reportFee": 0,
+      "stickerName": "",
+      "id": "9bf9"
+    },
+    {
+      "id": "519a",
+      "tName": "1111111",
+      "tCharge": 1111111,
+      "tLessItem": "Yes",
+      "tDefaultHnr": 0,
+      "tDefaultHnrAmtUnit": "%",
+      "tDefaultHnrAmt": 0,
+      "isVaqItem": "No",
+      "isDoctor": "No",
+      "department": "",
+      "chrChange": "No",
+      "reportFileName": "",
+      "reportFee": 0,
+      "stickerName": ""
+    },
+    {
+      "id": "79c6",
+      "tName": "2222222",
+      "tCharge": 111111,
+      "tLessItem": "Yes",
+      "tDefaultHnr": 0,
+      "tDefaultHnrAmtUnit": "%",
+      "tDefaultHnrAmt": 0,
+      "isVaqItem": "No",
+      "isDoctor": "No",
+      "department": "",
+      "chrChange": "No",
+      "reportFileName": "",
+      "reportFee": 0,
+      "stickerName": ""
+    },
+    {
+      "id": "cb7d",
+      "tName": "33333333333",
+      "tCharge": 222,
+      "tLessItem": "Yes",
+      "tDefaultHnr": 0,
+      "tDefaultHnrAmtUnit": "%",
+      "tDefaultHnrAmt": 0,
+      "isVaqItem": "No",
+      "isDoctor": "No",
+      "department": "",
+      "chrChange": "No",
+      "reportFileName": "",
+      "reportFee": 0,
+      "stickerName": ""
+    },
+    {
+      "id": "9668",
+      "tName": "44444444",
+      "tCharge": 32321,
+      "tLessItem": "Yes",
+      "tDefaultHnr": 0,
+      "tDefaultHnrAmtUnit": "%",
+      "tDefaultHnrAmt": 0,
+      "isVaqItem": "No",
+      "isDoctor": "No",
+      "department": "",
+      "chrChange": "No",
+      "reportFileName": "",
+      "reportFee": 0,
+      "stickerName": ""
+    },
+    {
+      "id": "d4c4",
+      "tName": "55555555555",
+      "tCharge": 555,
+      "tLessItem": "Yes",
+      "tDefaultHnr": 0,
+      "tDefaultHnrAmtUnit": "%",
+      "tDefaultHnrAmt": 0,
+      "isVaqItem": "No",
+      "isDoctor": "No",
+      "department": "",
+      "chrChange": "No",
+      "reportFileName": "",
+      "reportFee": 0,
+      "stickerName": ""
+    },
+    {
+      "id": "f757",
+      "tName": "6666666666",
+      "tCharge": 66,
+      "tLessItem": "Yes",
+      "tDefaultHnr": 0,
+      "tDefaultHnrAmtUnit": "%",
+      "tDefaultHnrAmt": 0,
+      "isVaqItem": "No",
+      "isDoctor": "No",
+      "department": "",
+      "chrChange": "No",
+      "reportFileName": "",
+      "reportFee": 0,
+      "stickerName": ""
+    },
+    {
+      "id": "9b19",
+      "tName": "777777777",
+      "tCharge": 77,
+      "tLessItem": "Yes",
+      "tDefaultHnr": 0,
+      "tDefaultHnrAmtUnit": "%",
+      "tDefaultHnrAmt": 0,
+      "isVaqItem": "No",
+      "isDoctor": "No",
+      "department": "",
+      "chrChange": "No",
+      "reportFileName": "",
+      "reportFee": 0,
+      "stickerName": ""
+    },
+    {
+      "id": "26cd",
+      "tName": "888888888888",
+      "tCharge": 88,
+      "tLessItem": "Yes",
+      "tDefaultHnr": 0,
+      "tDefaultHnrAmtUnit": "%",
+      "tDefaultHnrAmt": 0,
+      "isVaqItem": "No",
+      "isDoctor": "No",
+      "department": "",
+      "chrChange": "No",
+      "reportFileName": "",
+      "reportFee": 0,
+      "stickerName": ""
+    },
+    {
+      "id": "e0f4",
+      "tName": "999999999999",
+      "tCharge": 99,
+      "tLessItem": "Yes",
+      "tDefaultHnr": 0,
+      "tDefaultHnrAmtUnit": "%",
+      "tDefaultHnrAmt": 0,
+      "isVaqItem": "No",
+      "isDoctor": "No",
+      "department": "",
+      "chrChange": "No",
+      "reportFileName": "",
+      "reportFee": 0,
+      "stickerName": ""
+    }
+  ],
+  "departments": [
+    {
+      "id": "1",
+      "name": "Finance",
+      "type": "income"
+    },
+    {
+      "id": "2",
+      "name": "Maintenance",
+      "type":"expense"
+    },
+    {
+      "id": "tuehbq9ku",
+      "name": "qqqqqqq",
+      "type": "expense"
+    }
+  ],
+  "subDepartments": [
+    {
+      "id": "1",
+      "departmentId": 1,
+      "name": "Billing"
+    },
+    {
+      "id": "2",
+      "departmentId": 1,
+      "name": "Accounting"
+    },
+    {
+      "id": "3",
+      "departmentId": 2,
+      "name": "Equipment"
+    }
+  ],
+  "entries": [
+    {
+      "id": "1",
+      "type": "income",
+      "department": "Finance",
+      "subDepartment": "Billing",
+      "name": "Consultation Fee",
+      "amount": 200
+    },
+    {
+      "id": "2",
+      "type": "expense",
+      "department": "Maintenance",
+      "subDepartment": "Equipment",
+      "name": "X-ray Machine Repair",
+      "amount": 500
+    }
+  ]
+}

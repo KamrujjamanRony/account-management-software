@@ -1,0 +1,100 @@
+<div class="relative z-0 w-full mb-3 group">
+  @switch (cType){ @case ('text-old') {
+    <input #inputRef
+      type="text"
+      [(ngModel)]="value"
+      (input)="onInputChange($event)"
+      (focus)="onTextChange()"
+      (input)="onTextChange()"
+      [disabled]="isDisabled"
+      class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer capitalize"
+      [class.invalid]="isInvalid"
+      placeholder=" "
+      required
+    />
+    } @case ('select-old') {
+      <select #inputRef
+      [(ngModel)]="value"
+        (change)="onInputChange($event)"
+        [disabled]="isDisabled"
+        class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer capitalize"
+      >
+          @for(option of options; track $index){
+              <option [value]="option.name" class="capitalize">{{ option.name }}</option>
+          }
+        
+      </select>
+      } @case ('text') {
+  <input #inputRef
+    type="text"
+    [value]="value"
+    (input)="onInputChange($event)"
+    (focus)="onTextChange()"
+    (input)="onTextChange()"
+    [disabled]="isDisabled"
+    class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer capitalize"
+    [class.invalid]="isInvalid"
+    placeholder=" "
+    required
+  />
+  } @case ('password') {
+  <input #inputRef
+    type="password"
+    [value]="value"
+    (input)="onInputChange($event)"
+    [disabled]="isDisabled"
+    class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer capitalize"
+    [class.invalid]="isInvalid"
+    placeholder=" "
+    required
+  />
+  } @case ('select') {
+    <select #inputRef
+      [value]="value"
+      (change)="onInputChange($event)"
+      [disabled]="isDisabled"
+      class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer capitalize"
+    >
+        @for(option of options; track $index){
+            <option [value]="option.name" class="capitalize">{{ option.name }}</option>
+        }
+      
+    </select>
+    } @case ('submit') {
+      
+      <input #inputRef
+      [value]="label"
+        type="submit"
+        class="text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-1 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 w-full"
+        required
+      />
+      }
+    @default {
+        <input #inputRef
+        type="number"
+        [value]="value"
+        (input)="onInputChange($event)"
+        [disabled]="isDisabled"
+        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer capitalize"
+        [class.invalid]="isInvalid"
+        placeholder=" "
+        required
+      />
+    } }
+    
+   @if (cType !== 'submit') {
+    <ng-content />
+
+    <label
+      [for]="label"
+      class="peer capitalize-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer capitalize-focus:start-0 rtl:peer capitalize-focus:translate-x-1/4 peer capitalize-focus:text-blue-600 peer capitalize-focus:dark:text-blue-500 peer capitalize-placeholder-shown:scale-100 peer capitalize-placeholder-shown:translate-y-0 peer capitalize-focus:scale-75 peer capitalize-focus:-translate-y-6"
+    >
+      {{ label }}
+    </label>
+    @if (isInvalid) {
+    <div>
+      <small class="text-red-500">This field is required</small>
+    </div>
+    }
+   }
+</div>
