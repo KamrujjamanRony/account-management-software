@@ -14,8 +14,12 @@ export class EntriesService {
     return this.http.post<void>(this.apiUrl, model)
   }
 
-  getAllEntries(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl);
+  // getAllEntries(): Observable<any[]> {
+  //   return this.http.get<any[]>(this.apiUrl);
+  // }
+
+  getAllEntries(type: any): Observable<any[]> {
+    return type ? this.http.get<any[]>(`${this.apiUrl}?type=${type}`) : this.http.get<any[]>(this.apiUrl);
   }
 
   getEntries(id: any): Observable<any> {

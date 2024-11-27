@@ -37,7 +37,6 @@ export class AccountSetupComponent {
   filteredEntries = signal<any[]>([]);
   searchQuery = '';
   @ViewChildren(InputComponent) formInputs!: QueryList<InputComponent>;
-  @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
   isSubmitted = false;
   form = this.fb.group({
     type: ['expense', [Validators.required]],
@@ -48,10 +47,14 @@ export class AccountSetupComponent {
   
   ngOnInit() {
     this.onLoad();
-
-    // Focus on the search input when the component is initialized
+  }
+  
+  ngAfterViewInit() {
     setTimeout(() => {
-      this.searchInput.nativeElement.focus();
+      const firstInput = this.formInputs.first;
+      if (firstInput) {
+        firstInput.focus();
+      }
     }, 0);
   }
 
@@ -62,7 +65,8 @@ export class AccountSetupComponent {
   }
 
   onEntryLoaded() {
-    this.entriesService.getAllEntries().subscribe(data => {
+    const type = this.getControl('type').value;
+    this.entriesService.getAllEntries(type).subscribe(data => {
       this.Entries.set(data);
       this.filteredEntries.set(data);
     });
@@ -70,19 +74,23 @@ export class AccountSetupComponent {
 
   onDepartmentLoaded() {
     const type = this.getControl('type').value;
-    console.log(type)
     this.departmentService.getAllDepartments(type).subscribe(data => {
       this.departments = data;
     });
   }
 
   onSubDepartmentLoaded() {
-    console.log("clicked on sub-department")
     const selectedDepartment = this.getControl('department').value;
-    console.log(selectedDepartment)
     this.subDepartmentService.getAllSubDepartments(selectedDepartment).subscribe(data => {
       this.subDepartments = data;
     });
+  }
+
+  onDepartmentChange(){
+    this.onSubDepartmentLoaded();
+    const department = this.getControl('department').value;
+    console.log(department)
+    console.log(this.Entries().filter(entry => entry.department === department))
   }
 
   // Method to filter test list based on search query
@@ -113,11 +121,12 @@ export class AccountSetupComponent {
     e.preventDefault();
     const currentValue = this.getControl('department').value;
     if (currentValue && !this.departments.includes(currentValue)) {
-      this.departmentService.addDepartment({id: Math.random().toString(36).substr(2, 9), name:currentValue}).subscribe(data => {
-        this.onLoad()
+      const departmentData = {id: crypto.randomUUID(),type: this.getControl('type').value , name:currentValue}
+      this.departmentService.addDepartment(departmentData).subscribe(data => {
+        this.onLoad();
+        this.getControl('department').setValue('');
+        this.isDepartmentOpen = false;
       });
-      this.getControl('department').setValue('');
-      this.isDepartmentOpen = false;
     }
   }
 
@@ -126,9 +135,13 @@ export class AccountSetupComponent {
     e.preventDefault();
     const currentValue = this.getControl('subDepartment').value;
     if (currentValue && !this.subDepartments.includes(currentValue)) {
-      this.subDepartments.push(currentValue);
-      this.getControl('subDepartment').setValue('');
-      this.isSubDepartmentOpen = false;
+      const subDepartmentData = {id: crypto.randomUUID(), department: this.getControl('department').value , name:currentValue}
+      this.subDepartmentService.addSubDepartment(subDepartmentData).subscribe(data => {
+        console.log(data)
+        this.onLoad();
+        this.getControl('subDepartment').setValue('');
+        this.isSubDepartmentOpen = false;
+      });
     }
   }
 
@@ -141,7 +154,7 @@ export class AccountSetupComponent {
 
   // Set the Department name from the dropdown
   selectSubDepartment(option: any) {
-    this.getControl('subDepartment').setValue(option);
+    this.getControl('subDepartment').setValue(option?.name);
     this.isSubDepartmentOpen = false;
     this.highlightedSubDepartment = -1;
   }
@@ -170,6 +183,7 @@ export class AccountSetupComponent {
         // Select the highlighted option on Enter
         if (this.highlightedDepartment !== -1) {
           this.selectDepartment(this.departments[this.highlightedDepartment]);
+          this.onSubDepartmentLoaded();
           this.isDepartmentOpen = false; // Close the dropdown after selection
         }
       }
@@ -199,7 +213,7 @@ export class AccountSetupComponent {
       } else if (event.key === 'Enter') {
         // Select the highlighted option on Enter
         if (this.highlightedSubDepartment !== -1) {
-          this.selectDepartment(this.subDepartments[this.highlightedSubDepartment]);
+          this.selectSubDepartment(this.subDepartments[this.highlightedSubDepartment]);
           this.isSubDepartmentOpen = false; // Close the dropdown after selection
         }
       }

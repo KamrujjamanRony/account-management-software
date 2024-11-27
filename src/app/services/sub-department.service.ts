@@ -14,8 +14,8 @@ export class SubSubDepartmentService {
     return this.http.post<void>(this.apiUrl, model)
   }
 
-  getAllSubDepartments(departmentId: any): Observable<any[]> {
-    return departmentId ? this.http.get<any[]>(`${this.apiUrl}?departmentId=${departmentId}`) : this.http.get<any[]>(this.apiUrl);
+  getAllSubDepartments(departmentName: any): Observable<any[]> {
+    return departmentName ? this.http.get<any[]>(`${this.apiUrl}?department=${departmentName}`) : this.http.get<any[]>(this.apiUrl);
   }
 
   getSubDepartment(id: any): Observable<any> {

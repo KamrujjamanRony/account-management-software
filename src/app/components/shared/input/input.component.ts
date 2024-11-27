@@ -21,7 +21,13 @@ export class InputComponent implements ControlValueAccessor {
   @Input() isSubmitted: boolean = false;
   @Input() options: any[] = [];
   @Output() handleChange = new EventEmitter<void>(); 
+  @Output() handleFocus = new EventEmitter<void>(); 
   @ViewChild('inputRef', { static: false  }) inputRef!: ElementRef<HTMLInputElement>;
+  @ViewChild('inputRef') inputField!: ElementRef;
+
+  focus() {
+    this.inputField.nativeElement.focus();
+  }
 
   value: any = '';                         // Store the value for the input field
   isDisabled: boolean = false;                // Store whether the input is disabled
@@ -31,8 +37,12 @@ export class InputComponent implements ControlValueAccessor {
   onTouch = () => {};
   nativeElement: any;
 
-  onTextChange() {
+  onHandleChange() {
     this.handleChange.emit();
+  }
+
+  onHandleFocus() {
+    this.handleFocus.emit();
   }
 
   writeValue(value: any): void {
@@ -53,7 +63,6 @@ export class InputComponent implements ControlValueAccessor {
 
   // Handle input change
   onInputChange(event: Event) {
-    console.log("clicked", event)
     const input = event.target as HTMLInputElement;
     if (this.cType) {
       this.value = input.value;
