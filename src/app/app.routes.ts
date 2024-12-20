@@ -6,6 +6,7 @@ import { DoctorFeeReportComponent } from './components/pages/reports/doctor-fee-
 import { DoctorsReportComponent } from './components/pages/reports/doctors-report/doctors-report.component';
 import { BankEntryComponent } from './components/pages/accounts/setup/bank-entry/bank-entry.component';
 import { VendorEntryComponent } from './components/pages/accounts/setup/vendor-entry/vendor-entry.component';
+import { AccountListEntryComponent } from './components/pages/accounts/setup/account-list-entry/account-list-entry.component';
 
 export const routes: Routes = [
     {
@@ -24,6 +25,10 @@ export const routes: Routes = [
           {
             path: 'setup/vendor-entry',
             component: VendorEntryComponent
+          },
+          {
+            path: 'setup/account-list-entry',
+            component: AccountListEntryComponent
           },
           {
             path: 'setup/doctor/entry',

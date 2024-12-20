@@ -1,0 +1,28 @@
+.invalid {
+  border-color: red !important;
+}
+
+.highlighted {
+  background-color: #007bff !important;
+  color: white;
+}
+
+ul {
+  list-style-type: none;
+  padding-left: 20px;
+}
+
+li {
+  margin: 5px 0;
+  cursor: pointer;
+}
+
+.node {
+  font-weight: bold;
+}
+
+.toggle-btn {
+  margin-right: 10px;
+  cursor: pointer;
+  user-select: none;
+}

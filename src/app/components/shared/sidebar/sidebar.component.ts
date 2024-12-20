@@ -26,6 +26,9 @@ export class SidebarComponent {
         {
           id: 22, label: 'Vendor Entry', route: '/setup/vendor-entry'
         },
+        {
+          id: 23, label: 'Account List Entry', route: '/setup/account-list-entry'
+        },
       ]
     },
     // {
