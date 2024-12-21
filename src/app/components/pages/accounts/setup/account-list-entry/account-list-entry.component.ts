@@ -29,10 +29,13 @@ export class AccountListEntryComponent {
   controlHeadOption: any = [];
   bankOption: any = [];
   accountGroupOption: any = [
-    { id: 'asset', text: 'asset' },
-    { id: 'income', text: 'income' },
+    { id: 'current asset', text: 'current asset' },
+    { id: 'nonCurrent/fixed asset', text: 'nonCurrent/fixed asset' },
+    { id: 'current liability', text: 'current liability' },
+    { id: 'nonCurrent/fixed liability', text: 'nonCurrent/fixed liability' },
+    { id: 'equity', text: 'equity' },
+    { id: 'revenue', text: 'revenue' },
     { id: 'expense', text: 'expense' },
-    { id: 'liabilities', text: 'liabilities' },
   ];
   coaMapOption: any = [
     { id: 'cash', text: 'cash' },
@@ -324,7 +327,7 @@ export class AccountListEntryComponent {
  
    displayHeadId(id: any) {
      const find = this.controlHeadOption.find((p: { id: any; }) => p.id === id);
-     return find?.text ?? '';
+     return find?.text.toLowerCase() ?? '';
    }
  
    handleHeadIdKeyDown(event: KeyboardEvent) {

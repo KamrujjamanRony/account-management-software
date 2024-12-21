@@ -44,7 +44,7 @@
             name="controlHeadId"
             [formControl]="getControl('controlHeadId')"
             required
-            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
             [class.invalid]="
               (getControl('controlHeadId').invalid &&
               getControl('controlHeadId').touched) || isSubmitted
@@ -101,7 +101,7 @@
           [formControl]="getControl('accountGroup')"
           placeholder=""
           (keydown.enter)="handleEnterKey($event, 2)"
-          class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
           [class.invalid]="
             (getControl('accountGroup').invalid &&
               getControl('accountGroup').touched) ||
@@ -158,7 +158,7 @@
           [formControl]="getControl('bankId')"
           placeholder=""
           (keydown.enter)="handleEnterKey($event, 5)"
-          class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
         >
           <option value="0" class="capitalize" disabled>Select Option</option>
           @for(option of bankOption; track $index){
@@ -484,10 +484,10 @@
               ></ng-container>
               }
             </ul>
-            } @if(node.subHead !== 'root' && isCollapsed[node.id]){
+            } @if(node.subHead.toLowerCase() !== 'root' && isCollapsed[node.id]){
             <button
               (click)="onAdd(node)"
-              class="bg-blue-500 py-1 px-2 rounded text-white"
+              class="bg-blue-500 text-xs py-1 px-2 rounded text-white"
             >
               Add
             </button>
