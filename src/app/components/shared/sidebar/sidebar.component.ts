@@ -29,6 +29,9 @@ export class SidebarComponent {
         {
           id: 23, label: 'Account List Entry', route: '/setup/account-list-entry'
         },
+        {
+          id: 24, label: 'Voucher Entry', route: '/setup/voucher-entry'
+        },
       ]
     },
     // {
