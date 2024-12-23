@@ -1,5 +1,5 @@
 <section class="flex flex-col lg:flex-row gap-5">
-    <div class="w-full md:max-w-xl border mb-10">
+    <div class="w-full max-w-4xl mx-auto border mb-10">
       <h1
         class="text-xl md:text-3xl font-bold text-teal-500 underline text-center mb-5"
       >
@@ -112,7 +112,7 @@
 
 
   <div formArrayName="createVoucherDetailDto">
-    <div class="p-2 m-1 border border-teal-400 rounded" *ngFor="let detail of createVoucherDetailDto.controls; let i = index" [formGroupName]="i">
+    <div class="p-2 m-1 border border-teal-400 rounded flex justify-between -pb-2" *ngFor="let detail of createVoucherDetailDto.controls; let i = index" [formGroupName]="i">
       <!-- headId -->
       <Field label="Head">
         <select
@@ -123,6 +123,7 @@
               (getControl('voucherDate').invalid && getControl('voucherDate').touched) ||
               isSubmitted
             "
+          (input)="onHeadChanged($event)"
         >
           <option value="0" class="capitalize" disabled>Select Option</option>
           @for(option of headIdOption; track $index){
@@ -138,9 +139,10 @@
           formControlName="subHeadId"
           placeholder=""
           class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+          [disabled]="subHeadIdOption.length === 0"
         >
           <option value="0" class="capitalize" disabled>Select Option</option>
-          @for(option of accountBankCashIdOption; track $index){
+          @for(option of subHeadIdOption; track $index){
           <option [value]="option?.id" class="capitalize">
             {{ option?.text }}
           </option>
@@ -165,11 +167,7 @@
           placeholder=""
         />
       </Field>
-      <!-- <label>Debit Amount:</label>
-      <input formControlName="debitAmount" type="number" />
-      <label>Credit Amount:</label>
-      <input formControlName="creditAmount" type="number" /> -->
-      <button class="bg-red-600 hover:bg-red-800 py-2 w-full px-3 rounded-md my-2 text-white" type="button" (click)="removeCreateVoucherDetail(i)">Remove Voucher Detail</button>
+      <button class="bg-red-600 hover:bg-red-800 py-2 px-3 rounded-md my-2 text-white" type="button" (click)="removeCreateVoucherDetail(i)">Remove</button>
     </div>
     <button class="bg-green-600 hover:bg-green-800 py-2 w-full px-3 rounded-md my-2 text-white" type="button" (click)="addCreateVoucherDetail()">Add Voucher Detail</button>
   </div>
@@ -192,68 +190,6 @@
           </button>
         </div>
       </form>
-    </div>
-  
-    <div class="w-full border mb-10 px-3 max-h-[98vh] overflow-scroll">
-      <h1
-        class="text-xl md:text-3xl font-bold text-teal-500 underline text-center"
-      >
-        Voucher List
-      </h1>
-  
-      <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
-  
-       
-        <table
-          class="w-full text-sm text-left rtl:text-right text-gray-800 dark:text-gray-400 mt-2"
-        >
-          <thead
-            class="text-sm text-gray-100 uppercase bg-gray-800 dark:bg-gray-700 dark:text-gray-400"
-          >
-            <tr>
-              <th scope="col" class="p-1">name</th>
-              <th scope="col" class="p-1">address</th>
-              <th scope="col" class="p-1">remarks</th>
-              <th scope="col" class="px-1 py-3">Edit</th>
-              <th scope="col" class="px-1 py-3">Delete</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (item of filteredBankList(); track $index) {
-            <tr
-              id="row-{{ $index }}"
-              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
-            >
-              <td scope="row" class="p-1">
-                {{ item?.name }}
-              </td>
-              <td class="p-1">
-                {{ item?.address }}
-              </td>
-              <td class="p-1">
-                {{ item?.remarks }}
-              </td>
-              <td>
-                <button
-                  class="text-yellow-400 hover:bg-white px-1 rounded"
-                  (click)="onUpdate(item)"
-                >
-                  Edit
-                </button>
-              </td>
-              <td>
-                <button
-                  class="text-rose-400 hover:bg-white px-1 rounded"
-                  (click)="onDelete(item.id)"
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-            }
-          </tbody>
-        </table>
-      </div>
     </div>
   </section>
   

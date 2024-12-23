@@ -19,7 +19,7 @@ export class VoucherEntryComponent {
   fb = inject(NonNullableFormBuilder);
   private bankService = inject(BankService);
   private accountListService = inject(AccountListService);
-    private vendorService = inject(VendorService);
+  private vendorService = inject(VendorService);
   dataFetchService = inject(DataFetchService);
   filteredBankList = signal<any[]>([]);
   highlightedTr: number = -1;
@@ -28,6 +28,9 @@ export class VoucherEntryComponent {
   accountBankCashIdOption: any = [];
   vendorIdOption: any = [];
   headIdOption: any = [];
+  subHeadIdOption: any = [];
+  date: any = new Date();
+  today: any = this.date.toString().split('T')[0];
 
   private searchQuery$ = new BehaviorSubject<string>('');
   isLoading$: Observable<any> | undefined;
@@ -41,7 +44,7 @@ export class VoucherEntryComponent {
   form = this.fb.group({
     transactionType: ['Payment', Validators.required],
     coaMap: [''],
-    voucherDate: ['', Validators.required],
+    voucherDate: [this.today, Validators.required],
     voucherNo: [''],
     accountBankCashId: [0, Validators.required],
     vendorId: [0],
@@ -108,6 +111,26 @@ export class VoucherEntryComponent {
     this.accountListService.getAccountList(accountListReq).subscribe(data => this.accountBankCashIdOption = data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() })));
     this.accountListService.getAccountList(headIdReq).subscribe(data => this.headIdOption = data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() })));
     this.vendorService.getVendor('').subscribe(data => this.vendorIdOption = data.map((c: any) => ({ id: c.id, text: c.name.toLowerCase() })));
+  }
+
+  onHeadChanged(e: Event){
+    e.preventDefault();
+    // console.log(this.form.get('createVoucherDetailDto')?.value?.map((item: any) => item.headId));
+    const selectElement = e.target as HTMLSelectElement;
+    const selectedValue = selectElement.value;
+    
+    const subHeadIdReq = {
+      "headId": selectedValue,
+      "search": null,
+      "coaMap": [
+        "cash", "bank"
+      ],
+      "accountGroup": [
+        "Current Asset"
+      ]
+    }
+    console.log(subHeadIdReq)
+    this.accountListService.getAccountList(subHeadIdReq).subscribe(data => this.subHeadIdOption = data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() })));
   }
 
   onSearchBank(event: Event) {
@@ -295,7 +318,7 @@ export class VoucherEntryComponent {
     this.form.reset({
       transactionType: '',
       coaMap: '',
-      voucherDate: '',
+      voucherDate: this.today,
       voucherNo: '',
       accountBankCashId: 0,
       vendorId: 0,
