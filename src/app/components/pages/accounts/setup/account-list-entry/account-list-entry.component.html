@@ -25,7 +25,7 @@
             isSubmitted
           "
         >
-          <option value="" class="capitalize" disabled>Select Option</option>
+          <option value="" class="capitalize">Select Option</option>
           @for(option of controlHeadOption; track $index){
           <option [value]="option?.id" class="capitalize">
             {{ option?.text }}
@@ -108,7 +108,7 @@
             isSubmitted
           "
         >
-          <option value="" class="capitalize" disabled>Select Option</option>
+          <option value="" class="capitalize">Select Option</option>
           @for(option of accountGroupOption; track $index){
           <option [value]="option?.id" class="capitalize">
             {{ option?.text }}
@@ -142,7 +142,7 @@
           (keydown.enter)="handleEnterKey($event, 4)"
           class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
         >
-          <option value="" class="capitalize" disabled>Select Option</option>
+          <option value="" class="capitalize">Select Option</option>
           @for(option of coaMapOption; track $index){
           <option [value]="option?.id" class="capitalize">
             {{ option?.text }}
@@ -160,7 +160,7 @@
           (keydown.enter)="handleEnterKey($event, 5)"
           class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
         >
-          <option value="0" class="capitalize" disabled>Select Option</option>
+          <option value="0" class="capitalize">Select Option</option>
           @for(option of bankOption; track $index){
           <option [value]="option?.id" class="capitalize">
             {{ option?.text }}
