@@ -3,16 +3,17 @@ import { FormArray, FormControl, NonNullableFormBuilder, ReactiveFormsModule, Va
 import { BankService } from '../../../../../services/bank.service';
 import { DataFetchService } from '../../../../../services/useDataFetch';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { ToastSuccessComponent } from '../../../../shared/toast/toast-success/toast-success.component';
 import { FieldComponent } from '../../../../shared/field/field.component';
 import { AccountListService } from '../../../../../services/account-list.service';
 import { VendorService } from '../../../../../services/vendor.service';
 import { VoucherService } from '../../../../../services/voucher.service';
+import { AllSvgComponent } from "../../../../shared/svg/all-svg/all-svg.component";
 
 @Component({
   selector: 'app-voucher-entry',
-  imports: [CommonModule, ToastSuccessComponent, FieldComponent, ReactiveFormsModule],
+  imports: [CommonModule, ToastSuccessComponent, FieldComponent, ReactiveFormsModule, AllSvgComponent],
   templateUrl: './voucher-entry.component.html',
   styleUrl: './voucher-entry.component.css'
 })
@@ -27,6 +28,8 @@ export class VoucherEntryComponent {
   highlightedTr: number = -1;
   success = signal<any>("");
   selectedVoucher: any;
+  selectedVoucherDetails: any;
+  selectedVoucherDetailsIndex: any;
   accountBankCashIdOption: any = [];
   vendorIdOption: any = [];
   headIdOption: any = [];
@@ -36,6 +39,7 @@ export class VoucherEntryComponent {
   todayDate: any;
   dataArray: any[] = [];
   totalAmount: number = 0;
+  bankOrCash: string = "";
 
   private searchQuery$ = new BehaviorSubject<string>('');
   isLoading$: Observable<any> | undefined;
@@ -51,6 +55,7 @@ export class VoucherEntryComponent {
     coaMap: [''],
     voucherDate: ["", Validators.required],
     accountBankCashId: ["", Validators.required],
+    voucherNo: [''],
     vendorId: [''],
     receiveFrom: [''],
     payTo: [''],
@@ -59,7 +64,36 @@ export class VoucherEntryComponent {
     remarks: ['']
   });
 
+  onUpdate(data: any) {
+    this.form.patchValue({
+      transactionType: data?.transactionType,
+      coaMap: data?.coaMap,
+      voucherDate: data?.voucherDate.split('T')[0],
+      accountBankCashId: data?.accountBankCashId,
+      vendorId: data?.vendorId,
+      receiveFrom: data?.receiveFrom,
+      payTo: data?.payTo,
+      amount: data?.amount,
+      particular: data?.particular,
+      voucherNo: data?.voucherNo,
+      remarks: data?.remarks,
+    });
+    this.selectedVoucher = data;
+    this.dataArray = data.voucherDetailDto;
+    const cashId = this.form.value.accountBankCashId;
+    this.bankOrCash = this.accountBankCashIdOption.find((a: any) => a.id == cashId)?.text;
+    this.totalAmount = this.dataArray.reduce((prev, data) => prev + data.debitAmount, 0);
+    console.log(this.selectedVoucher)
+
+    // Focus the 'Name' input field after patching the value
+    setTimeout(() => {
+      const inputs = this.inputRefs.toArray();
+      inputs[0].nativeElement.focus();
+    }, 0); // Delay to ensure the DOM is updated
+  }
+
   addVoucherForm = this.fb.group({
+    id: [""],
     headId: ["", Validators.required],
     subHeadId: [""],
     debitAmount: [''],
@@ -67,16 +101,36 @@ export class VoucherEntryComponent {
   });
 
   addData() {
-    if (this.addVoucherForm.valid && this.addVoucherForm.value.headId) {
+    const cashId = this.form.value.accountBankCashId
+    if (this.addVoucherForm.valid && this.addVoucherForm.value.headId && cashId) {
+      if (!this.addVoucherForm.value.debitAmount) {
+        alert('Amount Must Be Gater Than 0');
+        return;
+      }
       const data = this.addVoucherForm.value;
       const addData = { ...data, headId: Number(data.headId), subHeadId: data.subHeadId ? Number(data.subHeadId) : null, debitAmount: data.debitAmount ? Number(data.debitAmount) : null }
-      this.dataArray.push(addData);
+      if (this.selectedVoucherDetails) {
+        this.dataArray[this.selectedVoucherDetailsIndex] = addData;
+      } else {
+        this.dataArray.push(addData);
+      }
       this.addVoucherForm.reset();
-
+      this.bankOrCash = this.accountBankCashIdOption.find((a: any) => a.id == cashId)?.text;
       this.totalAmount = this.dataArray.reduce((prev, data) => prev + data.debitAmount, 0);
     } else {
-      alert('Form is invalid! Please Fill Head Field.');
+      alert('Form is invalid! Please Fill Bank/Cash and Head Field.');
     }
+  }
+
+  editData(index: number) {
+    this.selectedVoucherDetails = this.dataArray[index];
+    this.selectedVoucherDetailsIndex = index;
+    this.addVoucherForm.patchValue({
+      headId: this.selectedVoucherDetails?.headId,
+      subHeadId: this.selectedVoucherDetails?.subHeadId,
+      debitAmount: this.selectedVoucherDetails?.debitAmount,
+      remarks: this.selectedVoucherDetails?.remarks,
+    });
   }
 
   deleteData(index: number) {
@@ -280,21 +334,6 @@ export class VoucherEntryComponent {
     }
   }
 
-  onUpdate(data: any) {
-    this.selectedVoucher = data;
-    // this.form.patchValue({
-    //   name: data?.name,
-    //   address: data?.address,
-    //   remarks: data?.remarks,
-    // });
-
-    // Focus the 'Name' input field after patching the value
-    setTimeout(() => {
-      const inputs = this.inputRefs.toArray();
-      inputs[0].nativeElement.focus();
-    }, 0); // Delay to ensure the DOM is updated
-  }
-
   onDelete(id: any) {
     // if (confirm("Are you sure you want to delete?")) {
     //   this.bankService.deleteBank(id).subscribe(data => {
@@ -315,9 +354,21 @@ export class VoucherEntryComponent {
   resetForm(e: Event) {
     e.preventDefault();
     this.form.reset();
+    const today = new Date();
+    this.form.patchValue({
+      voucherDate: today.toISOString().split('T')[0]
+    });
+    this.addVoucherForm.reset();
     this.isSubmitted = false;
     this.totalAmount = 0;
     this.dataArray = [];
+  }
+
+  
+  transform(value: any, args: any = 'dd/MM/yyyy'): any {
+    if (!value) return null;
+    const datePipe = new DatePipe('en-US');
+    return datePipe.transform(value, args);
   }
 
 }
