@@ -22,11 +22,11 @@ export class AccountListService {
     return this.http.get<any>(`${this.rootUrl}/GenerateTreeData`);
   }
 
-  // updateAccountList(id: any, updateAccountListRequest: any | FormData): Observable<any> {
-  //   return this.http.put<any>(`${this.rootUrl}/EditAccountList/${id}`, updateAccountListRequest);
-  // }
+  updateAccountList(id: any, updateAccountListRequest: any | FormData): Observable<any> {
+    return this.http.put<any>(`${this.rootUrl}/EditChartofAccount/${id}`, updateAccountListRequest);
+  }
 
-  // deleteAccountList(id: any): Observable<any> {
-  //   return this.http.post<any>(`${this.rootUrl}/DeleteAccountList?id=${id}`, '');
-  // }
+  deleteAccountList(id: any): Observable<any> {
+    return this.http.delete<any>(`${this.rootUrl}/DeleteChartofAccount?id=${id}`);
+  }
 }

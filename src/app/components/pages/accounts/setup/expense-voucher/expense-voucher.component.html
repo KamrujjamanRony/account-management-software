@@ -1,0 +1,403 @@
+<section class="flex flex-col gap-5">
+    <div class="w-full border mb-10">
+      <h1
+        class="text-xl md:text-3xl font-bold text-teal-500 underline text-center mb-5"
+      >
+        Expense Voucher Form
+      </h1>
+      <div class="flex gap-2">
+        <form
+        [formGroup]="form"
+        (ngSubmit)="onSubmit($event)"
+        class="w-full mx-auto px-2"
+      >
+        <div class="flex gap-2">
+          <!-- voucherDate -->
+        <Field label="Voucher Date" class="w-1/2">
+          <input
+            #inputRef
+            type="date"
+            [formControl]="getControl('voucherDate')"
+            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+            [class.invalid]="
+              (getControl('voucherDate').invalid &&
+                getControl('voucherDate').touched) ||
+              isSubmitted
+            "
+            placeholder=""
+            (keydown.enter)="handleEnterKey($event, 0)"
+            required
+          />
+        </Field>
+        <!-- payTo -->
+        <Field label="Pay To" class="w-1/2">
+          <input
+            #inputRef
+            type="text"
+            [formControl]="getControl('payTo')"
+            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+            placeholder=""
+            (keydown.enter)="handleEnterKey($event, 1)"
+          />
+        </Field>
+        </div>
+        <!-- vendorId -->
+        <Field label="Vendor">
+          <select
+            #inputRef
+            name="vendorId"
+            [formControl]="getControl('vendorId')"
+            placeholder=""
+            (keydown.enter)="handleEnterKey($event, 2)"
+            class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+          >
+            <option value="" class="capitalize" disabled>Select Option</option>
+            @for(option of vendorIdOption(); track $index){
+            <option [value]="option?.id" class="capitalize">
+              {{ option?.text }}
+            </option>
+            }
+          </select>
+        </Field>
+        <!-- accountBankCashId -->
+        <Field label="Bank/Cash">
+          <select
+            #inputRef
+            name="accountBankCashId"
+            [formControl]="getControl('accountBankCashId')"
+            placeholder=""
+            (keydown.enter)="handleEnterKey($event, 3)"
+            class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+            [class.invalid]="
+              (getControl('accountBankCashId').invalid &&
+                getControl('accountBankCashId').touched) ||
+              isSubmitted
+            "
+            required
+          >
+            <option value="" class="capitalize" disabled>Select Option</option>
+            @for(option of accountBankCashIdOption(); track $index){
+            <option [value]="option?.id" class="capitalize">
+              {{ option?.text }}
+            </option>
+            }
+          </select>
+        </Field>
+        <!-- remarks -->
+        <Field label="remarks">
+          <input
+            #inputRef
+            type="text"
+            [formControl]="getControl('remarks')"
+            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+            placeholder=""
+            (keydown.enter)="handleEnterKey($event, 4)"
+          />
+        </Field>
+  
+        <div class="flex gap-2">
+          <!-- Save -->
+           @if (isSubmitting()) {
+            <div class="text-white bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-yellow-300 dark:focus:ring-yellow-800 shadow-lg shadow-yellow-500/50 dark:shadow-lg dark:shadow-yellow-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full">
+              Processing...
+            </div>
+           } @else {
+            <input
+            type="submit"
+            [value]="selectedVoucher ? 'Update Voucher' : 'Save Voucher'"
+            class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-lg shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
+          />
+           }
+          
+  
+          <button
+            (click)="resetForm($event)"
+            class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10"
+          >
+            Clear
+          </button>
+        </div>
+      </form>
+  
+      <form class="w-full" [formGroup]="addVoucherForm" (ngSubmit)="addData()">
+        <div class="px-2">
+          <!-- headId -->
+          <Field label="Head">
+            <select
+              #inputRef
+              formControlName="headId"
+              placeholder=""
+              class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+              [class.invalid]="
+                (getControl('voucherDate').invalid &&
+                  getControl('voucherDate').touched) ||
+                isSubmitted
+              "
+              (input)="onHeadChanged($event)"
+              (keydown.enter)="handleEnterKey($event, 5)"
+              required
+            >
+              <option value="" class="capitalize">
+                Select Option
+              </option>
+              @for(option of headIdOption(); track $index){
+              <option [value]="option?.id" class="capitalize">
+                {{ option?.text }}
+              </option>
+              }
+            </select>
+          </Field>
+          <!-- subHeadId -->
+           @if (subHeadIdOption().length > 0) {
+            <Field label="Sub Head">
+              <select
+                #inputRef
+                formControlName="subHeadId"
+                placeholder=""
+                class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+                (keydown.enter)="handleEnterKey($event, 6)"
+                [disabled]="subHeadIdOption().length === 0"
+              >
+                  <option value="" class="capitalize">
+                    Select Option
+                  </option>
+                  @for(option of subHeadIdOption(); track $index){
+                  <option [value]="option?.id" class="capitalize">
+                    {{ option?.text }}
+                  </option>
+                  }
+              </select>
+            </Field>
+           } @else {
+            <Field label="Sub Head">
+              <select
+                placeholder=""
+                class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+                [disabled]="subHeadIdOption().length === 0"
+              >
+              </select>
+            </Field>
+           }
+          
+          
+          <!-- debitAmount -->
+          <Field label="debitAmount">
+            <input
+              #inputRef
+              type="number"
+              formControlName="debitAmount"
+              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              placeholder=""
+              (keydown.enter)="handleEnterKey($event, 7)"
+            />
+          </Field>
+          <!-- remarks -->
+          <Field label="remarks">
+            <input
+              #inputRef
+              type="text"
+              formControlName="remarks"
+              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              placeholder=""
+              (keydown.enter)="handleEnterKey($event, 8)"
+            />
+          </Field>
+        </div>
+        <div class="mx-2">
+          <button
+          #inputRef
+          (keydown.enter)="handleEnterKey($event, 9)"
+          class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-lg shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
+          type="button"
+          (click)="addData()"
+        >
+          {{selectedVoucherDetails ? 'Update' : 'Add'}} Voucher Detail
+        </button>
+        </div>
+      </form>
+      </div>
+    </div>
+  
+    @if (dataArray.length > 0) {
+    <div class="w-full border mb-10 px-3 max-h-[98vh] overflow-scroll">
+      <h1
+        class="text-xl md:text-3xl font-bold text-teal-500 underline text-center"
+      >
+        Expense Voucher Details List
+      </h1>
+  
+      <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
+        <table
+          class="w-full text-sm text-left rtl:text-right text-gray-800 dark:text-gray-400 mt-2"
+        >
+          <thead
+            class="text-sm text-gray-100 capitalize bg-teal-800 dark:bg-gray-700 dark:text-gray-400"
+          >
+            <tr>
+              <th scope="col" class="p-1">head</th>
+              <th scope="col" class="p-1">subHead</th>
+              <th scope="col" class="p-1">Debit</th>
+              <th scope="col" class="p-1">Credit</th>
+              <th scope="col" class="p-1">remarks</th>
+              <th scope="col" class="px-1 py-3">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of dataArray; track $index) {
+            <tr
+              id="row-{{ $index }}"
+              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+            >
+              <td class="p-1 capitalize">
+                {{ displayHead(item?.headId) }}
+              </td>
+              <td class="p-1 capitalize">
+                {{ displayHead(item?.subHeadId) }}
+              </td>
+              <td class="p-1">
+                {{ item?.debitAmount }}
+              </td>
+              <td class="p-1">
+                {{ item?.creditAmount }}
+              </td>
+              <td class="p-1">
+                {{ item?.remarks }}
+              </td>
+              <td class="flex gap-1">
+                <button
+                  class="text-orange-50 bg-orange-400 hover:bg-orange-500 p-1 rounded"
+                  (click)="editData($index)"
+                >
+                  <app-all-svg icon="pencil" />
+                </button>
+                <button
+                  class="text-rose-50 bg-rose-600 hover:bg-rose-700 px-2 py-[1px] rounded"
+                  (click)="deleteData($index)"
+                >
+                  X
+                </button>
+              </td>
+            </tr>
+            } @empty {
+            <tr>
+              <td
+                colspan="6"
+                class="text-center text-gray-600 dark:text-gray-400"
+              >
+                No data found
+              </td>
+            </tr>
+            }
+            <tr
+              id="row-last"
+              class="bg-teal-200 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+            >
+              <td class="p-1 capitalize">
+                {{bankOrCash}}
+              </td>
+              <td class="p-1 capitalize">
+              </td>
+              <td class="p-1">
+              </td>
+              <td class="p-1">
+                {{ totalAmount }}
+              </td>
+              <td class="p-1">
+              </td>
+              <td class="flex gap-1">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    } @else {
+  
+    <div class="w-full border mb-10 px-3 max-h-[98vh] overflow-scroll">
+      <h1
+        class="text-xl md:text-3xl font-bold text-teal-500 underline text-center"
+      >
+        Expense Voucher List
+      </h1>
+  
+      <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
+        <table
+          class="w-full text-sm text-left rtl:text-right text-gray-800 dark:text-gray-400 mt-2"
+        >
+          <thead
+            class="text-sm text-gray-100 uppercase bg-teal-800 dark:bg-gray-700 dark:text-gray-400"
+          >
+            <tr>
+              <th scope="col" class="p-1">voucherNo</th>
+              <th scope="col" class="p-1">voucherDate</th>
+              <th scope="col" class="p-1">Cash/Bank</th>
+              <th scope="col" class="p-1">vendor</th>
+              <th scope="col" class="p-1">pay To</th>
+              <th scope="col" class="p-1">amount</th>
+              <th scope="col" class="p-1">remarks</th>
+              <th scope="col" class="px-1 py-3">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of filteredVoucherList(); track $index) {
+            <tr
+              id="row-{{ $index }}"
+              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+            >
+              <td class="p-1 capitalize">
+                {{ item?.voucherNo }}
+              </td>
+              <td class="p-1 capitalize">
+                {{ transform(item?.voucherDate) }}
+              </td>
+              <td class="p-1">
+                {{ item?.accountBankName }}
+              </td>
+              <td class="p-1">
+                {{ item?.vendorName }}
+              </td>
+              <td class="p-1">
+                {{ item?.payTo }}
+              </td>
+              <td class="p-1">
+                {{ item?.amount }}
+              </td>
+              <td class="p-1">
+                {{ item?.remarks }}
+              </td>
+              <td class="flex gap-1">
+                <button
+                  class="text-orange-50 bg-orange-400 hover:bg-orange-500 p-1 rounded"
+                  (click)="onUpdate(item)"
+                >
+                  <app-all-svg icon="pencil" />
+                </button>
+                <button
+                  class="text-rose-50 bg-rose-600 hover:bg-rose-700 px-2 py-[1px] rounded"
+                  (click)="onDelete(item?.id)"
+                >
+                  X
+                </button>
+              </td>
+            </tr>
+            } @empty {
+            <tr>
+              <td
+                colspan="6"
+                class="text-center text-gray-600 dark:text-gray-400"
+              >
+                No data found
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+    }
+  </section>
+  
+  @if (success()) {
+  <app-toast-success [title]="success()"></app-toast-success>
+  }
+  

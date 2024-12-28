@@ -3,7 +3,7 @@
     <h1
       class="text-xl md:text-3xl font-bold text-teal-500 underline text-center mb-5"
     >
-      Voucher Form
+      Expense Voucher Form
     </h1>
     <div class="flex gap-2">
       <form
@@ -130,7 +130,7 @@
             (keydown.enter)="handleEnterKey($event, 5)"
             required
           >
-            <option value="" class="capitalize" disabled>
+            <option value="" class="capitalize">
               Select Option
             </option>
             @for(option of headIdOption; track $index){
@@ -141,24 +141,38 @@
           </select>
         </Field>
         <!-- subHeadId -->
-        <Field label="Sub Head">
-          <select
-            #inputRef
-            formControlName="subHeadId"
-            placeholder=""
-            class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
-            (keydown.enter)="handleEnterKey($event, 6)"
-          >
-            <option value="" class="capitalize" disabled>
-              Select Option
-            </option>
-            @for(option of subHeadIdOption; track $index){
-            <option [value]="option?.id" class="capitalize">
-              {{ option?.text }}
-            </option>
-            }
-          </select>
-        </Field>
+         @if (subHeadIdOption.length > 0) {
+          <Field label="Sub Head">
+            <select
+              #inputRef
+              formControlName="subHeadId"
+              placeholder=""
+              class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+              (keydown.enter)="handleEnterKey($event, 6)"
+              [disabled]="subHeadIdOption.length === 0"
+            >
+                <option value="" class="capitalize">
+                  Select Option
+                </option>
+                @for(option of subHeadIdOption; track $index){
+                <option [value]="option?.id" class="capitalize">
+                  {{ option?.text }}
+                </option>
+                }
+            </select>
+          </Field>
+         } @else {
+          <Field label="Sub Head">
+            <select
+              placeholder=""
+              class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+              [disabled]="subHeadIdOption.length === 0"
+            >
+            </select>
+          </Field>
+         }
+        
+        
         <!-- debitAmount -->
         <Field label="debitAmount">
           <input
@@ -202,7 +216,7 @@
     <h1
       class="text-xl md:text-3xl font-bold text-teal-500 underline text-center"
     >
-      Voucher Details List
+      Expense Voucher Details List
     </h1>
 
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
@@ -227,7 +241,7 @@
             class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
           >
             <td class="p-1 capitalize">
-              {{ displaySubHead(item?.headId) }}
+              {{ displayHead(item?.headId) }}
             </td>
             <td class="p-1 capitalize">
               {{ displaySubHead(item?.subHeadId) }}
@@ -283,7 +297,7 @@
     <h1
       class="text-xl md:text-3xl font-bold text-teal-500 underline text-center"
     >
-      Voucher List
+      Expense Voucher List
     </h1>
 
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">

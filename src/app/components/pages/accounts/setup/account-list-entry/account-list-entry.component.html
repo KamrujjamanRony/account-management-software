@@ -10,33 +10,10 @@
       (ngSubmit)="onSubmit($event)"
       class="min-w-[400px] mx-auto px-2"
     >
-      <!-- controlHeadId -->
-      <!-- <Field label="controlHeadId">
-        <select
-          #inputRef
-          name="controlHeadId"
-          [formControl]="getControl('controlHeadId')"
-          placeholder=""
-          (keydown.enter)="handleEnterKey($event, 0)"
-          class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
-          [class.invalid]="
-            (getControl('controlHeadId').invalid &&
-              getControl('controlHeadId').touched) ||
-            isSubmitted
-          "
-        >
-          <option value="" class="capitalize">Select Option</option>
-          @for(option of controlHeadOption; track $index){
-          <option [value]="option?.id" class="capitalize">
-            {{ option?.text }}
-          </option>
-          }
-        </select>
-      </Field> -->
 
       <!-- controlHeadId -->
       <div class="gap-2 relative">
-        <Field label="controlHeadId">
+        <Field label="Control Head">
           <input
             #inputRef
             type="text"
@@ -82,7 +59,7 @@
 
 
       <!-- accountCode -->
-      <Field label="accountCode">
+      <!-- <Field label="Account Code">
         <input
           #inputRef
           type="text"
@@ -92,9 +69,10 @@
           placeholder=""
           (keydown.enter)="handleEnterKey($event, 1)"
         />
-      </Field>
+      </Field> -->
+      
       <!-- accountGroup -->
-      <Field label="accountGroup">
+      <Field label="Account Group">
         <select
           #inputRef
           name="accountGroup"
@@ -117,7 +95,7 @@
         </select>
       </Field>
       <!-- subHead -->
-      <Field label="subHead">
+      <Field label="Sub Head">
         <input
           #inputRef
           type="text"
@@ -132,8 +110,22 @@
           (keydown.enter)="handleEnterKey($event, 3)"
         />
       </Field>
+      <!-- remarks -->
+      <Field label="Remarks">
+        <input
+          #inputRef
+          type="text"
+          [formControl]="getControl('remarks')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          placeholder=""
+          (keydown.enter)="handleEnterKey($event, 8)"
+        />
+      </Field>
+
+      @if (show()) {
+        
       <!-- coaMap -->
-      <Field label="coaMap">
+      <Field label="COA Map">
         <select
           #inputRef
           name="coaMap"
@@ -151,7 +143,7 @@
         </select>
       </Field>
       <!-- bankId -->
-      <Field label="bankId">
+      <Field label="Bank">
         <select
           #inputRef
           name="bankId"
@@ -169,7 +161,7 @@
         </select>
       </Field>
       <!-- accountNo -->
-      <Field label="accountNo">
+      <Field label="Bank Account No">
         <input
           #inputRef
           type="text"
@@ -181,7 +173,7 @@
         />
       </Field>
       <!-- openingBalance -->
-      <Field label="openingBalance">
+      <Field label="Opening Balance">
         <input
           #inputRef
           type="number"
@@ -192,17 +184,9 @@
           (keydown.enter)="handleEnterKey($event, 7)"
         />
       </Field>
-      <!-- remarks -->
-      <Field label="remarks">
-        <input
-          #inputRef
-          type="text"
-          [formControl]="getControl('remarks')"
-          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
-          placeholder=""
-          (keydown.enter)="handleEnterKey($event, 8)"
-        />
-      </Field>
+      }
+
+      <button (click)="onToggleShow($event)" class="btn btn-small uppercase px-2 py-1 rounded bg-purple-600 text-white mb-2">{{show() ? 'hide' : 'show'}}</button>
 
       <div class="flex gap-2">
         <!-- Save -->

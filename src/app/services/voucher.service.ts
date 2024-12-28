@@ -19,11 +19,11 @@ export class VoucherService {
     return this.http.post<any>(`${this.rootUrl}/SearchVoucher`, query);
   }
 
-  // updateVoucher(id: any, updateVoucherRequest: any | FormData): Observable<any> {
-  //   return this.http.put<any>(`${this.rootUrl}/EditVoucher/${id}`, updateVoucherRequest);
-  // }
+  updateVoucher(id: any, updateVoucherRequest: any | FormData): Observable<any> {
+    return this.http.put<any>(`${this.rootUrl}/EditVoucher/${id}`, updateVoucherRequest);
+  }
 
-  // deleteVoucher(id: any): Observable<any> {
-  //   return this.http.post<any>(`${this.rootUrl}/DeleteVoucher?id=${id}`, '');
-  // }
+  deleteVoucher(id: any): Observable<any> {
+    return this.http.delete<any>(`${this.rootUrl}/DeleteVoucher?id=${id}`);
+  }
 }

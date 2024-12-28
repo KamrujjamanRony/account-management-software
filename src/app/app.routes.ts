@@ -1,12 +1,11 @@
 import { Routes } from '@angular/router';
 import { MainComponent } from './components/layouts/main/main.component';
-import { DoctorFeeComponent } from './components/pages/setup/doctor/doctor-fee/doctor-fee.component';
-import { DoctorFeeReportComponent } from './components/pages/reports/doctor-fee-report/doctor-fee-report.component';
-import { DoctorsReportComponent } from './components/pages/reports/doctors-report/doctors-report.component';
 import { BankEntryComponent } from './components/pages/accounts/setup/bank-entry/bank-entry.component';
 import { VendorEntryComponent } from './components/pages/accounts/setup/vendor-entry/vendor-entry.component';
 import { AccountListEntryComponent } from './components/pages/accounts/setup/account-list-entry/account-list-entry.component';
-import { VoucherEntryComponent } from './components/pages/accounts/setup/voucher-entry/voucher-entry.component';
+import { ExpenseVoucherComponent } from './components/pages/accounts/setup/expense-voucher/expense-voucher.component';
+import { ReceiveVoucherComponent } from './components/pages/accounts/setup/receive-voucher/receive-voucher.component';
+import { JournalVoucherComponent } from './components/pages/accounts/setup/journal-voucher/journal-voucher.component';
 
 export const routes: Routes = [
     {
@@ -31,20 +30,16 @@ export const routes: Routes = [
             component: AccountListEntryComponent
           },
           {
-            path: 'setup/voucher-entry',
-            component: VoucherEntryComponent
+            path: 'setup/expense-voucher',
+            component: ExpenseVoucherComponent
           },
           {
-            path: 'setup/doctor/fee',
-            component: DoctorFeeComponent
+            path: 'setup/receive-voucher',
+            component: ReceiveVoucherComponent
           },
           {
-            path: 'reports/doctor-fee-report',
-            component: DoctorFeeReportComponent
-          },
-          {
-            path: 'reports/doctors-report',
-            component: DoctorsReportComponent
+            path: 'setup/journal-voucher',
+            component: JournalVoucherComponent
           },
         ],
       }

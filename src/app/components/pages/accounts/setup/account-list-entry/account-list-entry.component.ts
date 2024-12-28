@@ -21,25 +21,26 @@ export class AccountListEntryComponent {
   private accountListService = inject(AccountListService);
   dataFetchService = inject(DataFetchService);
   filteredAccountList = signal<any[]>([]);
+  show = signal<boolean>(false);
   highlightedTr: number = -1;
   success = signal<any>("");
   selectedAccount: any;
-  isGrid: boolean = true;
+  isGrid: boolean = false;
 
   controlHeadOption: any = [];
   bankOption: any = [];
   accountGroupOption: any = [
-    { id: 'current asset', text: 'current asset' },
-    { id: 'nonCurrent/fixed asset', text: 'nonCurrent/fixed asset' },
-    { id: 'current liability', text: 'current liability' },
-    { id: 'nonCurrent/fixed liability', text: 'nonCurrent/fixed liability' },
-    { id: 'equity', text: 'equity' },
-    { id: 'revenue', text: 'revenue' },
-    { id: 'expense', text: 'expense' },
+    { id: 'Current Asset', text: 'Current Asset' },
+    { id: 'NonCurrent/Fixed Asset', text: 'NonCurrent/Fixed Asset' },
+    { id: 'Current Liability', text: 'Current Liability' },
+    { id: 'NonCurrent Liability', text: 'NonCurrent Liability' },
+    { id: 'Equity', text: 'Equity' },
+    { id: 'Income', text: 'Income' },
+    { id: 'Expenses', text: 'Expenses' },
   ];
   coaMapOption: any = [
-    { id: 'cash', text: 'cash' },
-    { id: 'bank', text: 'bank' },
+    { id: 'Cash', text: 'Cash' },
+    { id: 'Bank', text: 'Bank' },
   ];
 
   treeData: any[] = [];
@@ -81,7 +82,13 @@ export class AccountListEntryComponent {
   }
 
   onLoadAccountList() {
-    const { data$, isLoading$, hasError$ } = this.dataFetchService.fetchData(this.accountListService.getAccountList({}));
+    const { data$, isLoading$, hasError$ } = this.dataFetchService.fetchData(this.accountListService.getAccountList({
+      "headId": null,
+      "allbyheadId": 1,
+      "search": null,
+      "coaMap": [],
+      "accountGroup": []
+    }));
 
     data$.subscribe(data => this.controlHeadOption = data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() })));
 
@@ -169,27 +176,28 @@ export class AccountListEntryComponent {
     // console.log(this.form.value);
     if (this.form.valid) {
       this.form.get('controlHeadId')?.enable();
+      this.form.get('accountGroup')?.enable();
       if (this.selectedAccount) {
-        // this.bankService.updateAccount(this.selectedAccount.id, this.form.value)
-        //   .subscribe({
-        //     next: (response) => {
-        //       if (response !== null && response !== undefined) {
-        //         this.success.set("Account successfully updated!");
-        //         const rest = this.filteredAccountList().filter(d => d.id !== response.id);
-        //         this.filteredAccountList.set([response, ...rest]);
-        //         this.isSubmitted = false;
-        //         this.selectedAccount = null;
-        //         this.formReset(e);
-        //         setTimeout(() => {
-        //           this.success.set("");
-        //         }, 3000);
-        //       }
+        this.accountListService.updateAccountList(this.selectedAccount.id, this.form.value)
+          .subscribe({
+            next: (response) => {
+              if (response !== null && response !== undefined) {
+                this.success.set("ChartofAccount successfully updated!");
+                const rest = this.filteredAccountList().filter(d => d.id !== response.id);
+                this.filteredAccountList.set([response, ...rest]);
+                this.isSubmitted = false;
+                this.selectedAccount = null;
+                this.formReset(e);
+                setTimeout(() => {
+                  this.success.set("");
+                }, 3000);
+              }
 
-        //     },
-        //     error: (error) => {
-        //       console.error('Error register:', error);
-        //     }
-        //   });
+            },
+            error: (error) => {
+              console.error('Error register:', error);
+            }
+          });
       } else {
         this.accountListService.addAccountList(this.form.value)
           .subscribe({
@@ -230,6 +238,8 @@ export class AccountListEntryComponent {
       openingBalance: data?.openingBalance,
       remarks: data?.remarks,
     });
+    
+    this.form.get('controlHeadId')?.disable();
 
     // Focus the 'Name' input field after patching the value
     setTimeout(() => {
@@ -239,36 +249,26 @@ export class AccountListEntryComponent {
   }
 
   onDelete(id: any) {
-  //   if (confirm("Are you sure you want to delete?")) {
-  //     this.bankService.deleteBank(id).subscribe(data => {
-  //       if (data.id) {
-  //         this.success.set("Bank deleted successfully!");
-  //         this.filteredAccountList.set(this.filteredAccountList().filter(d => d.id !== id));
-  //         setTimeout(() => {
-  //           this.success.set("");
-  //         }, 3000);
-  //       } else {
-  //         console.error('Error deleting Bank:', data);
-  //         alert('Error deleting Bank: ' + data.message)
-  //       }
-  //     });
-  //   }
+    if (confirm("Are you sure you want to delete?")) {
+      this.accountListService.deleteAccountList(id).subscribe(data => {
+        if (data.id) {
+          this.success.set("ChartOfAccount deleted successfully!");
+          this.filteredAccountList.set(this.filteredAccountList().filter(d => d.id !== id));
+          setTimeout(() => {
+            this.success.set("");
+          }, 3000);
+        } else {
+          console.error('Error deleting ChartOfAccount:', data);
+          alert('Error deleting ChartOfAccount: ' + data.message)
+        }
+      });
+    }
   }
 
   formReset(e: Event): void {
     e.preventDefault();
     this.form.get('controlHeadId')?.enable();
-    this.form.reset({
-      controlHeadId: '',
-      accountCode: '',
-      accountGroup: '',
-      subHead: '',
-      coaMap: '',
-      bankId: 0,
-      accountNo: '',
-      openingBalance: 0,
-      remarks: '',
-    });
+    this.form.reset();
     this.isSubmitted = false;
     this.selectedAccount = null;
   }
@@ -311,9 +311,14 @@ export class AccountListEntryComponent {
   }
 
   onAdd(data: any){
+    const findData = this.filteredAccountList().find((d: any) => d.id == data.id);
+    console.log(findData)
     this.form.patchValue({
-      controlHeadId: data?.id
+      controlHeadId: data?.id,
+      accountGroup: findData?.accountGroup,
     });
+    
+    this.form.get('accountGroup')?.disable();
   }
   //------ End Tree Functions --------------------------------
 
@@ -326,7 +331,7 @@ export class AccountListEntryComponent {
    controlHeadIdEnable: boolean = true;
  
    displayHeadId(id: any) {
-     const find = this.controlHeadOption.find((p: { id: any; }) => p.id === id);
+     const find = this.controlHeadOption.find((p: { id: any; }) => p.id == id);
      return find?.text.toLowerCase() ?? '';
    }
  
@@ -397,5 +402,14 @@ export class AccountListEntryComponent {
      this.controlHeadIdEnable = true;
    }
    //----------controlHeadId End----------------------------------------------------------------------
+
+
+   
+   // ----------Utility function start---------------------------------------------------------------------------------
+   onToggleShow(e: any){
+    e.preventDefault();
+    this.show.set(!this.show())
+   }
+   // ----------Utility function end---------------------------------------------------------------------------------
 
 }

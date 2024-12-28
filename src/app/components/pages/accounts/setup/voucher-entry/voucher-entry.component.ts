@@ -2,7 +2,7 @@ import { Component, ElementRef, inject, QueryList, signal, ViewChild, ViewChildr
 import { FormArray, FormControl, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BankService } from '../../../../../services/bank.service';
 import { DataFetchService } from '../../../../../services/useDataFetch';
-import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, config, map, Observable } from 'rxjs';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ToastSuccessComponent } from '../../../../shared/toast/toast-success/toast-success.component';
 import { FieldComponent } from '../../../../shared/field/field.component';
@@ -34,12 +34,12 @@ export class VoucherEntryComponent {
   vendorIdOption: any = [];
   headIdOption: any = [];
   subHeadIdOption: any = [];
-  allOption: any = [];
   date: any = new Date();
   todayDate: any;
   dataArray: any[] = [];
   totalAmount: number = 0;
   bankOrCash: string = "";
+  selectedValue: any = "";
 
   private searchQuery$ = new BehaviorSubject<string>('');
   isLoading$: Observable<any> | undefined;
@@ -80,6 +80,7 @@ export class VoucherEntryComponent {
     });
     this.selectedVoucher = data;
     this.dataArray = data.voucherDetailDto;
+    console.log(this.dataArray)
     const cashId = this.form.value.accountBankCashId;
     this.bankOrCash = this.accountBankCashIdOption.find((a: any) => a.id == cashId)?.text;
     this.totalAmount = this.dataArray.reduce((prev, data) => prev + data.debitAmount, 0);
@@ -109,6 +110,7 @@ export class VoucherEntryComponent {
       }
       const data = this.addVoucherForm.value;
       const addData = { ...data, headId: Number(data.headId), subHeadId: data.subHeadId ? Number(data.subHeadId) : null, debitAmount: data.debitAmount ? Number(data.debitAmount) : null }
+      console.log(addData)
       if (this.selectedVoucherDetails) {
         this.dataArray[this.selectedVoucherDetailsIndex] = addData;
       } else {
@@ -175,35 +177,40 @@ export class VoucherEntryComponent {
   }
 
   onLoadDropdown() {
-    const allListReq = {
-      "headId": null,
+    this.accountListService.getAccountList({
+      "allbyheadId": 1,
       "search": null,
       "coaMap": [],
-      "accountGroup": []
-    }
-    const accountListReq = {
-      "headId": null,
-      "search": null,
-      "coaMap": [
-        "cash", "bank"
-      ]
-    }
-    const headIdReq = {
-      "headId": null,
-      "search": null,
-      "coaMap": [],
-      "accountGroup": [
-        "Expenses"
-      ]
-    }
-    this.accountListService.getAccountList(allListReq).subscribe(data => this.allOption = data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() })));
-    this.accountListService.getAccountList(accountListReq).subscribe(data => this.accountBankCashIdOption = data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() })));
-    this.accountListService.getAccountList(headIdReq).subscribe(data => this.headIdOption = data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() })));
-    this.vendorService.getVendor('').subscribe(data => this.vendorIdOption = data.map((c: any) => ({ id: c.id, text: c.name.toLowerCase() })));
+      "accountGroup": ["Expenses"]
+    }).subscribe(data => {
+      const accountGroupId = data.find((a: any) => a.accountGroup === "Expenses")?.id;
+      console.log(accountGroupId)
+      const accountListReq = {
+        "headId": null,
+        "allbyheadId": 1,
+        "search": null,
+        "coaMap": ["Cash", "Bank"],
+        "accountGroup": []
+      }
+      const headIdReq = {
+        "headId": accountGroupId,
+        "allbyheadId": accountGroupId,
+        "search": null,
+        "coaMap": [],
+        "accountGroup": []
+      }
+      this.accountListService.getAccountList(accountListReq).subscribe(data => this.accountBankCashIdOption = data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() })));
+      this.accountListService.getAccountList(headIdReq).subscribe(data => this.headIdOption = data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() })));
+      this.vendorService.getVendor('').subscribe(data => this.vendorIdOption = data.map((c: any) => ({ id: c.id, text: c.name.toLowerCase() })));
+    });
+  }
+
+  displayHead(id: any) {
+    return this.headIdOption.find((option: any) => option.id == id)?.text;
   }
 
   displaySubHead(id: any) {
-    return this.allOption.find((option: any) => option.id == id)?.text;
+    return this.subHeadIdOption.find((option: any) => option.id == id)?.text;
   }
 
   onHeadChanged(e: Event) {
@@ -214,9 +221,7 @@ export class VoucherEntryComponent {
 
     const subHeadIdReq = {
       "headId": +selectedValue,
-      "search": null,
-      "coaMap": [],
-      "accountGroup": []
+      "allbyheadId": +selectedValue
     };
     this.accountListService.getAccountList(subHeadIdReq).subscribe(data => {
       this.subHeadIdOption = data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() }))
@@ -278,7 +283,7 @@ export class VoucherEntryComponent {
 
   onSubmit(e: Event) {
     this.isSubmitted = true;
-    console.log(this.form.value);
+    // console.log(this.form.value);
     if (this.form.valid) {
       const restData = this.form.value;
       const voucherFormData = { ...restData, accountBankCashId: Number(restData.accountBankCashId), vendorId: restData.vendorId ? Number(restData.vendorId) : null, amount: this.totalAmount, VoucherNo: "" }
@@ -290,7 +295,7 @@ export class VoucherEntryComponent {
         //       if (response !== null && response !== undefined) {
         //         this.success.set("Bank successfully updated!");
         //         const rest = this.filteredVoucherList().filter(d => d.id !== response.id);
-        //         this.filteredVoucherList.set([response, ...rest]);
+        //         this.filteredVoucherList.set([ ...rest, response ]);
         //         this.isSubmitted = false;
         //         this.selectedVoucher = null;
         //         this.resetForm(e);
@@ -305,14 +310,15 @@ export class VoucherEntryComponent {
         //     }
         //   });
       } else {
-        const addData = { ...voucherFormData, createVoucherDetailDto: this.dataArray }
+        const addData = { ...voucherFormData, remarks: `${this.displayHead(this.dataArray[0]?.headId)} - ${this.displaySubHead(this.dataArray[0]?.subHeadId) || ""} - ${this.dataArray[0]?.remarks}` , createVoucherDetailDto: this.dataArray };
+        console.log(addData);
         this.voucherService.addVoucher(addData)
           .subscribe({
             next: (response) => {
               if (response !== null && response !== undefined) {
                 this.success.set("Voucher successfully added!");
                 this.dataArray = [];
-                this.filteredVoucherList.set([response, ...this.filteredVoucherList()])
+                this.filteredVoucherList.set([...this.filteredVoucherList(), response])
                 this.isSubmitted = false;
                 this.resetForm(e);
                 setTimeout(() => {
@@ -359,12 +365,13 @@ export class VoucherEntryComponent {
       voucherDate: today.toISOString().split('T')[0]
     });
     this.addVoucherForm.reset();
+    this.selectedVoucher = null;
     this.isSubmitted = false;
     this.totalAmount = 0;
     this.dataArray = [];
   }
 
-  
+
   transform(value: any, args: any = 'dd/MM/yyyy'): any {
     if (!value) return null;
     const datePipe = new DatePipe('en-US');
