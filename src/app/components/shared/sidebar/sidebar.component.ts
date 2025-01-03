@@ -30,7 +30,7 @@ export class SidebarComponent {
           id: 23, label: 'Account List Entry', route: '/setup/account-list-entry'
         },
         {
-          id: 24, label: 'Expense Voucher', route: '/setup/expense-voucher'
+          id: 24, label: 'Payment Voucher', route: '/setup/payment-voucher'
         },
         {
           id: 25, label: 'Receive Voucher', route: '/setup/receive-voucher'

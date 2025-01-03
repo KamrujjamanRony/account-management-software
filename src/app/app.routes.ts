@@ -8,39 +8,39 @@ import { ReceiveVoucherComponent } from './components/pages/accounts/setup/recei
 import { JournalVoucherComponent } from './components/pages/accounts/setup/journal-voucher/journal-voucher.component';
 
 export const routes: Routes = [
-    {
+  {
+    path: '',
+    component: MainComponent,
+    children: [
+      { path: '', redirectTo: 'home', pathMatch: 'full' },
+      {
         path: '',
-        component: MainComponent,
-        children: [
-          { path: '', redirectTo: 'home', pathMatch: 'full' },
-          {
-            path: '',
-            component: BankEntryComponent
-          },
-          {
-            path: 'setup/bank-entry',
-            component: BankEntryComponent
-          },
-          {
-            path: 'setup/vendor-entry',
-            component: VendorEntryComponent
-          },
-          {
-            path: 'setup/account-list-entry',
-            component: AccountListEntryComponent
-          },
-          {
-            path: 'setup/expense-voucher',
-            component: ExpenseVoucherComponent
-          },
-          {
-            path: 'setup/receive-voucher',
-            component: ReceiveVoucherComponent
-          },
-          {
-            path: 'setup/journal-voucher',
-            component: JournalVoucherComponent
-          },
-        ],
-      }
+        component: BankEntryComponent
+      },
+      {
+        path: 'setup/bank-entry',
+        component: BankEntryComponent
+      },
+      {
+        path: 'setup/vendor-entry',
+        component: VendorEntryComponent
+      },
+      {
+        path: 'setup/account-list-entry',
+        component: AccountListEntryComponent
+      },
+      {
+        path: 'setup/payment-voucher',
+        component: ExpenseVoucherComponent
+      },
+      {
+        path: 'setup/receive-voucher',
+        component: ReceiveVoucherComponent
+      },
+      {
+        path: 'setup/journal-voucher',
+        component: JournalVoucherComponent
+      },
+    ],
+  }
 ];
