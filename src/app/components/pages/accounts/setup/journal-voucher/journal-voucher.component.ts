@@ -2,7 +2,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { Component, ElementRef, inject, QueryList, signal, ViewChildren } from '@angular/core';
 import { ToastSuccessComponent } from '../../../../shared/toast/toast-success/toast-success.component';
 import { FieldComponent } from '../../../../shared/field/field.component';
-import { FormControl, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AllSvgComponent } from '../../../../shared/svg/all-svg/all-svg.component';
 import { BankService } from '../../../../../services/bank.service';
 import { AccountListService } from '../../../../../services/account-list.service';
@@ -13,7 +13,7 @@ import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-journal-voucher',
-  imports: [CommonModule, ToastSuccessComponent, FieldComponent, ReactiveFormsModule, AllSvgComponent],
+  imports: [CommonModule, ToastSuccessComponent, FieldComponent, ReactiveFormsModule, AllSvgComponent, FormsModule],
   templateUrl: './journal-voucher.component.html',
   styleUrl: './journal-voucher.component.css'
 })
@@ -36,18 +36,15 @@ export class JournalVoucherComponent {
   subHeadIdOption = signal<any[]>([]);
   chartGroupOption = signal<any[]>([]);
   allOption = signal<any[]>([]);
+  fromDate = signal<any>('');
+  toDate = signal<any>('');
   isSubmitting = signal<boolean>(false);
   date: any = new Date();
   todayDate: any;
   dataArray: any[] = [];
-  totalAmount: number = 0;
-  bankOrCash: string = "";
+  totalDebitAmount: number = 0;
+  totalCreditAmount: number = 0;
   selectedValue: any = "";
-  transitionTypes: any = [
-    { id: 'Payment', text: 'Payment' },
-    { id: 'Receipt', text: 'Receipt' },
-    { id:'Balance-Sheet', text: 'Balance-Sheet' },
-  ]
 
   isLoading$: Observable<any> | undefined;
   hasError$: Observable<any> | undefined;
@@ -59,6 +56,7 @@ export class JournalVoucherComponent {
   ngOnInit() {
     const today = new Date();
     this.todayDate = today.toISOString().split('T')[0];
+    this.fromDate.set(today.toISOString().split('T')[0]);
     this.form.patchValue({
       voucherDate: today.toISOString().split('T')[0]
     });
@@ -74,9 +72,9 @@ export class JournalVoucherComponent {
   onLoadVoucher() {
     const reqData = {
       "search": "",
-      "transactionType": "",
-      "fromDate": "2024-12-10T04:41:08.409Z",
-      "toDate": "2024-12-29T04:41:08.409Z"
+      "transactionType": "Journal",
+      "fromDate": this.fromDate(),
+      "toDate": this.toDate() || this.fromDate()
     }
     const { data$, isLoading$, hasError$ } = this.dataFetchService.fetchData(this.voucherService.getVoucher(reqData));
 
@@ -106,13 +104,16 @@ export class JournalVoucherComponent {
     this.vendorService.getVendor('').subscribe(data => this.vendorIdOption.set(data.map((c: any) => ({ id: c.id, text: c.name.toLowerCase() }))));
   }
 
+  onDateChange() {
+    this.onLoadVoucher();
+  }
+
   // Form Field ----------------------------------------------------------------
 
   form = this.fb.group({
-    transactionType: ['', Validators.required],
+    transactionType: ['Journal', Validators.required],
     voucherDate: ["", Validators.required],
     voucherNo: [''],
-    accountBankCashId: ["", Validators.required],
     vendorId: [''],
     payTo: [''],
     amount: [''],
@@ -139,47 +140,45 @@ export class JournalVoucherComponent {
   }
 
   addData() {
-    console.log(this.selectedVoucher);
-    console.log(this.selectedVoucherDetails);
     if (this.selectedVoucher && this.dataArray.length > 0 && !this.selectedVoucherDetails) {
       alert("You don't add a Voucher details in editing mode!");
       return;
     }
-    const cashId = this.form.value.accountBankCashId;
-    if (this.addVoucherForm.valid && this.addVoucherForm.value.headId && cashId) {
-      if (!this.addVoucherForm.value.debitAmount) {
+    if (this.addVoucherForm.valid && this.addVoucherForm.value.headId) {
+      if (this.addVoucherForm.value.debitAmount || this.addVoucherForm.value.creditAmount) {
+        const headId = this.addVoucherForm.value.headId;
+        let children = [];
+        this.accountListService.getAccountList({
+          "allbyheadId": +headId,
+          "accountGroup": [
+            "Income"
+          ]
+        }).subscribe(accountData => {
+          children = accountData.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() }))
+          if (children.length > 0 && !this.addVoucherForm.value.subHeadId) {
+            alert(`Head is Not Valid Form Voucher Details`);
+            return;
+          }
+          const data = this.addVoucherForm.value;
+          const addData = { ...data, headId: Number(data.headId), subHeadId: data.subHeadId ? Number(data.subHeadId) : null, debitAmount: data.debitAmount ? Number(data.debitAmount) : null }
+          if (this.selectedVoucherDetails) {
+            this.dataArray[this.selectedVoucherDetailsIndex] = addData;
+            this.selectedVoucherDetails = null;
+            this.selectedVoucherDetailsIndex = null;
+          } else {
+            this.dataArray.push(addData);
+          }
+          this.addVoucherForm.reset();
+          this.totalDebitAmount = this.dataArray.reduce((prev, data) => prev + data.debitAmount, 0);
+          this.totalCreditAmount = this.dataArray.reduce((prev, data) => prev + data.creditAmount, 0);
+        });
+      } else {
         alert('Amount Must Be Gater Than 0');
-        return;
       }
-      const headId = this.addVoucherForm.value.headId;
-      let children = [];
-      this.accountListService.getAccountList({
-        "allbyheadId": +headId,
-        "accountGroup": [
-          "Income"
-        ]
-      }).subscribe(accountData => {
-        children = accountData.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() }))
-        if (children.length > 0 && !this.addVoucherForm.value.subHeadId) {
-          alert(`Head is Not Valid Form Voucher Details`);
-          return;
-        }
-        const data = this.addVoucherForm.value;
-        const addData = { ...data, headId: Number(data.headId), subHeadId: data.subHeadId ? Number(data.subHeadId) : null, debitAmount: data.debitAmount ? Number(data.debitAmount) : null }
-        if (this.selectedVoucherDetails) {
-          this.dataArray[this.selectedVoucherDetailsIndex] = addData;
-          this.selectedVoucherDetails = null;
-          this.selectedVoucherDetailsIndex = null;
-        } else {
-          this.dataArray.push(addData);
-        }
-        this.addVoucherForm.reset();
-        this.bankOrCash = this.accountBankCashIdOption().find((a: any) => a.id == cashId)?.text;
-        this.totalAmount = this.dataArray.reduce((prev, data) => prev + data.debitAmount, 0);
-      });
+
 
     } else {
-      alert('Form is invalid! Please Fill Bank/Cash and Head Field.');
+      alert('Form is invalid! Please Fill and Head Field.');
     }
   }
 
@@ -201,13 +200,15 @@ export class JournalVoucherComponent {
     };
     this.accountListService.getAccountList(subHeadIdReq).subscribe(data => {
       this.subHeadIdOption.set(data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() })))
-      this.totalAmount = this.dataArray.reduce((prev, data) => prev + data.debitAmount, 0);
+      this.totalDebitAmount = this.dataArray.reduce((prev, data) => prev + data.debitAmount, 0);
+      this.totalCreditAmount = this.dataArray.reduce((prev, data) => prev + data.creditAmount, 0);
     });
   }
 
   deleteData(index: number) {
     this.dataArray.splice(index, 1);
-    this.totalAmount = this.dataArray.reduce((prev, data) => prev + data.debitAmount, 0);
+    this.totalDebitAmount = this.dataArray.reduce((prev, data) => prev + data.debitAmount, 0);
+    this.totalCreditAmount = this.dataArray.reduce((prev, data) => prev + data.creditAmount, 0);
   }
 
   onSubmit(e: Event) {
@@ -216,7 +217,7 @@ export class JournalVoucherComponent {
     if (this.form.valid && this.dataArray.length > 0) {
       this.isSubmitting.set(true);
       const restData = this.form.value;
-      const voucherFormData = { ...restData, accountBankCashId: Number(restData.accountBankCashId), vendorId: restData.vendorId ? Number(restData.vendorId) : null, amount: this.totalAmount }
+      const voucherFormData = { ...restData, vendorId: restData.vendorId ? Number(restData.vendorId) : null, amount: this.totalDebitAmount }
       // console.log(this.form.value);
       if (this.selectedVoucher) {
         const editData = { ...voucherFormData, editVoucherDetailDto: this.dataArray };
@@ -317,7 +318,8 @@ export class JournalVoucherComponent {
     this.addVoucherForm.reset();
     this.selectedVoucher = null;
     this.isSubmitted = false;
-    this.totalAmount = 0;
+    this.totalDebitAmount = 0;
+    this.totalCreditAmount = 0;
     this.dataArray = [];
     this.selectedVoucherDetails = null;
   }
@@ -327,7 +329,6 @@ export class JournalVoucherComponent {
       transactionType: data?.transactionType,
       coaMap: data?.coaMap,
       voucherDate: data?.voucherDate.split('T')[0],
-      accountBankCashId: data?.accountBankCashId,
       vendorId: data?.vendorId,
       receiveFrom: data?.receiveFrom,
       payTo: data?.payTo,
@@ -345,12 +346,12 @@ export class JournalVoucherComponent {
         headId: data.headId,
         subHeadId: data.subHeadId,
         debitAmount: data.debitAmount,
+        creditAmount: data.creditAmount,
         remarks: data.remarks
       };
     });
-    const cashId = this.form.value.accountBankCashId;
-    this.bankOrCash = this.accountBankCashIdOption().find((a: any) => a.id == cashId)?.text;
-    this.totalAmount = this.dataArray.reduce((prev, data) => prev + data.debitAmount, 0);
+    this.totalDebitAmount = this.dataArray.reduce((prev, data) => prev + data.debitAmount, 0);
+    this.totalCreditAmount = this.dataArray.reduce((prev, data) => prev + data.creditAmount, 0);
 
     // Focus the 'Name' input field after patching the value
     setTimeout(() => {
@@ -391,15 +392,26 @@ export class JournalVoucherComponent {
   handleEnterKey(event: Event, currentIndex: number) {
     const keyboardEvent = event as KeyboardEvent;
     event.preventDefault();
-    const allInputs = this.inputRefs.toArray();
-    const inputs = allInputs.filter((i: any) => !i.nativeElement.disabled);
+    const inputs = this.inputRefs.toArray();
+    console.log(currentIndex);
+    console.log(inputs[currentIndex])
 
-    if (currentIndex + 1 < inputs.length) {
-      inputs[currentIndex + 1].nativeElement.focus();
-    } else {
+    if ((inputs[currentIndex] as any).innerText === 'Add Debit Voucher Detail' || (inputs[currentIndex] as any).innerText === 'Update Debit Voucher Detail') {
       this.addData();
-      inputs[5].nativeElement.focus();
+      inputs[3].nativeElement.focus();
+    } else if ((inputs[currentIndex] as any).innerText === 'Add Credit Voucher Detail' || (inputs[currentIndex] as any).innerText === 'Update Credit Voucher Detail') {
+      this.addData();
+      inputs[8].nativeElement.focus();
+    } else {
+      inputs[currentIndex + 1].nativeElement.focus();
     }
+
+    // if (currentIndex + 1 < inputs.length) {
+    //   inputs[currentIndex + 1].nativeElement.focus();
+    // } else {
+    //   this.addData();
+    //   inputs[8].nativeElement.focus();
+    // }
   }
 
 

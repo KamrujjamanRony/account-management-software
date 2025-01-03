@@ -1,32 +1,41 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, switchMap } from 'rxjs';
+import { DataService } from './data.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AccountListService {
+  private readonly http = inject(HttpClient);
+  private readonly dataService = inject(DataService);
 
-  http = inject(HttpClient);
-  rootUrl = 'http://localhost:2222/api/ChartofAccount'
+  private apiCall<T>(endpoint: string, method: 'get' | 'post' | 'put' | 'delete', body?: any): Observable<T> {
+    return this.dataService.getPort().pipe(
+      switchMap(port => {
+        const url = `http://localhost:${port}/api/ChartofAccount${endpoint}`;
+        return this.http.request<T>(method, url, { body });
+      })
+    );
+  }
 
   addAccountList(model: any | FormData): Observable<void> {
-    return this.http.post<void>(this.rootUrl, model)
+    return this.apiCall<void>('', 'post', model);
   }
 
   getAccountList(query: any): Observable<any> {
-    return this.http.post<any>(`${this.rootUrl}/SearchChartofAccount`, query);
+    return this.apiCall<any>('/SearchChartofAccount', 'post', query);
   }
 
   getTreeView(): Observable<any> {
-    return this.http.get<any>(`${this.rootUrl}/GenerateTreeData`);
+    return this.apiCall<any>('/GenerateTreeData', 'get');
   }
 
-  updateAccountList(id: any, updateAccountListRequest: any | FormData): Observable<any> {
-    return this.http.put<any>(`${this.rootUrl}/EditChartofAccount/${id}`, updateAccountListRequest);
+  updateAccountList(id: string | number, updateRequest: any | FormData): Observable<any> {
+    return this.apiCall<any>(`/EditChartofAccount/${id}`, 'put', updateRequest);
   }
 
-  deleteAccountList(id: any): Observable<any> {
-    return this.http.delete<any>(`${this.rootUrl}/DeleteChartofAccount?id=${id}`);
+  deleteAccountList(id: string | number): Observable<any> {
+    return this.apiCall<any>(`/DeleteChartofAccount?id=${id}`, 'delete');
   }
 }

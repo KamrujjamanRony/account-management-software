@@ -1,28 +1,37 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, switchMap } from 'rxjs';
+import { DataService } from './data.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class VendorService {
+  private readonly http = inject(HttpClient);
+  private readonly dataService = inject(DataService);
 
-  http = inject(HttpClient);
-  rootUrl = 'http://localhost:2222/api/Vendor'
+  private apiCall<T>(endpoint: string, method: 'get' | 'post' | 'put' | 'delete', body?: any): Observable<T> {
+    return this.dataService.getPort().pipe(
+      switchMap(port => {
+        const url = `http://localhost:${port}/api/Vendor${endpoint}`;
+        return this.http.request<T>(method, url, { body });
+      })
+    );
+  }
 
   addVendor(model: any | FormData): Observable<void> {
-    return this.http.post<void>(this.rootUrl, model)
+    return this.apiCall<void>('', 'post', model);
   }
 
-  getVendor(query: any): Observable<any> {
-    return this.http.post<any>(`${this.rootUrl}/SearchVendor?Search=${query}`, '');
+  getVendor(query: string): Observable<any> {
+    return this.apiCall<any>(`/SearchVendor?Search=${query}`, 'post');
   }
 
-  updateVendor(id: any, updateVendorRequest: any | FormData): Observable<any> {
-    return this.http.put<any>(`${this.rootUrl}/EditVendor/${id}`, updateVendorRequest);
+  updateVendor(id: string | number, updateVendorRequest: any | FormData): Observable<any> {
+    return this.apiCall<any>(`/EditVendor/${id}`, 'put', updateVendorRequest);
   }
 
-  deleteVendor(id: any): Observable<any> {
-    return this.http.post<any>(`${this.rootUrl}/DeleteVendor?id=${id}`, '');
+  deleteVendor(id: string | number): Observable<any> {
+    return this.apiCall<any>(`/DeleteVendor?id=${id}`, 'delete');
   }
 }

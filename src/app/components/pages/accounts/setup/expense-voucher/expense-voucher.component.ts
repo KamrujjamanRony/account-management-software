@@ -2,7 +2,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { Component, ElementRef, inject, QueryList, signal, ViewChildren } from '@angular/core';
 import { ToastSuccessComponent } from '../../../../shared/toast/toast-success/toast-success.component';
 import { FieldComponent } from '../../../../shared/field/field.component';
-import { FormControl, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AllSvgComponent } from '../../../../shared/svg/all-svg/all-svg.component';
 import { BankService } from '../../../../../services/bank.service';
 import { AccountListService } from '../../../../../services/account-list.service';
@@ -13,7 +13,7 @@ import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-expense-voucher',
-  imports: [CommonModule, ToastSuccessComponent, FieldComponent, ReactiveFormsModule, AllSvgComponent],
+  imports: [CommonModule, ToastSuccessComponent, FieldComponent, ReactiveFormsModule, AllSvgComponent, FormsModule],
   templateUrl: './expense-voucher.component.html',
   styleUrl: './expense-voucher.component.css'
 })
@@ -36,7 +36,8 @@ export class ExpenseVoucherComponent {
   subHeadIdOption = signal<any[]>([]);
   allOption = signal<any[]>([]);
   isSubmitting = signal<boolean>(false);
-  date: any = new Date();
+  fromDate = signal<any>('');
+  toDate = signal<any>('');
   todayDate: any;
   dataArray: any[] = [];
   totalAmount: number = 0;
@@ -53,6 +54,7 @@ export class ExpenseVoucherComponent {
   ngOnInit() {
     const today = new Date();
     this.todayDate = today.toISOString().split('T')[0];
+    this.fromDate.set(today.toISOString().split('T')[0]);
     this.form.patchValue({
       voucherDate: today.toISOString().split('T')[0]
     });
@@ -69,8 +71,8 @@ export class ExpenseVoucherComponent {
     const reqData = {
       "search": "",
       "transactionType": "Payment",
-      "fromDate": "2024-12-10T04:41:08.409Z",
-      "toDate": "2024-12-29T04:41:08.409Z"
+      "fromDate": this.fromDate(),
+      "toDate": this.toDate() || this.fromDate()
     }
     const { data$, isLoading$, hasError$ } = this.dataFetchService.fetchData(this.voucherService.getVoucher(reqData));
 
@@ -108,6 +110,10 @@ export class ExpenseVoucherComponent {
       this.accountListService.getAccountList(headIdReq).subscribe(data => this.headIdOption.set(data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() }))));
       this.vendorService.getVendor('').subscribe(data => this.vendorIdOption.set(data.map((c: any) => ({ id: c.id, text: c.name.toLowerCase() }))));
     });
+  }
+
+  onDateChange() {
+    this.onLoadVoucher();
   }
 
   // Form Field ----------------------------------------------------------------
