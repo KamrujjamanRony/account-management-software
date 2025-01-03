@@ -3,7 +3,7 @@
     <h1
       class="text-xl md:text-3xl font-bold text-teal-500 underline text-center mb-5"
     >
-      Journal Voucher Form
+      {{ transactionType() }} Voucher Form
     </h1>
     <div class="flex gap-2">
       <form
@@ -28,6 +28,31 @@
             required
           />
         </Field>
+        <!-- transactionType -->
+        <Field label="Transaction Type" class="w-1/2">
+          <select
+            #inputRef
+            name="transactionType"
+            [formControl]="getControl('transactionType')"
+            (change)="onTransactionTypeChange()"
+            placeholder=""
+            (keydown.enter)="handleEnterKey($event, 4)"
+            class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+            [class.invalid]="
+              (getControl('transactionType').invalid &&
+                getControl('transactionType').touched) ||
+              isSubmitted
+            "
+            required
+          >
+            <option value="" class="capitalize" disabled>Select Option</option>
+            @for(option of transactionTypeOption; track $index){
+            <option [value]="option?.id" class="capitalize">
+              {{ option?.text }}
+            </option>
+            }
+          </select>
+        </Field>
         <!-- payTo -->
         <Field label="Pay To">
           <input
@@ -37,43 +62,6 @@
             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
             placeholder=""
             (keydown.enter)="handleEnterKey($event, 1)"
-          />
-        </Field>
-
-        <!-- accountBankCashId -->
-        <!-- <Field label="Bank/Cash" class="w-1/2">
-            <select
-              #inputRef
-              name="accountBankCashId"
-              [formControl]="getControl('accountBankCashId')"
-              placeholder=""
-              (keydown.enter)="handleEnterKey($event, 4)"
-              class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
-              [class.invalid]="
-                (getControl('accountBankCashId').invalid &&
-                  getControl('accountBankCashId').touched) ||
-                isSubmitted
-              "
-              required
-            >
-              <option value="" class="capitalize" disabled>Select Option</option>
-              @for(option of accountBankCashIdOption(); track $index){
-              <option [value]="option?.id" class="capitalize">
-                {{ option?.text }}
-              </option>
-              }
-            </select>
-          </Field> -->
-
-        <!-- remarks -->
-        <Field label="remarks">
-          <input
-            #inputRef
-            type="text"
-            [formControl]="getControl('remarks')"
-            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
-            placeholder=""
-            (keydown.enter)="handleEnterKey($event, 2)"
           />
         </Field>
 
@@ -317,7 +305,7 @@
     <h1
       class="text-xl md:text-3xl font-bold text-teal-500 underline text-center"
     >
-      Journal Voucher Details List
+      {{ transactionType() }} Voucher Details List
     </h1>
 
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
@@ -407,7 +395,7 @@
     <h1
       class="text-xl md:text-3xl font-bold text-teal-500 underline text-center"
     >
-      Journal Voucher List
+      {{ transactionType() }} Voucher List
     </h1>
 
     <div class="flex justify-end gap-1">
@@ -415,14 +403,14 @@
         type="date"
         id="fromDate"
         [(ngModel)]="fromDate"
-        (change)="onDateChange()"
+        (change)="onTransactionTypeChange()"
         class="border border-gray-500 text-gray-600 rounded-md px-5 py-2"
       />
       <input
         type="date"
         id="toDate"
         [(ngModel)]="toDate"
-        (change)="onDateChange()"
+        (change)="onTransactionTypeChange()"
         class="border border-gray-500 text-gray-600 rounded-md px-5 py-2"
       />
     </div>

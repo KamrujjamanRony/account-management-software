@@ -30,6 +30,11 @@ export class JournalVoucherComponent {
   selectedVoucher: any;
   selectedVoucherDetails: any;
   selectedVoucherDetailsIndex: any;
+  transactionTypeOption = [
+    { id: "Journal", text: "Balance-Sheet" },
+    { id: "Receipt", text: "Receipt" },
+    { id: "Payment", text: "Payment" }
+  ];
   accountBankCashIdOption = signal<any[]>([]);
   vendorIdOption = signal<any[]>([]);
   headIdOption = signal<any[]>([]);
@@ -38,6 +43,7 @@ export class JournalVoucherComponent {
   allOption = signal<any[]>([]);
   fromDate = signal<any>('');
   toDate = signal<any>('');
+  transactionType = signal<any>('');
   isSubmitting = signal<boolean>(false);
   date: any = new Date();
   todayDate: any;
@@ -60,6 +66,8 @@ export class JournalVoucherComponent {
     this.form.patchValue({
       voucherDate: today.toISOString().split('T')[0]
     });
+
+    this.transactionType.set(this.form.value.transactionType)
     this.onLoadVoucher();
     this.accountListService.getAccountList({ "allbyheadId": 1 }).subscribe(data => this.allOption.set(data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() }))));
     setTimeout(() => this.focusFirstInput(), 10);
@@ -72,7 +80,7 @@ export class JournalVoucherComponent {
   onLoadVoucher() {
     const reqData = {
       "search": "",
-      "transactionType": "Journal",
+      "transactionType": this.transactionType(),
       "fromDate": this.fromDate(),
       "toDate": this.toDate() || this.fromDate()
     }
@@ -87,6 +95,72 @@ export class JournalVoucherComponent {
   }
 
   onLoadDropdown() {
+    if (this.transactionType() === "Payment") {
+      this.onLoadExpense();
+    } else if (this.transactionType() === "Receipt") {
+      this.onLoadReceipt();
+    } else if (this.transactionType() === "Journal") {
+      this.onLoadJournal();
+    }
+  }
+
+  onLoadExpense() {
+    this.accountListService.getAccountList({
+      "allbyheadId": 1,
+      "search": null,
+      "coaMap": [],
+      "accountGroup": ["Expenses"]
+    }).subscribe(data => {
+      const accountGroupId = data.find((a: any) => a.accountGroup === "Expenses")?.id;
+      const accountListReq = {
+        "headId": null,
+        "allbyheadId": 1,
+        "search": null,
+        "coaMap": ["Cash", "Bank"],
+        "accountGroup": []
+      }
+      const headIdReq = {
+        "headId": accountGroupId,
+        "allbyheadId": accountGroupId,
+        "search": null,
+        "coaMap": [],
+        "accountGroup": []
+      }
+      this.accountListService.getAccountList(accountListReq).subscribe(data => this.accountBankCashIdOption.set(data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() }))));
+      this.accountListService.getAccountList(headIdReq).subscribe(data => this.headIdOption.set(data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() }))));
+      this.vendorService.getVendor('').subscribe(data => this.vendorIdOption.set(data.map((c: any) => ({ id: c.id, text: c.name.toLowerCase() }))));
+    });
+  }
+
+  onLoadReceipt() {
+    this.accountListService.getAccountList({
+      "allbyheadId": 1,
+      "search": null,
+      "coaMap": [],
+      "accountGroup": ["Income"]
+    }).subscribe(data => {
+      const accountGroupId = data.find((a: any) => a.accountGroup === "Income")?.id;
+      const accountListReq = {
+        "headId": null,
+        "allbyheadId": 1,
+        "search": null,
+        "coaMap": ["Cash", "Bank"],
+        "accountGroup": []
+      }
+      const headIdReq = {
+        "headId": accountGroupId,
+        "allbyheadId": accountGroupId,
+        "search": null,
+        "coaMap": [],
+        "accountGroup": []
+      }
+      this.accountListService.getAccountList(accountListReq).subscribe(data => this.accountBankCashIdOption.set(data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() }))));
+      this.accountListService.getAccountList(headIdReq).subscribe(data => this.headIdOption.set(data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() }))));
+      this.vendorService.getVendor('').subscribe(data => this.vendorIdOption.set(data.map((c: any) => ({ id: c.id, text: c.name.toLowerCase() }))));
+    });
+  }
+
+  onLoadJournal() {
     this.accountListService.getAccountList({
       "allbyheadId": 1,
       "search": null,
@@ -104,8 +178,10 @@ export class JournalVoucherComponent {
     this.vendorService.getVendor('').subscribe(data => this.vendorIdOption.set(data.map((c: any) => ({ id: c.id, text: c.name.toLowerCase() }))));
   }
 
-  onDateChange() {
+  onTransactionTypeChange() {
+    this.transactionType.set(this.form.value.transactionType)
     this.onLoadVoucher();
+    this.onLoadDropdown();
   }
 
   // Form Field ----------------------------------------------------------------
