@@ -54,7 +54,7 @@
           </select>
         </Field>
         <!-- payTo -->
-        <Field label="Pay To">
+        <Field label="Pay / Receive Person">
           <input
             #inputRef
             type="text"
@@ -76,7 +76,7 @@
           } @else {
           <input
             type="submit"
-            [value]="selectedVoucher ? 'Update Voucher' : 'Save Voucher'"
+            value="Save Voucher"
             class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-lg shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
           />
           }
@@ -90,25 +90,30 @@
         </div>
       </form>
 
-      <form class="w-full" [formGroup]="addVoucherForm" (ngSubmit)="addData()">
+      <form
+        class="w-full"
+        [formGroup]="debitVoucherForm"
+        (ngSubmit)="addData()"
+      >
         <div class="px-2">
           <div class="flex gap-2">
             <!-- headId -->
-            @if ((selectedVoucherDetails &&
-            selectedVoucherDetails?.creditAmount) || (!selectedVoucherDetails))
-            {
+            @if ((selectedVoucherDetails && selectedVoucherDetails?.debitAmount)
+            || (!selectedVoucherDetails)) {
             <Field label="Head" class="w-1/2">
               <select
                 #inputRef
                 formControlName="headId"
                 placeholder=""
                 class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
-                (input)="onHeadChanged($event)"
-                (keydown.enter)="handleEnterKey($event, 3)"
+                (input)="onHeadChanged($event, 'debit')"
+                (keydown.enter)="handleEnterKey($event, 8)"
                 required
               >
                 <option value="" class="capitalize">Select Option</option>
-                @for(option of headIdOption(); track $index){
+                @for(option of ((transactionType() === 'Contra' ||
+                transactionType() === 'Receipt') ? accountBankCashIdOption() :
+                headIdOption()); track $index){
                 <option [value]="option?.id" class="capitalize">
                   {{ option?.text }}
                 </option>
@@ -128,18 +133,19 @@
             }
 
             <!-- subHeadId -->
-            @if (subHeadIdOption().length > 0) {
+            @if (debitSubHeadIdOption().length > 0 &&
+            debitVoucherForm.value.headId) {
             <Field label="Sub Head" class="w-1/2">
               <select
                 #inputRef
                 formControlName="subHeadId"
                 placeholder=""
                 class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
-                (keydown.enter)="handleEnterKey($event, 4)"
-                [disabled]="subHeadIdOption().length === 0"
+                (keydown.enter)="handleEnterKey($event, 9)"
+                [disabled]="debitSubHeadIdOption().length === 0"
               >
                 <option value="" class="capitalize">Select Option</option>
-                @for(option of subHeadIdOption(); track $index){
+                @for(option of debitSubHeadIdOption(); track $index){
                 <option [value]="option?.id" class="capitalize">
                   {{ option?.text }}
                 </option>
@@ -151,7 +157,117 @@
               <select
                 placeholder=""
                 class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
-                [disabled]="subHeadIdOption().length === 0"
+                [disabled]="debitSubHeadIdOption().length === 0"
+              ></select>
+            </Field>
+            }
+          </div>
+
+          <!-- debitAmount -->
+          <Field label="debitAmount" class="w-1/2">
+            <input
+              #inputRef
+              type="number"
+              formControlName="debitAmount"
+              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              placeholder=""
+              (keydown.enter)="handleEnterKey($event, 10)"
+            />
+          </Field>
+
+          <!-- remarks -->
+          <Field label="remarks">
+            <input
+              #inputRef
+              type="text"
+              formControlName="remarks"
+              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              placeholder=""
+              (keydown.enter)="handleEnterKey($event, 11)"
+            />
+          </Field>
+        </div>
+        <!-- <div class="mx-2">
+          <button
+            #inputRef
+            (keydown.enter)="handleEnterKey($event, 12)"
+            class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-lg shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
+            type="button"
+            (click)="addData()"
+          >
+            {{ selectedVoucherDetails ? "Update" : "Add" }} Debit Voucher Detail
+          </button>
+        </div> -->
+      </form>
+
+      <form
+        class="w-full"
+        [formGroup]="creditVoucherForm"
+        (ngSubmit)="addData()"
+      >
+        <div class="px-2">
+          <div class="flex gap-2">
+            <!-- headId -->
+            @if ((selectedVoucherDetails &&
+            selectedVoucherDetails?.creditAmount) || !selectedVoucherDetails) {
+            <Field label="Head" class="w-1/2">
+              <select
+                #inputRef
+                formControlName="headId"
+                placeholder=""
+                class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+                (input)="onHeadChanged($event, 'credit')"
+                (keydown.enter)="handleEnterKey($event, 3)"
+                required
+              >
+                <option value="" class="capitalize">Select Option</option>
+                @for(option of ((transactionType() === 'Journal' ||
+                transactionType() === 'Receipt') ? headIdOption() :
+                accountBankCashIdOption()); track $index) {
+                <option [value]="option?.id" class="capitalize">
+                  {{ option?.text }}
+                </option>
+                }
+              </select>
+            </Field>
+            } @else {
+            <Field label="Head" class="w-1/2">
+              <select
+                placeholder=""
+                class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+                disabled
+              >
+                <option value="" class="capitalize">Select Option</option>
+              </select>
+            </Field>
+            }
+
+            <!-- subHeadId -->
+            @if (creditSubHeadIdOption().length > 0 &&
+            creditVoucherForm.value.headId) {
+            <Field label="Sub Head" class="w-1/2">
+              <select
+                #inputRef
+                formControlName="subHeadId"
+                placeholder=""
+                class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+                (keydown.enter)="handleEnterKey($event, 4)"
+                [disabled]="creditSubHeadIdOption().length === 0"
+              >
+                <option value="" class="capitalize">Select Option</option>
+                @for(option of creditSubHeadIdOption(); track $index){
+                <option [value]="option?.id" class="capitalize">
+                  {{ option?.text }}
+                </option>
+                }
+              </select>
+            </Field>
+            } @else {
+            <Field label="Sub Head" class="w-1/2">
+              <select
+                placeholder=""
+                class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+                [disabled]="creditSubHeadIdOption().length === 0"
               ></select>
             </Field>
             }
@@ -182,6 +298,17 @@
           </Field>
         </div>
         <div class="mx-2">
+          @if (selectedVoucherDetails) {
+          <button
+            #inputRef
+            (keydown.enter)="handleEnterKey($event, 7)"
+            class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-lg shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
+            type="button"
+            (click)="updateData()"
+          >
+            Update Voucher Detail
+          </button>
+          } @else {
           <button
             #inputRef
             (keydown.enter)="handleEnterKey($event, 7)"
@@ -189,112 +316,9 @@
             type="button"
             (click)="addData()"
           >
-            {{ selectedVoucherDetails ? "Update" : "Add" }} Credit Voucher
-            Detail
+            Add Voucher Detail
           </button>
-        </div>
-      </form>
-
-      <form class="w-full" [formGroup]="addVoucherForm" (ngSubmit)="addData()">
-        <div class="px-2">
-          <div class="flex gap-2">
-            <!-- headId -->
-            @if ((selectedVoucherDetails && selectedVoucherDetails?.debitAmount)
-            || (!selectedVoucherDetails)) {
-            <Field label="Head" class="w-1/2">
-              <select
-                #inputRef
-                formControlName="headId"
-                placeholder=""
-                class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
-                (input)="onHeadChanged($event)"
-                (keydown.enter)="handleEnterKey($event, 8)"
-                required
-              >
-                <option value="" class="capitalize">Select Option</option>
-                @for(option of headIdOption(); track $index){
-                <option [value]="option?.id" class="capitalize">
-                  {{ option?.text }}
-                </option>
-                }
-              </select>
-            </Field>
-            } @else {
-            <Field label="Head" class="w-1/2">
-              <select
-                placeholder=""
-                class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
-                disabled
-              >
-                <option value="" class="capitalize">Select Option</option>
-              </select>
-            </Field>
-            }
-
-            <!-- subHeadId -->
-            @if (subHeadIdOption().length > 0) {
-            <Field label="Sub Head" class="w-1/2">
-              <select
-                #inputRef
-                formControlName="subHeadId"
-                placeholder=""
-                class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
-                (keydown.enter)="handleEnterKey($event, 9)"
-                [disabled]="subHeadIdOption().length === 0"
-              >
-                <option value="" class="capitalize">Select Option</option>
-                @for(option of subHeadIdOption(); track $index){
-                <option [value]="option?.id" class="capitalize">
-                  {{ option?.text }}
-                </option>
-                }
-              </select>
-            </Field>
-            } @else {
-            <Field label="Sub Head" class="w-1/2">
-              <select
-                placeholder=""
-                class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
-                [disabled]="subHeadIdOption().length === 0"
-              ></select>
-            </Field>
-            }
-          </div>
-
-          <!-- debitAmount -->
-          <Field label="debitAmount" class="w-1/2">
-            <input
-              #inputRef
-              type="number"
-              formControlName="debitAmount"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
-              placeholder=""
-              (keydown.enter)="handleEnterKey($event, 10)"
-            />
-          </Field>
-
-          <!-- remarks -->
-          <Field label="remarks">
-            <input
-              #inputRef
-              type="text"
-              formControlName="remarks"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
-              placeholder=""
-              (keydown.enter)="handleEnterKey($event, 11)"
-            />
-          </Field>
-        </div>
-        <div class="mx-2">
-          <button
-            #inputRef
-            (keydown.enter)="handleEnterKey($event, 12)"
-            class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-lg shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
-            type="button"
-            (click)="addData()"
-          >
-            {{ selectedVoucherDetails ? "Update" : "Add" }} Debit Voucher Detail
-          </button>
+          }
         </div>
       </form>
     </div>
@@ -374,7 +398,7 @@
             id="row-last"
             class="bg-teal-200 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
           >
-            <td class="p-1 capitalize"></td>
+            <td class="p-1 capitalize">Total</td>
             <td class="p-1 capitalize"></td>
             <td class="p-1">
               {{ totalDebitAmount }}
@@ -463,7 +487,7 @@
             <td class="flex gap-1">
               <button
                 class="text-orange-50 bg-orange-400 hover:bg-orange-500 p-1 rounded"
-                (click)="onUpdate(item)"
+                (click)="onUpdate(item?.id)"
               >
                 <app-all-svg icon="pencil" />
               </button>
