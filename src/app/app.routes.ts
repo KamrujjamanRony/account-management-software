@@ -6,6 +6,10 @@ import { AccountListEntryComponent } from './components/pages/accounts/setup/acc
 import { ExpenseVoucherComponent } from './components/pages/accounts/setup/expense-voucher/expense-voucher.component';
 import { ReceiveVoucherComponent } from './components/pages/accounts/setup/receive-voucher/receive-voucher.component';
 import { JournalVoucherComponent } from './components/pages/accounts/setup/journal-voucher/journal-voucher.component';
+import { ReceiptPaymentComponent } from './components/pages/accounts/reports/receipt-payment/receipt-payment.component';
+import { TrialBalanceComponent } from './components/pages/accounts/reports/trial-balance/trial-balance.component';
+import { GeneralLedgerComponent } from './components/pages/accounts/reports/general-ledger/general-ledger.component';
+import { GeneralCashBookComponent } from './components/pages/accounts/reports/general-cash-book/general-cash-book.component';
 
 export const routes: Routes = [
   {
@@ -40,6 +44,22 @@ export const routes: Routes = [
       {
         path: 'setup/journal-voucher',
         component: JournalVoucherComponent
+      },
+      {
+        path: 'reports/receipt-payment',
+        component: ReceiptPaymentComponent
+      },
+      {
+        path: 'reports/trial-balance',
+        component: TrialBalanceComponent
+      },
+      {
+        path: 'reports/general-ledger',
+        component: GeneralLedgerComponent
+      },
+      {
+        path: 'reports/general-cashbook',
+        component: GeneralCashBookComponent
       },
     ],
   }

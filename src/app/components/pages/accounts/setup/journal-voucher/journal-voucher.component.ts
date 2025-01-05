@@ -32,8 +32,8 @@ export class JournalVoucherComponent {
   selectedVoucherDetailsIndex: any;
   transactionTypeOption = [
     { id: "Journal", text: "Balance-Sheet" },
-    { id: "Receipt", text: "Receipt" },
-    { id: "Payment", text: "Payment" },
+    // { id: "Receipt", text: "Receipt" },
+    // { id: "Payment", text: "Payment" },
     { id: "Contra", text: "Contra" },
   ];
   accountBankCashIdOption = signal<any[]>([]);

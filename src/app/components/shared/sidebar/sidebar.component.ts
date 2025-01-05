@@ -36,15 +36,24 @@ export class SidebarComponent {
           id: 25, label: 'Receive Voucher', route: '/setup/receive-voucher'
         },
         {
-          id: 26, label: 'Journal Voucher', route: '/setup/journal-voucher'
+          id: 26, label: 'Journal/Contra Voucher', route: '/setup/journal-voucher'
         },
       ]
     },
     // {
     //   id: 3, label: 'Reports', icon: 'reports', menu: [
     //     {
-    //       id: 32, label: 'Doctor Fee', route: '/reports/doctor-fee-report'
-    //     }
+    //       id: 31, label: 'Receipt Payment', route: '/reports/receipt-payment'
+    //     },
+    //     {
+    //       id: 32, label: 'Trial Balance', route: '/reports/trial-balance'
+    //     },
+    //     {
+    //       id: 33, label: 'General Ledger', route: '/reports/general-ledger'
+    //     },
+    //     {
+    //       id: 34, label: 'General CashBook', route: '/reports/general-cashbook'
+    //     },
     //   ]
     // },
   ]
