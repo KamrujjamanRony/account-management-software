@@ -2,9 +2,8 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { Component, ElementRef, inject, QueryList, signal, ViewChildren } from '@angular/core';
 import { ToastSuccessComponent } from '../../../../shared/toast/toast-success/toast-success.component';
 import { FieldComponent } from '../../../../shared/field/field.component';
-import { FormControl, FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AllSvgComponent } from '../../../../shared/svg/all-svg/all-svg.component';
-import { BankService } from '../../../../../services/bank.service';
 import { AccountListService } from '../../../../../services/account-list.service';
 import { VendorService } from '../../../../../services/vendor.service';
 import { VoucherService } from '../../../../../services/voucher.service';
@@ -18,8 +17,7 @@ import { Observable } from 'rxjs';
   styleUrl: './journal-voucher.component.css'
 })
 export class JournalVoucherComponent {
-  fb = inject(NonNullableFormBuilder);
-  private bankService = inject(BankService);
+  fb = inject(FormBuilder);
   private accountListService = inject(AccountListService);
   private vendorService = inject(VendorService);
   private voucherService = inject(VoucherService);
@@ -229,7 +227,19 @@ export class JournalVoucherComponent {
       alert("You don't add a Voucher details in editing mode!");
       return;
     }
-    const accountGroup = this.transactionType() === "Journal" ? ["Current Asset", "NonCurrent/Fixed Asset", "Current Liability", "NonCurrent Liability", "Equity"] : [this.transactionType()]
+    if (this.debitVoucherForm.value.headId == this.creditVoucherForm.value.headId) {
+      alert("Debit Voucher Head and Credit Voucher Head must be unique!");
+      return;
+    }
+    const findDebitVoucherHead = this.dataArray.find(v => v.headId == this.debitVoucherForm.value.headId);
+    const findCreditVoucherHead = this.dataArray.find(v => v.headId == this.creditVoucherForm.value.headId);
+    console.log(findDebitVoucherHead, findCreditVoucherHead);
+    console.log(this.debitVoucherForm.value.subHeadId, this.creditVoucherForm.value.subHeadId);
+    if ((findDebitVoucherHead && !this.debitVoucherForm.value.subHeadId) || (findCreditVoucherHead && !this.creditVoucherForm.value.subHeadId)) {
+      alert("This Voucher Head Already Added in Voucher Details!");
+      return;
+    }
+    const accountGroup = this.transactionType() === "Journal" ? ["Current Asset", "NonCurrent/Fixed Asset", "Current Liability", "NonCurrent Liability", "Equity"] : [this.transactionType()];
     if (this.debitVoucherForm.valid && this.debitVoucherForm.value.headId) {
       if (this.debitVoucherForm.value.debitAmount) {
         const headId = this.debitVoucherForm.value.headId;
