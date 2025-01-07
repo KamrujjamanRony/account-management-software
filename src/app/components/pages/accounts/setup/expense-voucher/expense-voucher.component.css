@@ -1,8 +1,8 @@
-.invalid{
-    border-color: red !important;
+.invalid {
+  border-color: red !important;
 }
 
 .highlighted {
-    background-color: #007bff !important;
-    color: white;
-  }
+  background-color: #007bff !important;
+  color: white;
+}

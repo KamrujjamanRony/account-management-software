@@ -24,26 +24,15 @@ export class AccountListEntryComponent {
   show = signal<boolean>(false);
   highlightedTr: number = -1;
   success = signal<any>("");
-  selectedAccount: any;
-  isGrid: boolean = false;
+  selectedAccount = signal<any>(null);
+  isGrid = signal<boolean>(false);
 
-  controlHeadOption: any = [];
-  bankOption: any = [];
-  accountGroupOption: any = [
-    { id: 'Current Asset', text: 'Current Asset' },
-    { id: 'NonCurrent/Fixed Asset', text: 'NonCurrent/Fixed Asset' },
-    { id: 'Current Liability', text: 'Current Liability' },
-    { id: 'NonCurrent Liability', text: 'NonCurrent Liability' },
-    { id: 'Equity', text: 'Equity' },
-    { id: 'Income', text: 'Income' },
-    { id: 'Expenses', text: 'Expenses' },
-  ];
-  coaMapOption: any = [
-    { id: 'Cash', text: 'Cash' },
-    { id: 'Bank', text: 'Bank' },
-  ];
+  controlHeadOption = signal<any[]>([]);
+  bankOption = signal<any[]>([]);
+  accountGroupOption = signal<any[]>(["Current Asset", "NonCurrent/Fixed Asset", "Current Liability", "NonCurrent Liability", "Equity", "Income", "Expenses", "Assets", "Liability"]);
+  coaMapOption = signal<any[]>([]);
 
-  treeData: any[] = [];
+  treeData = signal<any[]>([]);
   isLoadingTree$: Observable<boolean> | undefined;
   hasErrorTree$: Observable<any> | undefined;
 
@@ -90,7 +79,7 @@ export class AccountListEntryComponent {
       "accountGroup": []
     }));
 
-    data$.subscribe(data => this.controlHeadOption = data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() })));
+    data$.subscribe(data => this.controlHeadOption.set(data.map((c: any) => ({ id: c.id, text: c.subHead }))));
 
     this.isLoading$ = isLoading$;
     this.hasError$ = hasError$;
@@ -115,12 +104,12 @@ export class AccountListEntryComponent {
   onLoadBanks() {
     const { data$ } = this.dataFetchService.fetchData(this.bankService.getBank(''));
 
-    data$.subscribe(data => this.bankOption = data.map((b: any) => ({ id: b.id, text: b.name })));
+    data$.subscribe(data => this.bankOption.set(data.map((b: any) => ({ id: b.id, text: b.name }))));
   }
 
   // Method to filter Account list based on search query
   onSearchAccount(event: Event) {
-    const query = (event.target as HTMLInputElement).value.toLowerCase();
+    const query = (event.target as HTMLInputElement).value;
     this.searchQuery$.next(query);
   }
 
@@ -177,8 +166,8 @@ export class AccountListEntryComponent {
     if (this.form.valid) {
       this.form.get('controlHeadId')?.enable();
       this.form.get('accountGroup')?.enable();
-      if (this.selectedAccount) {
-        this.accountListService.updateAccountList(this.selectedAccount.id, this.form.value)
+      if (this.selectedAccount()) {
+        this.accountListService.updateAccountList(this.selectedAccount()?.id, this.form.value)
           .subscribe({
             next: (response) => {
               if (response !== null && response !== undefined) {
@@ -186,7 +175,7 @@ export class AccountListEntryComponent {
                 const rest = this.filteredAccountList().filter(d => d.id !== response.id);
                 this.filteredAccountList.set([response, ...rest]);
                 this.isSubmitted = false;
-                this.selectedAccount = null;
+                this.selectedAccount.set(null);
                 this.formReset(e);
                 setTimeout(() => {
                   this.success.set("");
@@ -202,7 +191,7 @@ export class AccountListEntryComponent {
         this.accountListService.addAccountList(this.form.value)
           .subscribe({
             next: (response) => {
-              console.log(response)
+              // console.log(response)
               if (response !== null && response !== undefined) {
                 this.success.set("Account successfully added!");
                 this.filteredAccountList.set([response, ...this.filteredAccountList()])
@@ -226,7 +215,7 @@ export class AccountListEntryComponent {
   }
 
   onUpdate(data: any) {
-    this.selectedAccount = data;
+    this.selectedAccount.set(data);
     this.form.patchValue({
       controlHeadId: data?.controlHeadId,
       accountCode: data?.accountCode,
@@ -238,7 +227,7 @@ export class AccountListEntryComponent {
       openingBalance: data?.openingBalance,
       remarks: data?.remarks,
     });
-    
+
     this.form.get('controlHeadId')?.disable();
 
     // Focus the 'Name' input field after patching the value
@@ -254,9 +243,10 @@ export class AccountListEntryComponent {
         if (data.id) {
           this.success.set("ChartOfAccount deleted successfully!");
           this.filteredAccountList.set(this.filteredAccountList().filter(d => d.id !== id));
+          this.onLoadAccountTree();
           setTimeout(() => {
             this.success.set("");
-          }, 3000);
+          }, 2000);
         } else {
           console.error('Error deleting ChartOfAccount:', data);
           alert('Error deleting ChartOfAccount: ' + data.message)
@@ -270,12 +260,12 @@ export class AccountListEntryComponent {
     this.form.get('controlHeadId')?.enable();
     this.form.reset();
     this.isSubmitted = false;
-    this.selectedAccount = null;
+    this.selectedAccount.set(null);
   }
 
-  
 
-  
+
+
   //------ Start Tree Functions --------------------------------
 
   onLoadAccountTree() {
@@ -284,15 +274,15 @@ export class AccountListEntryComponent {
     );
 
     data$.subscribe(data => {
-      this.treeData = data;
-      this.initializeCollapseState(this.treeData);
+      this.treeData.set(data);
+      this.initializeCollapseState(this.treeData());
     });
 
     this.isLoadingTree$ = isLoading$;
     this.hasErrorTree$ = hasError$;
   }
 
-  
+
 
   // Initialize all nodes to be collapsed
   initializeCollapseState(nodes: any[]) {
@@ -310,106 +300,26 @@ export class AccountListEntryComponent {
     }
   }
 
-  onAdd(data: any){
+  onAdd(data: any) {
     const findData = this.filteredAccountList().find((d: any) => d.id == data.id);
-    console.log(findData)
     this.form.patchValue({
       controlHeadId: data?.id,
       accountGroup: findData?.accountGroup,
     });
-    
+
     this.form.get('accountGroup')?.disable();
+    this.form.get('controlHeadId')?.disable();
   }
   //------ End Tree Functions --------------------------------
 
 
 
 
-   // ----------controlHeadId---------------------------------------------------------------------------------
-   controlHeadIdDropdownOpen: boolean = false;
-   highlightedIndexHeadId: number = -1;
-   controlHeadIdEnable: boolean = true;
- 
-   displayHeadId(id: any) {
-     const find = this.controlHeadOption.find((p: { id: any; }) => p.id == id);
-     return find?.text.toLowerCase() ?? '';
-   }
- 
-   handleHeadIdKeyDown(event: KeyboardEvent) {
-     if (event.key === 'ArrowDown') {
-       this.controlHeadIdDropdownOpen = true;
-       event.preventDefault();
-     }
-     if (this.controlHeadIdDropdownOpen && this.controlHeadOption.length > 0) {
-       if (event.key === 'ArrowDown') {
-         this.highlightedIndexHeadId = (this.highlightedIndexHeadId + 1) % this.controlHeadOption.length;
-         event.preventDefault();
-       } else if (event.key === 'ArrowUp') {
-         this.highlightedIndexHeadId = (this.highlightedIndexHeadId - 1 + this.controlHeadOption.length) % this.controlHeadOption.length;
-         event.preventDefault();
-       } else if (event.key === 'Enter') {
-         event.preventDefault();
-         if (this.highlightedIndexHeadId !== -1) {
-           this.selectHeadId(this.controlHeadOption[this.highlightedIndexHeadId]);
-           this.controlHeadIdDropdownOpen = false;
-         }
-       }
-     }
-   }
- 
-   toggleHeadIdDropdown(e: any) {
-     e.preventDefault();
-     this.controlHeadIdDropdownOpen = !this.controlHeadIdDropdownOpen;
-     this.highlightedIndexHeadId = -1;
-   }
- 
-   selectHeadId(option: any) {
-     this.getControl('controlHeadId').setValue(option?.id ?? this.controlHeadOption[this.highlightedIndexHeadId]?.id);
-     this.controlHeadIdDropdownOpen = false;
-     this.form.get('controlHeadId')?.disable();
-     this.controlHeadIdEnable = false;
-     this.highlightedIndexHeadId = -1;
-   }
- 
-  //  onHeadIdChange(data: any) {
-  //    this.selectedHeadId = data;
-  //    this.form.patchValue({
-  //      controlHeadId: this.selectedHeadId.id,
-  //    });
-  //  }
- 
-   onHeadIdSearchChange(event: Event) {
-     const searchValue = (event.target as HTMLInputElement).value?.toLowerCase();
-     this.controlHeadOption = this.filteredAccountList().filter(option =>
-       option.id.toString().includes(searchValue) ||
-       option.subHead.toLowerCase().includes(searchValue)
-     ).map(p => ({ id: p.id, text: p.subHead }));
-     this.highlightedIndexHeadId = -1;
-     if (searchValue === '') {
-       this.controlHeadIdDropdownOpen = false;
-     } else {
-       this.controlHeadIdDropdownOpen = true;
-     }
-   }
- 
- 
-   onClearHeadId(event: Event) {
-     event.preventDefault();
-     this.form.get('controlHeadId')?.enable();
-     this.form.patchValue({
-       controlHeadId: ''
-     });
-     this.controlHeadIdEnable = true;
-   }
-   //----------controlHeadId End----------------------------------------------------------------------
-
-
-   
-   // ----------Utility function start---------------------------------------------------------------------------------
-   onToggleShow(e: any){
+  // ----------Utility function start---------------------------------------------------------------------------------
+  onToggleShow(e: any) {
     e.preventDefault();
     this.show.set(!this.show())
-   }
-   // ----------Utility function end---------------------------------------------------------------------------------
+  }
+  // ----------Utility function end---------------------------------------------------------------------------------
 
 }

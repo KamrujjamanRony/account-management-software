@@ -27,7 +27,7 @@ export class SidebarComponent {
           id: 22, label: 'Vendor Entry', route: '/setup/vendor-entry'
         },
         {
-          id: 23, label: 'Account List Entry', route: '/setup/account-list-entry'
+          id: 23, label: 'Chart Of Account', route: '/setup/account-list-entry'
         },
         {
           id: 24, label: 'Payment Voucher', route: '/setup/payment-voucher'
@@ -40,22 +40,22 @@ export class SidebarComponent {
         },
       ]
     },
-    // {
-    //   id: 3, label: 'Reports', icon: 'reports', menu: [
-    //     {
-    //       id: 31, label: 'Receipt Payment', route: '/reports/receipt-payment'
-    //     },
-    //     {
-    //       id: 32, label: 'Trial Balance', route: '/reports/trial-balance'
-    //     },
-    //     {
-    //       id: 33, label: 'General Ledger', route: '/reports/general-ledger'
-    //     },
-    //     {
-    //       id: 34, label: 'General CashBook', route: '/reports/general-cashbook'
-    //     },
-    //   ]
-    // },
+    {
+      id: 3, label: 'Reports', icon: 'reports', menu: [
+        {
+          id: 31, label: 'Receipt Payment', route: '/reports/receipt-payment'
+        },
+        {
+          id: 32, label: 'Trial Balance', route: '/reports/trial-balance'
+        },
+        {
+          id: 33, label: 'General Ledger', route: '/reports/general-ledger'
+        },
+        {
+          id: 34, label: 'General CashBook', route: '/reports/general-cashbook'
+        },
+      ]
+    },
   ]
 
 }

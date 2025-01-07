@@ -10,53 +10,31 @@
       (ngSubmit)="onSubmit($event)"
       class="min-w-[400px] mx-auto px-2"
     >
-
       <!-- controlHeadId -->
       <div class="gap-2 relative">
         <Field label="Control Head">
-          <input
+          <select
             #inputRef
-            type="text"
-            [value]="displayHeadId(getControl('controlHeadId').value)"
             name="controlHeadId"
             [formControl]="getControl('controlHeadId')"
-            required
-            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+            placeholder=""
+            (keydown.enter)="handleEnterKey($event, 2)"
+            class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
             [class.invalid]="
               (getControl('controlHeadId').invalid &&
-              getControl('controlHeadId').touched) || isSubmitted
+                getControl('controlHeadId').touched) ||
+              isSubmitted
             "
-            placeholder=""
-            (keydown.enter)="handleEnterKey($event, 0)"
-            (keydown)="handleHeadIdKeyDown($event)"
-            (input)="onHeadIdSearchChange($event)"
-          />
-
-          @if (getControl('controlHeadId').value) {
-            <button (click)="onClearHeadId($event)" class="px-1 bg-red-300 rounded-sm text-white absolute top-2 right-0">X</button>
-          }
+          >
+            <option value="" class="capitalize">Select Option</option>
+            @for(option of controlHeadOption(); track $index){
+            <option [value]="option?.id" class="capitalize">
+              {{ option?.text }}
+            </option>
+            }
+          </select>
         </Field>
-        
-        <div
-          *ngIf="controlHeadIdDropdownOpen && controlHeadOption.length > 0 && controlHeadIdEnable && getControl('controlHeadId').value"
-          class="absolute bg-white border border-gray-300 -mt-2 w-full z-50 rounded shadow-lg max-h-96 overflow-scroll"
-        >
-          <ul>
-            <li
-              *ngFor="let option of controlHeadOption; let i = index"
-              (click)="selectHeadId(option)"
-              [class.highlighted]="i === highlightedIndexHeadId"
-              class="py-2 px-3 hover:text-white hover:bg-teal-600 cursor-pointer"
-            >
-              {{ option?.id + " - " + option?.text }}
-            </li>
-          </ul>
-        </div>
       </div>
-
-
-
-
 
       <!-- accountCode -->
       <!-- <Field label="Account Code">
@@ -70,7 +48,7 @@
           (keydown.enter)="handleEnterKey($event, 1)"
         />
       </Field> -->
-      
+
       <!-- accountGroup -->
       <Field label="Account Group">
         <select
@@ -87,9 +65,9 @@
           "
         >
           <option value="" class="capitalize">Select Option</option>
-          @for(option of accountGroupOption; track $index){
-          <option [value]="option?.id" class="capitalize">
-            {{ option?.text }}
+          @for(option of accountGroupOption(); track $index){
+          <option [value]="option" class="capitalize">
+            {{ option }}
           </option>
           }
         </select>
@@ -123,7 +101,7 @@
       </Field>
 
       @if (show()) {
-        
+
       <!-- coaMap -->
       <Field label="COA Map">
         <select
@@ -135,7 +113,7 @@
           class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
         >
           <option value="" class="capitalize">Select Option</option>
-          @for(option of coaMapOption; track $index){
+          @for(option of coaMapOption(); track $index){
           <option [value]="option?.id" class="capitalize">
             {{ option?.text }}
           </option>
@@ -153,7 +131,7 @@
           class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
         >
           <option value="0" class="capitalize">Select Option</option>
-          @for(option of bankOption; track $index){
+          @for(option of bankOption(); track $index){
           <option [value]="option?.id" class="capitalize">
             {{ option?.text }}
           </option>
@@ -186,14 +164,19 @@
       </Field>
       }
 
-      <button (click)="onToggleShow($event)" class="btn btn-small uppercase px-2 py-1 rounded bg-purple-600 text-white mb-2">{{show() ? 'hide' : 'show'}}</button>
+      <button
+        (click)="onToggleShow($event)"
+        class="btn btn-small uppercase px-2 py-1 rounded bg-purple-600 text-white mb-2"
+      >
+        {{ show() ? "hide" : "show" }}
+      </button>
 
       <div class="flex gap-2">
         <!-- Save -->
         <input
           #inputRef
           type="submit"
-          [value]="selectedAccount ? 'Update' : 'Save'"
+          [value]="selectedAccount() ? 'Update' : 'Save'"
           class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-lg shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
           (keydown.enter)="handleEnterKey($event, 9)"
         />
@@ -212,7 +195,7 @@
     <h1
       class="text-xl md:text-3xl font-bold text-teal-500 underline text-center"
     >
-      Account List
+      Chart Of Account
     </h1>
 
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
@@ -242,14 +225,16 @@
 
         <div class="flex gap-1">
           <button
-            (click)="isGrid = true"
+            (click)="isGrid.set(true)"
             [ngClass]="
-              isGrid ? 'bg-teal-700 text-gray-100' : 'bg-teal-200 text-gray-700'
+              isGrid()
+                ? 'bg-teal-700 text-gray-100'
+                : 'bg-teal-200 text-gray-700'
             "
             class="px-3 py-1.5 rounded flex items-center gap-2"
           >
             <svg
-              [ngClass]="isGrid ? 'fill-gray-100' : 'fill-gray-700'"
+              [ngClass]="isGrid() ? 'fill-gray-100' : 'fill-gray-700'"
               width="20px"
               height="20px"
               viewBox="0 0 52 52"
@@ -295,16 +280,16 @@
             >Grid
           </button>
           <button
-            (click)="isGrid = false"
+            (click)="isGrid.set(false)"
             [ngClass]="
-              !isGrid
+              !isGrid()
                 ? 'bg-teal-700 text-gray-100'
                 : 'bg-teal-200 text-gray-700'
             "
             class="px-3 py-1.5 rounded flex items-center gap-2"
           >
             <svg
-              [ngClass]="!isGrid ? 'fill-gray-100' : 'fill-gray-700'"
+              [ngClass]="!isGrid() ? 'fill-gray-100' : 'fill-gray-700'"
               class="hover:fill-gray-100"
               height="20px"
               width="20px"
@@ -333,7 +318,7 @@
         </div>
       </div>
 
-      @if (isGrid) { @if (isLoading$ | async) {
+      @if (isGrid()) { @if (isLoading$ | async) {
       <p class="text-3xl font-bold text-center p-10 text-teal-600">
         Loading ...
       </p>
@@ -358,16 +343,12 @@
             <th scope="col" class="p-1">accountGroup</th>
             <th scope="col" class="p-1">subHead</th>
             <th scope="col" class="p-1">coaMap</th>
-            <th scope="col" class="p-1">bankId</th>
+            <!-- <th scope="col" class="p-1">bankId</th>
             <th scope="col" class="p-1">accountNo</th>
-            <th scope="col" class="p-1">openingBalance</th>
+            <th scope="col" class="p-1">openingBalance</th> -->
             <th scope="col" class="p-1">remarks</th>
             <th scope="col" class="px-1 py-3">Edit</th>
             <th scope="col" class="px-1 py-3">Delete</th>
-            <!-- <th scope="col" class="p-1">Address</th>
-                      <th scope="col" class="p-1">fee</th> -->
-            <!-- <th scope="col" class="p-1">mpo id</th> -->
-            <!-- <th scope="col" class="p-1">is chamber Bank</th> -->
           </tr>
         </thead>
         <tbody>
@@ -392,7 +373,7 @@
             <td class="p-1">
               {{ item?.coaMap }}
             </td>
-            <td class="p-1">
+            <!-- <td class="p-1">
               {{ item?.bankId }}
             </td>
             <td class="p-1">
@@ -400,7 +381,7 @@
             </td>
             <td class="p-1">
               {{ item?.openingBalance }}
-            </td>
+            </td> -->
             <td class="p-1">
               {{ item?.remarks }}
             </td>
@@ -438,10 +419,10 @@
         <div class="error">Error loading data.</div>
         }
         <!-- Tree Data Available -->
-        @else if (treeData.length > 0) {
+        @else if (treeData().length > 0) {
         <div class="tree-container">
           <ul>
-            @for(node of treeData; track $index) {
+            @for(node of treeData(); track $index) {
             <ng-container
               *ngTemplateOutlet="treeTemplate; context: { $implicit: node }"
             ></ng-container>
@@ -456,7 +437,10 @@
 
         <ng-template #treeTemplate let-node>
           <li class="node" [class.collapsed]="isCollapsed[node.id]">
-            <span class="toggle-btn" (click)="toggleNode(node.id, node.children.length)">
+            <span
+              class="toggle-btn"
+              (click)="toggleNode(node.id, node.children.length)"
+            >
               {{ isCollapsed[node.id] ? "▶" : "▼" }}
             </span>
             {{ node.subHead }}
@@ -468,7 +452,8 @@
               ></ng-container>
               }
             </ul>
-            } @if(node.subHead.toLowerCase() !== 'root' && isCollapsed[node.id]){
+            } @if(node.subHead.toLowerCase() !== 'root' &&
+            isCollapsed[node.id]){
             <button
               (click)="onAdd(node)"
               class="bg-blue-500 text-xs py-1 px-2 rounded text-white"

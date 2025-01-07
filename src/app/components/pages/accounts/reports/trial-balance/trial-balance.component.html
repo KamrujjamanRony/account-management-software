@@ -1,1 +1,44 @@
-<p>trial-balance works!</p>
+<div class="container">
+  <h2>Video Category</h2>
+
+  <div class="select-box">
+    <div class="options-container" [class.active]="isOptionsVisible">
+      <div
+        class="option"
+        *ngFor="let category of filteredCategories"
+        (click)="selectCategory(category)"
+      >
+        <input type="radio" class="radio" [id]="category.id" name="category" />
+        <label [for]="category.id">{{ category.label }}</label>
+      </div>
+    </div>
+
+    <div class="selected" (click)="toggleOptions()">
+      {{ selectedCategory?.label || "Select Video Category" }}
+    </div>
+
+    <div class="search-box">
+      <input
+        type="text"
+        placeholder="Start Typing..."
+        [(ngModel)]="searchTerm"
+        (input)="filterCategories()"
+        *ngIf="isOptionsVisible"
+      />
+    </div>
+  </div>
+</div>
+
+<!-- <select id="controlHead">
+  <option value="">Select your country</option>
+  <option value="US">United States of America</option>
+  <option value="KE">Kenya</option>
+  <option value="UK">United Kingdom</option>
+  <option value="IN">India</option>
+  <option value="CN">China</option>
+  <option value="CA">Canada</option>
+  <option value="RU">Russia</option>
+  <option value="DE">Germany</option>
+  <option value="ZA">South Africa</option>
+  <option value="BR">Brazil</option>
+</select> -->
