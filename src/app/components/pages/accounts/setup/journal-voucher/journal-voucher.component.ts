@@ -254,7 +254,7 @@ export class JournalVoucherComponent {
             return;
           }
           const data = this.debitVoucherForm.value;
-          const addData = { ...data, headId: Number(data.headId), subHeadId: data.subHeadId ? Number(data.subHeadId) : null, debitAmount: data.debitAmount ? Number(data.debitAmount) : null }
+          const addData = { ...data, headId: Number(data.headId), subHeadId: data.subHeadId ? Number(data.subHeadId) : null, debitAmount: data.debitAmount ? Number(data.debitAmount) : null, remarks: data.remarks || " " }
           if (this.selectedVoucherDetails) {
             this.dataArray[this.selectedVoucherDetailsIndex] = addData;
             this.selectedVoucherDetails = null;
@@ -283,7 +283,7 @@ export class JournalVoucherComponent {
             return;
           }
           const data = this.creditVoucherForm.value;
-          const addData = { ...data, headId: Number(data.headId), subHeadId: data.subHeadId ? Number(data.subHeadId) : null, creditAmount: data.creditAmount ? Number(data.creditAmount) : null }
+          const addData = { ...data, headId: Number(data.headId), subHeadId: data.subHeadId ? Number(data.subHeadId) : null, creditAmount: data.creditAmount ? Number(data.creditAmount) : null, remarks: data.remarks || " " }
           if (this.selectedVoucherDetails) {
             this.dataArray[this.selectedVoucherDetailsIndex] = addData;
             this.selectedVoucherDetails = null;
