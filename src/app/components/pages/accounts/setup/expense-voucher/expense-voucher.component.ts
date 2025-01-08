@@ -4,22 +4,21 @@ import { ToastSuccessComponent } from '../../../../shared/toast/toast-success/to
 import { FieldComponent } from '../../../../shared/field/field.component';
 import { FormControl, FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AllSvgComponent } from '../../../../shared/svg/all-svg/all-svg.component';
-import { BankService } from '../../../../../services/bank.service';
 import { AccountListService } from '../../../../../services/account-list.service';
 import { VendorService } from '../../../../../services/vendor.service';
 import { VoucherService } from '../../../../../services/voucher.service';
 import { DataFetchService } from '../../../../../services/useDataFetch';
 import { Observable } from 'rxjs';
+import { SelectorComponent } from '../../../../shared/selector/selector.component';
 
 @Component({
   selector: 'app-expense-voucher',
-  imports: [CommonModule, ToastSuccessComponent, FieldComponent, ReactiveFormsModule, AllSvgComponent, FormsModule],
+  imports: [CommonModule, ToastSuccessComponent, FieldComponent, ReactiveFormsModule, AllSvgComponent, FormsModule, SelectorComponent],
   templateUrl: './expense-voucher.component.html',
   styleUrl: './expense-voucher.component.css'
 })
 export class ExpenseVoucherComponent {
   fb = inject(NonNullableFormBuilder);
-  private bankService = inject(BankService);
   private accountListService = inject(AccountListService);
   private vendorService = inject(VendorService);
   private voucherService = inject(VoucherService);
@@ -120,7 +119,7 @@ export class ExpenseVoucherComponent {
 
 
   form = this.fb.group({
-    transactionType: ['Receive', Validators.required],
+    transactionType: ['Payment', Validators.required],
     coaMap: [''],
     voucherDate: ["", Validators.required],
     accountBankCashId: ["", Validators.required],
@@ -144,8 +143,6 @@ export class ExpenseVoucherComponent {
   });
 
   addData() {
-    console.log(this.selectedVoucher);
-    console.log(this.selectedVoucherDetails);
     if (this.selectedVoucher && this.dataArray.length > 0 && !this.selectedVoucherDetails) {
       alert("You don't add a Voucher details in editing mode!");
       return;
@@ -225,22 +222,26 @@ export class ExpenseVoucherComponent {
       // console.log(this.form.value);
       if (this.selectedVoucher) {
         const editData = { ...voucherFormData, editVoucherDetailDto: this.dataArray };
-        console.log(editData, this.selectedVoucher.id)
+        // console.log(editData, this.selectedVoucher.id)
         this.voucherService.updateVoucher(this.selectedVoucher.id, editData)
           .subscribe({
             next: (response) => {
               if (response !== null && response !== undefined) {
                 this.success.set("Voucher successfully updated!");
                 const rest = this.filteredVoucherList().filter(d => d.id !== response.id);
+                const updatedData = response.voucherDetailDto.splice(-1);
                 this.filteredVoucherList.set([...rest, response]);
+                this.dataArray = [];
                 this.isSubmitted = false;
                 this.selectedVoucher = null;
                 this.resetForm(e);
                 this.isSubmitting.set(false);
+                this.isSubmitted = false;
                 setTimeout(() => {
                   this.success.set("");
                 }, 3000);
               }
+              this.isSubmitted = false;
 
             },
             error: (error) => {
@@ -262,15 +263,16 @@ export class ExpenseVoucherComponent {
           }
         })
         const addData = { ...voucherFormData, remarks: remarks.join(','), createVoucherDetailDto };
-        console.log(addData);
+        // console.log(addData);
         this.voucherService.addVoucher(addData)
           .subscribe({
-            next: (response) => {
-              console.log(response)
+            next: (response: any) => {
+              // console.log(response)
               if (response !== null && response !== undefined) {
                 this.success.set("Voucher successfully added!");
-                this.dataArray = [];
+                const updatedData = response.voucherDetailDto.splice(-1);
                 this.filteredVoucherList.set([...this.filteredVoucherList(), response])
+                this.dataArray = [];
                 this.isSubmitted = false;
                 this.resetForm(e);
                 this.isSubmitting.set(false);
@@ -278,15 +280,15 @@ export class ExpenseVoucherComponent {
                   this.success.set("");
                 }, 3000);
               }
+              this.isSubmitted = false;
 
             },
             error: (error) => {
+              this.isSubmitting.set(false);
               if (error.error.message) {
                 alert(`${error.error.status} : ${error.error.message}`);
-                this.isSubmitting.set(false);
               }
               console.error('Error add:', error);
-              this.isSubmitting.set(false);
             }
           });
       }
@@ -315,6 +317,7 @@ export class ExpenseVoucherComponent {
   resetForm(e: Event) {
     e.preventDefault();
     this.form.reset();
+    // this.addVoucherForm.value.headId = "";
     const today = new Date();
     this.form.patchValue({
       voucherDate: today.toISOString().split('T')[0]
@@ -371,6 +374,13 @@ export class ExpenseVoucherComponent {
 
 
   // Utility methods----------------------------------------------------------------------
+
+  onHeadSelected(selected: any): void {
+    // console.log('Selected :', selected);
+    this.addVoucherForm.patchValue({
+      headId: selected?.id
+    });
+  }
 
   focusFirstInput() {
     const inputs = this.inputRefs.toArray();

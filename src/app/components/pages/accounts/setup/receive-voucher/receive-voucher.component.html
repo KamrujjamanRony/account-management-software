@@ -124,6 +124,14 @@
         <div class="px-2">
           <!-- headId -->
           <Field label="Head">
+            <selector
+              [placeholder]="'Select Head'"
+              [selectedId]="addVoucherForm.value.headId ?? null"
+              [options]="headIdOption()"
+              (selectionChange)="onHeadSelected($event)"
+            ></selector>
+          </Field>
+          <Field label="Head" hidden>
             <select
               #inputRef
               formControlName="headId"

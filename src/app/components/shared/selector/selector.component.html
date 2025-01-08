@@ -1,0 +1,46 @@
+<div class="w-full font-medium">
+  <div
+    (click)="toggleDropdown()"
+    class="py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize flex justify-between"
+    [ngClass]="{ 'text-gray-700': !selected() }"
+  >
+    <span>
+      {{
+        selected()
+          ? selected().text.length > 200
+            ? selected().text.substring(0, 200) + "..."
+            : selected().text
+          : placeholder
+      }}
+    </span>
+    <app-all-svg icon="down-arrow"></app-all-svg>
+  </div>
+
+  <ul
+    class="mt-1 overflow-y-auto rounded-md"
+    [ngClass]="{ 'max-h-60 border': open, 'max-h-0': !open }"
+  >
+    <div class="flex items-center px-2 sticky top-0">
+      <app-all-svg icon="search" class="absolute left-4"></app-all-svg>
+      <input
+        type="text"
+        [(ngModel)]="inputValue"
+        placeholder="Search"
+        class="placeholder:text-gray-700 text-xs rounded-md px-2 pl-8 outline-none w-full my-1"
+      />
+    </div>
+
+    <li
+      *ngFor="let option of options"
+      class="p-2 text-sm hover:bg-teal-600 hover:text-white"
+      [ngClass]="{
+        'bg-sky-600 text-white': option.id === selected()?.id,
+        block: option.text.toLowerCase().startsWith(inputValue.toLowerCase()),
+        hidden: !option.text.toLowerCase().startsWith(inputValue.toLowerCase())
+      }"
+      (click)="selectOption(option)"
+    >
+      {{ option.text }}
+    </li>
+  </ul>
+</div>

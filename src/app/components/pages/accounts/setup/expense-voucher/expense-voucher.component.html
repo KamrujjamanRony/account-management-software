@@ -95,18 +95,6 @@
           />
         </Field>
 
-        <input
-          list="browsers"
-          class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
-        />
-        <datalist id="browsers" class="w-full bg-lime-400">
-          <option value="Internet Explorer"></option>
-          <option value="Firefox"></option>
-          <option value="Chrome"></option>
-          <option value="Opera"></option>
-          <option value="Safari"></option>
-        </datalist>
-
         <div class="flex gap-2">
           <!-- Save -->
           @if (isSubmitting()) {
@@ -136,6 +124,15 @@
         <div class="px-2">
           <!-- headId -->
           <Field label="Head">
+            <selector
+              [placeholder]="'Select Head'"
+              [selectedId]="addVoucherForm.value.headId ?? null"
+              [options]="headIdOption()"
+              (selectionChange)="onHeadSelected($event)"
+            ></selector>
+          </Field>
+
+          <Field label="Head" hidden>
             <select
               #inputRef
               formControlName="headId"

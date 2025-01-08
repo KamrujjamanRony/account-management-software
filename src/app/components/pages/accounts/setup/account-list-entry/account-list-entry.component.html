@@ -114,8 +114,8 @@
         >
           <option value="" class="capitalize">Select Option</option>
           @for(option of coaMapOption(); track $index){
-          <option [value]="option?.id" class="capitalize">
-            {{ option?.text }}
+          <option [value]="option" class="capitalize">
+            {{ option }}
           </option>
           }
         </select>
@@ -335,11 +335,11 @@
         class="w-full text-sm text-left rtl:text-right text-gray-800 dark:text-gray-400 mt-2"
       >
         <thead
-          class="text-sm text-gray-100 uppercase bg-teal-800 dark:bg-gray-700 dark:text-gray-400"
+          class="text-sm text-gray-100 capitalize bg-teal-800 dark:bg-gray-700 dark:text-gray-400"
         >
           <tr>
-            <th scope="col" class="p-1">controlHeadId</th>
-            <th scope="col" class="p-1">accountCode</th>
+            <th scope="col" class="p-1">controlHead</th>
+            <!-- <th scope="col" class="p-1">accountCode</th> -->
             <th scope="col" class="p-1">accountGroup</th>
             <th scope="col" class="p-1">subHead</th>
             <th scope="col" class="p-1">coaMap</th>
@@ -359,11 +359,11 @@
             class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
           >
             <td scope="row" class="p-1">
-              {{ item?.controlHeadId }}
+              {{ displayHead(item?.controlHeadId) }}
             </td>
-            <td class="p-1">
+            <!-- <td class="p-1">
               {{ item?.accountCode }}
-            </td>
+            </td> -->
             <td class="p-1">
               {{ item?.accountGroup }}
             </td>

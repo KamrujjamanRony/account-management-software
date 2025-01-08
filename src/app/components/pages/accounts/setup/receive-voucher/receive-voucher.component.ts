@@ -9,10 +9,11 @@ import { VendorService } from '../../../../../services/vendor.service';
 import { VoucherService } from '../../../../../services/voucher.service';
 import { DataFetchService } from '../../../../../services/useDataFetch';
 import { Observable } from 'rxjs';
+import { SelectorComponent } from "../../../../shared/selector/selector.component";
 
 @Component({
   selector: 'app-receive-voucher',
-  imports: [CommonModule, ToastSuccessComponent, FieldComponent, ReactiveFormsModule, AllSvgComponent, FormsModule],
+  imports: [CommonModule, ToastSuccessComponent, FieldComponent, ReactiveFormsModule, AllSvgComponent, FormsModule, SelectorComponent],
   templateUrl: './receive-voucher.component.html',
   styleUrl: './receive-voucher.component.css'
 })
@@ -144,8 +145,6 @@ export class ReceiveVoucherComponent {
   });
 
   addData() {
-    console.log(this.selectedVoucher);
-    console.log(this.selectedVoucherDetails);
     if (this.selectedVoucher && this.dataArray.length > 0 && !this.selectedVoucherDetails) {
       alert("You don't add a Voucher details in editing mode!");
       return;
@@ -181,7 +180,6 @@ export class ReceiveVoucherComponent {
         this.addVoucherForm.reset();
         this.bankOrCash = this.accountBankCashIdOption().find((a: any) => a.id == cashId)?.text;
         this.totalAmount = this.dataArray.reduce((prev, data) => prev + data.creditAmount, 0);
-        console.log(this.totalAmount)
       });
 
     } else {
@@ -208,7 +206,6 @@ export class ReceiveVoucherComponent {
     this.accountListService.getAccountList(subHeadIdReq).subscribe(data => {
       this.subHeadIdOption.set(data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() })))
       this.totalAmount = this.dataArray.reduce((prev, data) => prev + data.creditAmount, 0);
-      console.log(this.totalAmount)
     });
   }
 
@@ -247,7 +244,6 @@ export class ReceiveVoucherComponent {
     const cashId = this.form.value.accountBankCashId;
     this.bankOrCash = this.accountBankCashIdOption().find((a: any) => a.id == cashId)?.text;
     this.totalAmount = this.dataArray.reduce((prev, data) => prev + data.creditAmount, 0);
-    console.log(this.totalAmount)
 
     // Focus the 'Name' input field after patching the value
     setTimeout(() => {
@@ -266,13 +262,14 @@ export class ReceiveVoucherComponent {
       // console.log(this.form.value);
       if (this.selectedVoucher) {
         const editData = { ...voucherFormData, editVoucherDetailDto: this.dataArray };
-        console.log(editData, this.selectedVoucher.id)
+        // console.log(editData, this.selectedVoucher.id)
         this.voucherService.updateVoucher(this.selectedVoucher.id, editData)
           .subscribe({
             next: (response) => {
               if (response !== null && response !== undefined) {
                 this.success.set("Voucher successfully updated!");
                 const rest = this.filteredVoucherList().filter(d => d.id !== response.id);
+                const updatedData = response.voucherDetailDto.splice(-1);
                 this.filteredVoucherList.set([...rest, response]);
                 this.isSubmitted = false;
                 this.selectedVoucher = null;
@@ -303,14 +300,14 @@ export class ReceiveVoucherComponent {
           }
         })
         const addData = { ...voucherFormData, remarks: remarks.join(','), createVoucherDetailDto };
-        console.log(addData);
         this.voucherService.addVoucher(addData)
           .subscribe({
-            next: (response) => {
-              console.log(response)
+            next: (response: any) => {
+              // console.log(response)
               if (response !== null && response !== undefined) {
                 this.success.set("Voucher successfully added!");
                 this.dataArray = [];
+                const updatedData = response.voucherDetailDto.splice(-1);
                 this.filteredVoucherList.set([...this.filteredVoucherList(), response])
                 this.isSubmitted = false;
                 this.resetForm(e);
@@ -376,6 +373,13 @@ export class ReceiveVoucherComponent {
 
   // Utility methods----------------------------------------------------------------------
 
+  onHeadSelected(selected: any): void {
+    // console.log('Selected :', selected);
+    this.addVoucherForm.patchValue({
+      headId: selected?.id
+    });
+  }
+
   focusFirstInput() {
     const inputs = this.inputRefs.toArray();
     if (inputs.length) {
@@ -399,7 +403,7 @@ export class ReceiveVoucherComponent {
     };
     this.accountListService.getAccountList(subHeadIdReq).subscribe(data => {
       this.subHeadIdOption.set(data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() })))
-      console.log(this.subHeadIdOption())
+      // console.log(this.subHeadIdOption())
     });
   }
 

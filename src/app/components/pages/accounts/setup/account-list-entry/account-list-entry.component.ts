@@ -30,7 +30,7 @@ export class AccountListEntryComponent {
   controlHeadOption = signal<any[]>([]);
   bankOption = signal<any[]>([]);
   accountGroupOption = signal<any[]>(["Current Asset", "NonCurrent/Fixed Asset", "Current Liability", "NonCurrent Liability", "Equity", "Income", "Expenses", "Assets", "Liability"]);
-  coaMapOption = signal<any[]>([]);
+  coaMapOption = signal<any[]>(["Cash", "Bank"]);
 
   treeData = signal<any[]>([]);
   isLoadingTree$: Observable<boolean> | undefined;
@@ -319,6 +319,10 @@ export class AccountListEntryComponent {
   onToggleShow(e: any) {
     e.preventDefault();
     this.show.set(!this.show())
+  }
+
+  displayHead(id: any) {
+    return this.controlHeadOption().find((option: any) => option.id == id)?.text ?? "";
   }
   // ----------Utility function end---------------------------------------------------------------------------------
 
