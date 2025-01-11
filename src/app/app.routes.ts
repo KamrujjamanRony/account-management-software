@@ -10,6 +10,7 @@ import { ReceiptPaymentComponent } from './components/pages/accounts/reports/rec
 import { TrialBalanceComponent } from './components/pages/accounts/reports/trial-balance/trial-balance.component';
 import { GeneralLedgerComponent } from './components/pages/accounts/reports/general-ledger/general-ledger.component';
 import { GeneralCashBookComponent } from './components/pages/accounts/reports/general-cash-book/general-cash-book.component';
+import { TransactionsComponent } from './components/pages/accounts/reports/transactions/transactions.component';
 
 export const routes: Routes = [
   {
@@ -60,6 +61,10 @@ export const routes: Routes = [
       {
         path: 'reports/general-cashbook',
         component: GeneralCashBookComponent
+      },
+      {
+        path: 'reports/transactions',
+        component: TransactionsComponent
       },
     ],
   }

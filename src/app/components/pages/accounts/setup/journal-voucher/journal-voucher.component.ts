@@ -480,7 +480,7 @@ export class JournalVoucherComponent {
             remarks: data.remarks
           }
         })
-        const addData = { ...voucherFormData, remarks: remarks.join(','), createVoucherDetailDto };
+        const addData = { ...voucherFormData, particular: remarks.join(','), createVoucherDetailDto };
         console.log(addData);
         this.voucherService.addVoucher(addData)
           .subscribe({
@@ -617,6 +617,20 @@ export class JournalVoucherComponent {
 
 
   // Utility methods----------------------------------------------------------------------
+
+  onDebitHeadSelected(selected: any): void {
+    // console.log('Selected :', selected);
+    this.debitVoucherForm.patchValue({
+      headId: selected?.id
+    });
+  }
+
+  onCreditHeadSelected(selected: any): void {
+    // console.log('Selected :', selected);
+    this.creditVoucherForm.patchValue({
+      headId: selected?.id
+    });
+  }
 
   focusFirstInput() {
     const inputs = this.inputRefs.toArray();

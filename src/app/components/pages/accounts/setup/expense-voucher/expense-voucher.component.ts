@@ -22,7 +22,7 @@ export class ExpenseVoucherComponent {
   private accountListService = inject(AccountListService);
   private vendorService = inject(VendorService);
   private voucherService = inject(VoucherService);
-  dataFetchService = inject(DataFetchService);
+  private dataFetchService = inject(DataFetchService);
   filteredVoucherList = signal<any[]>([]);
   highlightedTr: number = -1;
   success = signal<any>("");
@@ -35,8 +35,9 @@ export class ExpenseVoucherComponent {
   subHeadIdOption = signal<any[]>([]);
   allOption = signal<any[]>([]);
   isSubmitting = signal<boolean>(false);
-  fromDate = signal<any>('');
-  toDate = signal<any>('');
+  fromDate = signal<any>(null);
+  toDate = signal<any>(null);
+  chartofAccountId = signal<any>(null);
   todayDate: any;
   dataArray: any[] = [];
   totalAmount: number = 0;
@@ -68,10 +69,11 @@ export class ExpenseVoucherComponent {
 
   onLoadVoucher() {
     const reqData = {
-      "search": "",
+      "search": null,
       "transactionType": "Payment",
       "fromDate": this.fromDate(),
-      "toDate": this.toDate() || this.fromDate()
+      "toDate": this.toDate() || this.fromDate(),
+      "chartofAccountId": this.chartofAccountId() === "null" ? null : this.chartofAccountId()
     }
     const { data$, isLoading$, hasError$ } = this.dataFetchService.fetchData(this.voucherService.getVoucher(reqData));
 
@@ -109,10 +111,6 @@ export class ExpenseVoucherComponent {
       this.accountListService.getAccountList(headIdReq).subscribe(data => this.headIdOption.set(data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() }))));
       this.vendorService.getVendor('').subscribe(data => this.vendorIdOption.set(data.map((c: any) => ({ id: c.id, text: c.name.toLowerCase() }))));
     });
-  }
-
-  onDateChange() {
-    this.onLoadVoucher();
   }
 
   // Form Field ----------------------------------------------------------------
@@ -262,7 +260,7 @@ export class ExpenseVoucherComponent {
             remarks: data.remarks
           }
         })
-        const addData = { ...voucherFormData, remarks: remarks.join(','), createVoucherDetailDto };
+        const addData = { ...voucherFormData, particular: remarks.join(','), createVoucherDetailDto };
         // console.log(addData);
         this.voucherService.addVoucher(addData)
           .subscribe({

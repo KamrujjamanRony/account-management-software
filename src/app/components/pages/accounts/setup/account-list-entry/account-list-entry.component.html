@@ -10,6 +10,22 @@
       (ngSubmit)="onSubmit($event)"
       class="min-w-[400px] mx-auto px-2"
     >
+      <!-- subHead -->
+      <Field label="Sub Head">
+        <input
+          #inputRef
+          type="text"
+          maxlength="255"
+          [formControl]="getControl('subHead')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          [class.invalid]="
+            (getControl('subHead').invalid && getControl('subHead').touched) ||
+            isSubmitted
+          "
+          placeholder=""
+          (keydown.enter)="handleEnterKey($event, 3)"
+        />
+      </Field>
       <!-- controlHeadId -->
       <div class="gap-2 relative">
         <Field label="Control Head">
@@ -71,22 +87,6 @@
           </option>
           }
         </select>
-      </Field>
-      <!-- subHead -->
-      <Field label="Sub Head">
-        <input
-          #inputRef
-          type="text"
-          maxlength="255"
-          [formControl]="getControl('subHead')"
-          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
-          [class.invalid]="
-            (getControl('subHead').invalid && getControl('subHead').touched) ||
-            isSubmitted
-          "
-          placeholder=""
-          (keydown.enter)="handleEnterKey($event, 3)"
-        />
       </Field>
       <!-- remarks -->
       <Field label="Remarks">

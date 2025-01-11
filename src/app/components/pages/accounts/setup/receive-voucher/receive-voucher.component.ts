@@ -299,7 +299,7 @@ export class ReceiveVoucherComponent {
             remarks: data.remarks
           }
         })
-        const addData = { ...voucherFormData, remarks: remarks.join(','), createVoucherDetailDto };
+        const addData = { ...voucherFormData, particular: remarks.join(','), createVoucherDetailDto };
         this.voucherService.addVoucher(addData)
           .subscribe({
             next: (response: any) => {

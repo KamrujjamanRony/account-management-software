@@ -321,22 +321,49 @@
     </h1>
 
     <div class="flex justify-end gap-1">
+      <selector
+        hidden
+        [placeholder]="'Select Option'"
+        [options]="headIdOption()"
+        (selectionChange)="onHeadSelected($event)"
+      ></selector>
+      <select
+        id="chartofAccountId"
+        [(ngModel)]="chartofAccountId"
+        (change)="onLoadVoucher()"
+        class="border border-gray-500 text-gray-600 rounded-md px-5 py-2"
+      >
+        <option value="null">All Payment</option>
+        <option *ngFor="let item of headIdOption()" [value]="item.id">
+          {{ item.text }}
+        </option>
+      </select>
       <input
         type="date"
         id="fromDate"
         [(ngModel)]="fromDate"
-        (change)="onDateChange()"
+        (change)="onLoadVoucher()"
         class="border border-gray-500 text-gray-600 rounded-md px-5 py-2"
       />
       <input
         type="date"
         id="toDate"
         [(ngModel)]="toDate"
-        (change)="onDateChange()"
+        (change)="onLoadVoucher()"
         class="border border-gray-500 text-gray-600 rounded-md px-5 py-2"
       />
     </div>
-
+    @if (isLoading$ | async) {
+    <p class="text-3xl font-bold text-center p-10 text-teal-600">Loading ...</p>
+    } @else if (hasError$ | async) {
+    <p class="text-3xl font-bold text-center p-10 text-red-600">
+      There was an error loading data.
+    </p>
+    } @else if (filteredVoucherList().length === 0) {
+    <p class="text-3xl font-bold text-center p-10 text-orange-600">
+      Data is Empty.
+    </p>
+    } @else {
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
       <table
         class="w-full text-sm text-left rtl:text-right text-gray-800 dark:text-gray-400 mt-2"
@@ -348,7 +375,7 @@
             <th scope="col" class="p-1">voucherNo</th>
             <th scope="col" class="p-1">voucherDate</th>
             <th scope="col" class="p-1">Cash/Bank</th>
-            <th scope="col" class="p-1">vendor</th>
+            <th scope="col" class="p-1">particular</th>
             <th scope="col" class="p-1">pay To</th>
             <th scope="col" class="p-1">amount</th>
             <th scope="col" class="p-1">remarks</th>
@@ -371,7 +398,7 @@
               {{ item?.accountBankName }}
             </td>
             <td class="p-1">
-              {{ item?.vendorName }}
+              {{ item?.particular }}
             </td>
             <td class="p-1">
               {{ item?.payTo }}
@@ -397,19 +424,11 @@
               </button>
             </td>
           </tr>
-          } @empty {
-          <tr>
-            <td
-              colspan="6"
-              class="text-center text-gray-600 dark:text-gray-400"
-            >
-              No data found
-            </td>
-          </tr>
           }
         </tbody>
       </table>
     </div>
+    }
   </div>
   }
 </section>

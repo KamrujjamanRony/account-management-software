@@ -1,0 +1,123 @@
+<div class="w-full border mb-10 px-3 h-[98vh] overflow-scroll">
+  <h1 class="text-xl md:text-3xl font-bold text-teal-500 underline text-center">
+    All Receipt/Payment
+  </h1>
+
+  <div class="flex justify-end gap-1 flex-wrap">
+    <select
+      id="transactionType"
+      [(ngModel)]="transactionType"
+      (change)="ontransactionTypeChange()"
+      class="border border-gray-500 text-gray-600 rounded-md px-5 py-2"
+    >
+      <option *ngFor="let item of transactionTypeOption()" [value]="item.id">
+        {{ item.text }}
+      </option>
+    </select>
+    <selector2
+      [placeholder]="'Select Account'"
+      [selectedId]="chartOfAccountId() || null"
+      [options]="chartOfAccountIdOption()"
+      (selectionChange)="onAccountIdSelected($event)"
+    ></selector2>
+    <input
+      type="date"
+      id="fromDate"
+      [(ngModel)]="fromDate"
+      (change)="onLoadVoucher()"
+      class="border border-gray-500 text-gray-600 rounded-md px-5 py-2"
+    />
+    <input
+      type="date"
+      id="toDate"
+      [(ngModel)]="toDate"
+      (change)="onLoadVoucher()"
+      class="border border-gray-500 text-gray-600 rounded-md px-5 py-2"
+    />
+    <button
+      class="relative inline-flex items-center justify-center p-0.5 me-2 overflow-hidden text-sm text-rose-600 font-medium rounded-lg group bg-gradient-to-br from-rose-400 to-red-600 group-hover:from-rose-400 group-hover:to-red-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-rose-200 dark:focus:ring-rose-800"
+      (click)="onClearFilter()"
+    >
+      <span
+        class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0"
+      >
+        Clear Filter
+      </span>
+    </button>
+    <button
+      class="relative inline-flex items-center justify-center p-0.5 me-2 overflow-hidden text-sm font-medium text-teal-600 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
+      (click)="generatePDF()"
+    >
+      <span
+        class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0"
+      >
+        Print
+      </span>
+    </button>
+  </div>
+  @if (isLoading$ | async) {
+  <p class="text-3xl font-bold text-center p-10 text-teal-600">Loading ...</p>
+  } @else if (hasError$ | async) {
+  <p class="text-3xl font-bold text-center p-10 text-red-600">
+    There was an error loading data.
+  </p>
+  } @else if (filteredVoucherList().length === 0) {
+  <p class="text-3xl font-bold text-center p-10 text-orange-600">
+    Data is Empty.
+  </p>
+  } @else {
+  <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
+    <table
+      class="w-full text-sm text-left rtl:text-right text-gray-800 dark:text-gray-400 mt-2"
+    >
+      <thead
+        class="text-sm text-gray-100 uppercase bg-teal-800 dark:bg-gray-700 dark:text-gray-400"
+      >
+        <tr>
+          <th scope="col" class="p-1">voucherDate</th>
+          <th scope="col" class="p-1">headName</th>
+          <th scope="col" class="p-1">subHeadName</th>
+          <th scope="col" class="p-1">
+            {{
+              transactionType() == "Payment" ? "debitAmount" : "creditAmount"
+            }}
+          </th>
+          <th scope="col" class="p-1">particular</th>
+          <th scope="col" class="p-1">remarks</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of filteredVoucherList(); track $index) {
+        <tr
+          id="row-{{ $index }}"
+          class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+        >
+          <td class="p-1 capitalize">
+            {{ transform(item?.voucherDate) }}
+          </td>
+          <td class="p-1">
+            {{ item?.headName }}
+          </td>
+          <td class="p-1">
+            {{ item?.subHeadName }}
+          </td>
+          <td class="p-1">
+            {{
+              transactionType() == "Payment"
+                ? item?.debitAmount
+                : item?.creditAmount
+            }}
+          </td>
+          <td class="p-1">
+            {{ item?.particular }}
+          </td>
+          <td class="p-1">
+            {{ item?.remarks }}
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  }
+</div>

@@ -28,6 +28,10 @@ export class VoucherService {
     return this.apiCall<any>('/SearchVoucher', 'post', query);
   }
 
+  getVoucherDetails(query: any): Observable<any> {
+    return this.apiCall<any>('/SearchVoucherwithDetail', 'post', query);
+  }
+
   updateVoucher(id: string | number, updateVoucherRequest: any | FormData): Observable<any> {
     return this.apiCall<any>(`/EditVoucher/${id}`, 'put', updateVoucherRequest);
   }

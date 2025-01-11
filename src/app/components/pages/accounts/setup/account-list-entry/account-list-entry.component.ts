@@ -166,8 +166,9 @@ export class AccountListEntryComponent {
     if (this.form.valid) {
       this.form.get('controlHeadId')?.enable();
       this.form.get('accountGroup')?.enable();
+      const requestData = { ...this.form.value, openingBalance: Number(this.form.value.openingBalance) };
       if (this.selectedAccount()) {
-        this.accountListService.updateAccountList(this.selectedAccount()?.id, this.form.value)
+        this.accountListService.updateAccountList(this.selectedAccount()?.id, requestData)
           .subscribe({
             next: (response) => {
               if (response !== null && response !== undefined) {
@@ -188,7 +189,7 @@ export class AccountListEntryComponent {
             }
           });
       } else {
-        this.accountListService.addAccountList(this.form.value)
+        this.accountListService.addAccountList(requestData)
           .subscribe({
             next: (response) => {
               // console.log(response)

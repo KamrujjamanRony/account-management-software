@@ -438,6 +438,17 @@
         class="border border-gray-500 text-gray-600 rounded-md px-5 py-2"
       />
     </div>
+    @if (isLoading$ | async) {
+    <p class="text-3xl font-bold text-center p-10 text-teal-600">Loading ...</p>
+    } @else if (hasError$ | async) {
+    <p class="text-3xl font-bold text-center p-10 text-red-600">
+      There was an error loading data.
+    </p>
+    } @else if (filteredVoucherList().length === 0) {
+    <p class="text-3xl font-bold text-center p-10 text-orange-600">
+      Data is Empty.
+    </p>
+    } @else {
 
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
       <table
@@ -450,7 +461,7 @@
             <th scope="col" class="p-1">voucherNo</th>
             <th scope="col" class="p-1">voucherDate</th>
             <th scope="col" class="p-1">Cash/Bank</th>
-            <th scope="col" class="p-1">vendor</th>
+            <th scope="col" class="p-1">particular</th>
             <th scope="col" class="p-1">pay To</th>
             <th scope="col" class="p-1">amount</th>
             <th scope="col" class="p-1">remarks</th>
@@ -473,7 +484,7 @@
               {{ item?.accountBankName }}
             </td>
             <td class="p-1">
-              {{ item?.vendorName }}
+              {{ item?.particular }}
             </td>
             <td class="p-1">
               {{ item?.payTo }}
@@ -499,19 +510,11 @@
               </button>
             </td>
           </tr>
-          } @empty {
-          <tr>
-            <td
-              colspan="6"
-              class="text-center text-gray-600 dark:text-gray-400"
-            >
-              No data found
-            </td>
-          </tr>
           }
         </tbody>
       </table>
     </div>
+    }
   </div>
   }
 </section>

@@ -40,22 +40,25 @@ export class SidebarComponent {
         },
       ]
     },
-    // {
-    //   id: 3, label: 'Reports', icon: 'reports', menu: [
-    //     {
-    //       id: 31, label: 'Receipt Payment', route: '/reports/receipt-payment'
-    //     },
-    //     {
-    //       id: 32, label: 'Trial Balance', route: '/reports/trial-balance'
-    //     },
-    //     {
-    //       id: 33, label: 'General Ledger', route: '/reports/general-ledger'
-    //     },
-    //     {
-    //       id: 34, label: 'General CashBook', route: '/reports/general-cashbook'
-    //     },
-    //   ]
-    // },
+    {
+      id: 3, label: 'Reports', icon: 'reports', menu: [
+        // {
+        //   id: 31, label: 'Receipt Payment', route: '/reports/receipt-payment'
+        // },
+        // {
+        //   id: 32, label: 'Trial Balance', route: '/reports/trial-balance'
+        // },
+        // {
+        //   id: 33, label: 'General Ledger', route: '/reports/general-ledger'
+        // },
+        // {
+        //   id: 34, label: 'General CashBook', route: '/reports/general-cashbook'
+        // },
+        {
+          id: 35, label: 'Transactions', route: 'reports/transactions'
+        },
+      ]
+    },
   ]
 
 }

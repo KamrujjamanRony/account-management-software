@@ -1,7 +1,7 @@
-<div class="w-full font-medium">
+<div class="w-full relative max-w-md min-w-96">
   <div
     (click)="toggleDropdown()"
-    class="py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize flex justify-between cursor-pointer"
+    class="border border-gray-500 text-gray-600 rounded-md px-5 py-2 flex justify-between cursor-pointer"
     [ngClass]="{ 'text-gray-700': !selected() }"
   >
     <span>
@@ -17,8 +17,11 @@
   </div>
 
   <ul
-    class="mt-1 overflow-y-auto rounded-md"
-    [ngClass]="{ 'max-h-96 border': open, 'max-h-0': !open }"
+    class="mt-1 overflow-y-auto rounded-md w-full bg-white"
+    [ngClass]="{
+      'max-h-96 border absolute top-10 z-50': open,
+      hidden: !open
+    }"
   >
     <div class="flex items-center px-2 sticky top-0">
       <app-all-svg icon="search" class="absolute left-4"></app-all-svg>
@@ -29,10 +32,9 @@
         class="placeholder:text-gray-700 text-xs rounded-md px-2 pl-8 outline-none w-full my-1"
       />
     </div>
-
     <li
       *ngFor="let option of options"
-      class="p-2 text-sm hover:bg-teal-600 hover:text-white cursor-pointer"
+      class="p-2 text-sm hover:bg-teal-600 hover:text-white cursor-pointer w-full"
       [ngClass]="{
         'bg-sky-600 text-white': option.id === selected()?.id,
         block: option.text.toLowerCase().startsWith(inputValue.toLowerCase()),
