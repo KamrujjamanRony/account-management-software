@@ -13,7 +13,7 @@ export class AccountingReportsService {
   private apiCall<T>(endpoint: string, method: 'get' | 'post' | 'put' | 'delete', body?: any): Observable<T> {
     return this.dataService.getPort().pipe(
       switchMap(port => {
-        const url = `http://localhost:${port}/api/AccountingReport/${endpoint}`;
+        const url = `${port}/api/AccountingReport/${endpoint}`;
         return this.http.request<T>(method, url, { body });
       })
     );
