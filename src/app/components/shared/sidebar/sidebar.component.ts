@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AllSvgComponent } from "../svg/all-svg/all-svg.component";
 import { CommonModule } from '@angular/common';
@@ -14,7 +14,7 @@ export class SidebarComponent {
 
 
 
-  sidebarData: any[] = [
+  sidebarData = signal<any[]>([
     // {
     //   id: 1, label: 'Registration', icon: 'users', route: '/registration'
     // },
@@ -59,6 +59,9 @@ export class SidebarComponent {
         },
       ]
     },
-  ]
+    {
+      id: 4, label: 'User Access', icon: 'users', route: '/user-access'
+    },
+  ]);
 
 }

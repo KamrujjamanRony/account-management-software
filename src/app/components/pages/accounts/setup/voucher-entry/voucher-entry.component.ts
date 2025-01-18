@@ -301,7 +301,7 @@ export class VoucherEntryComponent {
         //         this.resetForm(e);
         //         setTimeout(() => {
         //           this.success.set("");
-        //         }, 3000);
+        //         }, 1000);
         //       }
 
         //     },
@@ -310,7 +310,7 @@ export class VoucherEntryComponent {
         //     }
         //   });
       } else {
-        const addData = { ...voucherFormData, remarks: `${this.displayHead(this.dataArray[0]?.headId)} - ${this.displaySubHead(this.dataArray[0]?.subHeadId) || ""} - ${this.dataArray[0]?.remarks}` , createVoucherDetailDto: this.dataArray };
+        const addData = { ...voucherFormData, remarks: `${this.displayHead(this.dataArray[0]?.headId)} - ${this.displaySubHead(this.dataArray[0]?.subHeadId) || ""} - ${this.dataArray[0]?.remarks}`, createVoucherDetailDto: this.dataArray };
         console.log(addData);
         this.voucherService.addVoucher(addData)
           .subscribe({
@@ -323,7 +323,7 @@ export class VoucherEntryComponent {
                 this.resetForm(e);
                 setTimeout(() => {
                   this.success.set("");
-                }, 3000);
+                }, 1000);
               }
 
             },
@@ -348,7 +348,7 @@ export class VoucherEntryComponent {
     //       this.filteredVoucherList.set(this.filteredVoucherList().filter(d => d.id !== id));
     //       setTimeout(() => {
     //         this.success.set("");
-    //       }, 3000);
+    //       }, 1000);
     //     } else {
     //       console.error('Error deleting Bank:', data);
     //       alert('Error deleting Bank: ' + data.message)

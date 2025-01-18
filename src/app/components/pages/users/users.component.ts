@@ -1,29 +1,33 @@
 import { Component, ElementRef, inject, QueryList, signal, ViewChild, ViewChildren } from '@angular/core';
 import { FormControl, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { BankService } from '../../../../../services/bank.service';
-import { DataFetchService } from '../../../../../services/useDataFetch';
+import { UserAccessService } from '../../../services/user-access.service';
+import { UserAccessTreeComponent } from "../../shared/user/user-access-tree/user-access-tree.component";
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
-import { ToastSuccessComponent } from '../../../../shared/toast/toast-success/toast-success.component';
-import { FieldComponent } from '../../../../shared/field/field.component';
-import { SearchComponent } from '../../../../shared/svg/search/search.component';
+import { DataFetchService } from '../../../services/useDataFetch';
+import { UserService } from '../../../services/user.service';
+import { FieldComponent } from "../../shared/field/field.component";
+import { SearchComponent } from "../../shared/svg/search/search.component";
 import { CommonModule } from '@angular/common';
+import { ToastSuccessComponent } from "../../shared/toast/toast-success/toast-success.component";
 
 @Component({
-  selector: 'app-bank-entry',
-  imports: [CommonModule, ToastSuccessComponent, FieldComponent, SearchComponent, ReactiveFormsModule],
-  templateUrl: './bank-entry.component.html',
-  styleUrl: './bank-entry.component.css'
+  selector: 'app-users',
+  imports: [ReactiveFormsModule, UserAccessTreeComponent, FieldComponent, SearchComponent, CommonModule, ToastSuccessComponent],
+  templateUrl: './users.component.html',
+  styleUrl: './users.component.css'
 })
-export class BankEntryComponent {
+export class UsersComponent {
   fb = inject(NonNullableFormBuilder);
-  private bankService = inject(BankService);
-  dataFetchService = inject(DataFetchService);
-  filteredBankList = signal<any[]>([]);
+  private userService = inject(UserService);
+  private dataFetchService = inject(DataFetchService);
+  private userAccessService = inject(UserAccessService);
+  filteredUserList = signal<any[]>([]);
   highlightedTr: number = -1;
   success = signal<any>("");
-  selectedBank: any;
+  selectedUser: any;
 
   private searchQuery$ = new BehaviorSubject<string>('');
+  userAccessTree = signal<any[]>([]);
   isLoading$: Observable<any> | undefined;
   hasError$: Observable<any> | undefined;
   @ViewChildren('inputRef') inputRefs!: QueryList<ElementRef>;
@@ -31,23 +35,26 @@ export class BankEntryComponent {
   isSubmitted = false;
 
   form = this.fb.group({
-    name: ['', [Validators.required]],
-    address: [''],
-    remarks: [''],
+    username: ['', [Validators.required]],
+    password: [''],
   });
 
-  ngOnInit() {
-    this.onLoadBanks();
+  ngOnInit(): void {
+    this.userAccessService.getUserAccessTree().subscribe((data) => {
+      this.userAccessTree.set(data);
+    });
+
+    this.onLoadUsers();
 
     // Focus on the search input when the component is initialized
     setTimeout(() => {
       const inputs = this.inputRefs.toArray();
       inputs[0].nativeElement.focus();
-    }, 10); // Delay to ensure the DOM is updated
+    }, 10);
   }
 
-  onLoadBanks() {
-    const { data$, isLoading$, hasError$ } = this.dataFetchService.fetchData(this.bankService.getBank(""));
+  onLoadUsers() {
+    const { data$, isLoading$, hasError$ } = this.dataFetchService.fetchData(this.userService.getUser("")); // TODO: user data request due
 
     this.isLoading$ = isLoading$;
     this.hasError$ = hasError$;
@@ -57,17 +64,15 @@ export class BankEntryComponent {
       this.searchQuery$
     ]).pipe(
       map(([data, query]) =>
-        data.filter((bankData: any) =>
-          bankData.name?.toLowerCase().includes(query) ||
-          bankData.address?.toLowerCase().includes(query) ||
-          bankData.remarks?.toLowerCase().includes(query)
+        data.filter((UserData: any) =>
+          UserData.username?.toLowerCase().includes(query)
         )
       )
-    ).subscribe(filteredData => this.filteredBankList.set(filteredData.reverse()));
+    ).subscribe(filteredData => this.filteredUserList.set(filteredData));
   }
 
-  // Method to filter Bank list based on search query
-  onSearchBank(event: Event) {
+  // Method to filter User list based on search query
+  onSearchUser(event: Event) {
     const query = (event.target as HTMLInputElement).value.toLowerCase();
     this.searchQuery$.next(query);
   }
@@ -92,7 +97,7 @@ export class BankEntryComponent {
   }
 
   handleSearchKeyDown(event: KeyboardEvent) {
-    if (this.filteredBankList().length === 0) {
+    if (this.filteredUserList().length === 0) {
       return; // Exit if there are no items to navigate
     }
 
@@ -102,17 +107,17 @@ export class BankEntryComponent {
       inputs[0].nativeElement.focus();
     } else if (event.key === 'ArrowDown') {
       event.preventDefault(); // Prevent default scrolling behavior
-      this.highlightedTr = (this.highlightedTr + 1) % this.filteredBankList().length;
+      this.highlightedTr = (this.highlightedTr + 1) % this.filteredUserList().length;
     } else if (event.key === 'ArrowUp') {
       event.preventDefault(); // Prevent default scrolling behavior
       this.highlightedTr =
-        (this.highlightedTr - 1 + this.filteredBankList().length) % this.filteredBankList().length;
+        (this.highlightedTr - 1 + this.filteredUserList().length) % this.filteredUserList().length;
     } else if (event.key === 'Enter') {
       event.preventDefault(); // Prevent form submission
 
       // Call onUpdate for the currently highlighted item
       if (this.highlightedTr !== -1) {
-        const selectedItem = this.filteredBankList()[this.highlightedTr];
+        const selectedItem = this.filteredUserList()[this.highlightedTr];
         this.onUpdate(selectedItem);
         this.highlightedTr = -1;
       }
@@ -123,16 +128,16 @@ export class BankEntryComponent {
     this.isSubmitted = true;
     if (this.form.valid) {
       // console.log(this.form.value);
-      if (this.selectedBank) {
-        this.bankService.updateBank(this.selectedBank.id, this.form.value)
+      if (this.selectedUser) {
+        this.userService.updateUser(this.selectedUser.id, this.form.value)
           .subscribe({
             next: (response) => {
               if (response !== null && response !== undefined) {
-                this.success.set("Bank successfully updated!");
-                const rest = this.filteredBankList().filter(d => d.id !== response.id);
-                this.filteredBankList.set([response, ...rest]);
+                this.success.set("User successfully updated!");
+                const rest = this.filteredUserList().filter(d => d.id !== response.id);
+                this.filteredUserList.set([response, ...rest]);
                 this.isSubmitted = false;
-                this.selectedBank = null;
+                this.selectedUser = null;
                 this.formReset(e);
                 setTimeout(() => {
                   this.success.set("");
@@ -145,12 +150,12 @@ export class BankEntryComponent {
             }
           });
       } else {
-        this.bankService.addBank(this.form.value)
+        this.userService.addUser(this.form.value)
           .subscribe({
             next: (response) => {
               if (response !== null && response !== undefined) {
-                this.success.set("Bank successfully added!");
-                this.filteredBankList.set([response, ...this.filteredBankList()])
+                this.success.set("User successfully added!");
+                this.filteredUserList.set([response, ...this.filteredUserList()])
                 this.isSubmitted = false;
                 this.formReset(e);
                 setTimeout(() => {
@@ -165,19 +170,18 @@ export class BankEntryComponent {
           });
       }
     } else {
-      alert('Form is invalid! Please Fill Name Field.');
+      alert('Form is invalid! Please Fill Username and Password Field.');
     }
   }
 
   onUpdate(data: any) {
-    this.selectedBank = data;
+    this.selectedUser = data;
     this.form.patchValue({
-      name: data?.name,
-      address: data?.address,
-      remarks: data?.remarks,
+      username: data?.username,
+      password: data?.password,
     });
 
-    // Focus the 'Name' input field after patching the value
+    // Focus the 'username' input field after patching the value
     setTimeout(() => {
       const inputs = this.inputRefs.toArray();
       inputs[0].nativeElement.focus();
@@ -186,16 +190,16 @@ export class BankEntryComponent {
 
   onDelete(id: any) {
     if (confirm("Are you sure you want to delete?")) {
-      this.bankService.deleteBank(id).subscribe(data => {
+      this.userService.deleteUser(id).subscribe(data => {
         if (data.id) {
-          this.success.set("Bank deleted successfully!");
-          this.filteredBankList.set(this.filteredBankList().filter(d => d.id !== id));
+          this.success.set("User deleted successfully!");
+          this.filteredUserList.set(this.filteredUserList().filter(d => d.id !== id));
           setTimeout(() => {
             this.success.set("");
           }, 1000);
         } else {
-          console.error('Error deleting Bank:', data);
-          alert('Error deleting Bank: ' + data.message)
+          console.error('Error deleting User:', data);
+          alert('Error deleting User: ' + data.message)
         }
       });
     }
@@ -204,12 +208,29 @@ export class BankEntryComponent {
   formReset(e: Event): void {
     e.preventDefault();
     this.form.reset({
-      name: '',
-      address: '',
-      remarks: '',
+      username: '',
+      password: '',
     });
     this.isSubmitted = false;
-    this.selectedBank = null;
+    this.selectedUser = null;
   }
+
+  // User Accessibility Code Start----------------------------------------------------------------
+
+  savePermissions() {
+    const selectedNodes = this.getSelectedNodes(this.userAccessTree());
+    console.log('Selected Access:', selectedNodes);
+  }
+
+  private getSelectedNodes(nodes: any[]): any[] {
+    return nodes
+      .filter((node) => node.checked || node.children?.some((child: any) => child.checked))
+      .map((node) => ({
+        ...node,
+        children: node.children ? this.getSelectedNodes(node.children) : undefined,
+      }));
+  }
+
+  // User Accessibility Code End----------------------------------------------------------------
 
 }

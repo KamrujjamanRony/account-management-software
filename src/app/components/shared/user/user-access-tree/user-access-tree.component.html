@@ -1,0 +1,35 @@
+<ul class="ml-4 space-y-2">
+  @for (node of nodes; track $index) {
+  <li>
+    <div class="flex items-center space-x-2 font-bold">
+      <!-- Collapse Button -->
+      @if (node.children?.length) {
+      <button
+        class="text-gray-600 hover:text-black focus:outline-none"
+        (click)="toggleCollapse(node)"
+      >
+        {{ node.collapsed ? "▶" : "▼" }}
+      </button>
+      } @else {
+      <p class="w-5"></p>
+      }
+
+      <!-- Checkbox -->
+      <input
+        type="checkbox"
+        class="form-checkbox h-5 w-5 text-teal-500 focus:ring-teal-500"
+        [(ngModel)]="node.checked"
+        (change)="onCheck(node, $event)"
+      />
+
+      <!-- Node Name -->
+      <span class="text-gray-800">{{ node.name }}</span>
+    </div>
+
+    <!-- Children List (Collapsible) -->
+    @if (!node.collapsed && node.children?.length) {
+    <app-user-access-tree [nodes]="node.children || []"></app-user-access-tree>
+    }
+  </li>
+  }
+</ul>

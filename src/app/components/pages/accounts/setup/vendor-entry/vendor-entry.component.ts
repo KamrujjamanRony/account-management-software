@@ -138,7 +138,7 @@ export class VendorEntryComponent {
                 this.formReset(e);
                 setTimeout(() => {
                   this.success.set("");
-                }, 3000);
+                }, 1000);
               }
 
             },
@@ -157,7 +157,7 @@ export class VendorEntryComponent {
                 this.formReset(e);
                 setTimeout(() => {
                   this.success.set("");
-                }, 3000);
+                }, 1000);
               }
 
             },
@@ -195,7 +195,7 @@ export class VendorEntryComponent {
           this.filteredVendorList.set(this.filteredVendorList().filter(d => d.id !== id));
           setTimeout(() => {
             this.success.set("");
-          }, 3000);
+          }, 1000);
         } else {
           console.error('Error deleting Vendor:', data);
           alert('Error deleting Vendor: ' + data.message)

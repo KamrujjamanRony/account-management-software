@@ -11,6 +11,7 @@ import { TrialBalanceComponent } from './components/pages/accounts/reports/trial
 import { GeneralLedgerComponent } from './components/pages/accounts/reports/general-ledger/general-ledger.component';
 import { GeneralCashBookComponent } from './components/pages/accounts/reports/general-cash-book/general-cash-book.component';
 import { TransactionsComponent } from './components/pages/accounts/reports/transactions/transactions.component';
+import { UsersComponent } from './components/pages/users/users.component';
 
 export const routes: Routes = [
   {
@@ -65,6 +66,10 @@ export const routes: Routes = [
       {
         path: 'reports/transactions',
         component: TransactionsComponent
+      },
+      {
+        path: 'user-access',
+        component: UsersComponent
       },
     ],
   }

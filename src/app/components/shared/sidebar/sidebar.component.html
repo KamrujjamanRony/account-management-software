@@ -67,14 +67,17 @@
   </div>
 </aside> -->
 
-
 <aside
   id="sidebar-multi-level-sidebar"
   class="group fixed top-0 left-0 z-40 w-12 hover:w-72 h-screen overflow-hidden"
   aria-label="Sidebar"
 >
   <div class="h-full pl-2 py-4 overflow-hidden bg-teal-300 dark:bg-gray-800">
-    <ul class="space-y-2 font-medium" id="accordion-collapse" data-accordion="collapse">
+    <ul
+      class="space-y-2 font-medium"
+      id="accordion-collapse"
+      data-accordion="collapse"
+    >
       <li class="cursor-pointer">
         <a
           routerLink="/"
@@ -83,7 +86,7 @@
           <span class="ms-12 text-xl font-bold text-teal-700">SuperSoft</span>
         </a>
       </li>
-      @for (item of sidebarData; track $index) { @if (item?.menu) {
+      @for (item of sidebarData(); track $index) { @if (item?.menu) {
       <li class="cursor-pointer">
         <a
           [routerLink]="item?.route"
@@ -108,7 +111,7 @@
         >
           @for (subItem of item.menu; track $index) {
           <li class="cursor-pointer">
-            <a 
+            <a
               [routerLink]="subItem?.route"
               class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-10 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
               >{{ subItem.label }}</a

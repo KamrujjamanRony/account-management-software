@@ -237,7 +237,7 @@ export class ExpenseVoucherComponent {
                 this.isSubmitted = false;
                 setTimeout(() => {
                   this.success.set("");
-                }, 3000);
+                }, 1000);
               }
               this.isSubmitted = false;
 
@@ -276,7 +276,7 @@ export class ExpenseVoucherComponent {
                 this.isSubmitting.set(false);
                 setTimeout(() => {
                   this.success.set("");
-                }, 3000);
+                }, 1000);
               }
               this.isSubmitted = false;
 
@@ -303,7 +303,7 @@ export class ExpenseVoucherComponent {
           this.filteredVoucherList.set(this.filteredVoucherList().filter(d => d.id !== id));
           setTimeout(() => {
             this.success.set("");
-          }, 3000);
+          }, 1000);
         } else {
           console.error('Error deleting Voucher:', data);
           alert('Error deleting Voucher: ' + data.message)
