@@ -1,44 +1,98 @@
-<div class="container">
-  <h2>Video Category</h2>
+<div class="w-full border mb-10 px-3 max-h-[98vh] overflow-scroll">
+  <h1 class="text-xl md:text-3xl font-bold text-teal-500 underline text-center">
+    Trail Balance
+  </h1>
 
-  <div class="select-box">
-    <div class="options-container" [class.active]="isOptionsVisible">
-      <div
-        class="option"
-        *ngFor="let category of filteredCategories"
-        (click)="selectCategory(category)"
+  <div class="flex justify-end gap-1">
+    <input
+      type="date"
+      id="fromDate"
+      [(ngModel)]="fromDate"
+      (change)="onLoadReport()"
+      class="border border-gray-500 text-gray-600 rounded-md px-5 py-2"
+    />
+    <input
+      type="date"
+      id="toDate"
+      [(ngModel)]="toDate"
+      (change)="onLoadReport()"
+      class="border border-gray-500 text-gray-600 rounded-md px-5 py-2"
+    />
+    <button
+      class="relative inline-flex items-center justify-center p-0.5 me-2 overflow-hidden text-sm font-medium text-teal-600 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
+      (click)="generatePDF()"
+    >
+      <span
+        class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0"
       >
-        <input type="radio" class="radio" [id]="category.id" name="category" />
-        <label [for]="category.id">{{ category.label }}</label>
-      </div>
-    </div>
-
-    <div class="selected" (click)="toggleOptions()">
-      {{ selectedCategory?.label || "Select Video Category" }}
-    </div>
-
-    <div class="search-box">
-      <input
-        type="text"
-        placeholder="Start Typing..."
-        [(ngModel)]="searchTerm"
-        (input)="filterCategories()"
-        *ngIf="isOptionsVisible"
-      />
-    </div>
+        Print
+      </span>
+    </button>
   </div>
+  @if (isLoading$ | async) {
+  <p class="text-3xl font-bold text-center p-10 text-teal-600">Loading ...</p>
+  } @else if (hasError$ | async) {
+  <p class="text-3xl font-bold text-center p-10 text-red-600">
+    There was an error loading data.
+  </p>
+  } @else if (filteredReports().length === 0) {
+  <p class="text-3xl font-bold text-center p-10 text-orange-600">
+    Data is Empty.
+  </p>
+  } @else {
+  <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
+    <table
+      class="w-full text-sm text-left rtl:text-right text-gray-800 dark:text-gray-400 mt-2"
+    >
+      <thead
+        class="text-sm text-gray-100 uppercase bg-teal-800 dark:bg-gray-700 dark:text-gray-400"
+      >
+        <tr>
+          <th scope="col" class="p-1">Head</th>
+          <th scope="col" class="p-1">subHead</th>
+          <th scope="col" class="p-1">debitAmount</th>
+          <th scope="col" class="p-1">creditAmount</th>
+          <th scope="col" class="p-1">balance</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of filteredReports(); track $index) {
+        <tr
+          id="row-{{ $index }}"
+          class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+        >
+          <td class="p-1 capitalize">
+            {{ item?.subHead }}
+          </td>
+          <td class="p-1 capitalize">
+            {{ item?.subSubHead }}
+          </td>
+          <td class="p-1">
+            {{ item?.debitAmount }}
+          </td>
+          <td class="p-1">
+            {{ item?.creditAmount }}
+          </td>
+          <td class="p-1">
+            {{ item?.balance }}
+          </td>
+        </tr>
+        }
+        <tr
+          class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+        >
+          <td class="p-1 capitalize">Total:</td>
+          <td class="p-1 capitalize"></td>
+          <td class="p-1">
+            {{ totalDebit().toFixed(2) }}
+          </td>
+          <td class="p-1">
+            {{ totalCredit().toFixed(2) }}
+          </td>
+          <td class="p-1"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  }
 </div>
-
-<!-- <select id="controlHead">
-  <option value="">Select your country</option>
-  <option value="US">United States of America</option>
-  <option value="KE">Kenya</option>
-  <option value="UK">United Kingdom</option>
-  <option value="IN">India</option>
-  <option value="CN">China</option>
-  <option value="CA">Canada</option>
-  <option value="RU">Russia</option>
-  <option value="DE">Germany</option>
-  <option value="ZA">South Africa</option>
-  <option value="BR">Brazil</option>
-</select> -->

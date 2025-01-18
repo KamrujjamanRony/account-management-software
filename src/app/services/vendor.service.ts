@@ -13,7 +13,7 @@ export class VendorService {
   private apiCall<T>(endpoint: string, method: 'get' | 'post' | 'put' | 'delete', body?: any): Observable<T> {
     return this.dataService.getPort().pipe(
       switchMap(port => {
-        const url = `http://localhost:${port}/api/Vendor${endpoint}`;
+        const url = `${port}/api/Vendor${endpoint}`;
         return this.http.request<T>(method, url, { body });
       })
     );

@@ -13,7 +13,7 @@ export class VoucherService {
   private apiCall<T>(endpoint: string, method: 'get' | 'post' | 'put' | 'delete', body?: any): Observable<T> {
     return this.dataService.getPort().pipe(
       switchMap(port => {
-        const url = `http://localhost:${port}/api/Voucher${endpoint}`;
+        const url = `${port}/api/Voucher${endpoint}`;
         return this.http.request<T>(method, url, { body });
       })
     );

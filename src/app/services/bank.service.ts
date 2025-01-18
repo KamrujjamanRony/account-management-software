@@ -13,7 +13,7 @@ export class BankService {
   private apiCall<T>(endpoint: string, method: 'get' | 'post' | 'put' | 'delete', body?: any): Observable<T> {
     return this.dataService.getPort().pipe(
       switchMap(port => {
-        const url = `http://localhost:${port}/api/Bank${endpoint}`;
+        const url = `${port}/api/Bank${endpoint}`;
         return this.http.request<T>(method, url, { body });
       })
     );

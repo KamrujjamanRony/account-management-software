@@ -9,6 +9,8 @@ import { VendorService } from '../../../../../services/vendor.service';
 import { VoucherService } from '../../../../../services/voucher.service';
 import { DataFetchService } from '../../../../../services/useDataFetch';
 import { Observable } from 'rxjs';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 @Component({
   selector: 'app-journal-voucher',
@@ -29,7 +31,7 @@ export class JournalVoucherComponent {
   selectedVoucherDetails: any;
   selectedVoucherDetailsIndex: any;
   transactionTypeOption = [
-    { id: "Journal", text: "Balance-Sheet" },
+    { id: "BalanceSheet", text: "Balance-Sheet" },
     // { id: "Receipt", text: "Receipt" },
     // { id: "Payment", text: "Payment" },
     { id: "Contra", text: "Contra" },
@@ -43,7 +45,7 @@ export class JournalVoucherComponent {
   allOption = signal<any[]>([]);
   fromDate = signal<any>('');
   toDate = signal<any>('');
-  transactionType = signal<any>('Journal');
+  transactionType = signal<any>('BalanceSheet');
   isSubmitting = signal<boolean>(false);
   date: any = new Date();
   todayDate: any;
@@ -51,6 +53,7 @@ export class JournalVoucherComponent {
   totalDebitAmount: number = 0;
   totalCreditAmount: number = 0;
   selectedValue: any = "";
+  marginTop: any = 0;
 
   isLoading$: Observable<any> | undefined;
   hasError$: Observable<any> | undefined;
@@ -99,7 +102,7 @@ export class JournalVoucherComponent {
       this.onLoadExpense();
     } else if (this.transactionType() === "Receipt") {
       this.onLoadReceipt();
-    } else if (this.transactionType() === "Journal") {
+    } else if (this.transactionType() === "BalanceSheet") {
       this.onLoadJournal();
     }
   }
@@ -187,7 +190,7 @@ export class JournalVoucherComponent {
   // Form Field ----------------------------------------------------------------
 
   form = this.fb.group({
-    transactionType: [{ value: 'Journal', disabled: false }, Validators.required],
+    transactionType: [{ value: 'BalanceSheet', disabled: false }, Validators.required],
     voucherDate: ["", Validators.required],
     voucherNo: [''],
     vendorId: [''],
@@ -239,7 +242,7 @@ export class JournalVoucherComponent {
       alert("This Voucher Head Already Added in Voucher Details!");
       return;
     }
-    const accountGroup = this.transactionType() === "Journal" ? ["Current Asset", "NonCurrent/Fixed Asset", "Current Liability", "NonCurrent Liability", "Equity"] : [this.transactionType()];
+    const accountGroup = this.transactionType() === "BalanceSheet" ? ["Current Asset", "NonCurrent/Fixed Asset", "Current Liability", "NonCurrent Liability", "Equity"] : [this.transactionType()];
     if (this.debitVoucherForm.valid && this.debitVoucherForm.value.headId) {
       if (this.debitVoucherForm.value.debitAmount) {
         const headId = this.debitVoucherForm.value.headId;
@@ -353,7 +356,7 @@ export class JournalVoucherComponent {
       alert("You don't add a Voucher details in editing mode!");
       return;
     }
-    const accountGroup = this.transactionType() === "Journal" ? ["Current Asset", "NonCurrent/Fixed Asset", "Current Liability", "NonCurrent Liability", "Equity"] : [this.transactionType()]
+    const accountGroup = this.transactionType() === "BalanceSheet" ? ["Current Asset", "NonCurrent/Fixed Asset", "Current Liability", "NonCurrent Liability", "Equity"] : [this.transactionType()]
     if (this.debitVoucherForm.valid && this.debitVoucherForm.value.headId) {
       if (this.debitVoucherForm.value.debitAmount) {
         const headId = this.debitVoucherForm.value.headId;
@@ -587,7 +590,7 @@ export class JournalVoucherComponent {
         });
         this.selectedVoucher = data[0];
 
-        const editDetails = (this.transactionType() === "Journal" || this.transactionType() === "Contra") ? data[0].voucherDetailDto : data[0].voucherDetailDto.slice(0, data[0].voucherDetailDto.length - 1);
+        const editDetails = (this.transactionType() === "BalanceSheet" || this.transactionType() === "Contra") ? data[0].voucherDetailDto : data[0].voucherDetailDto.slice(0, data[0].voucherDetailDto.length - 1);
 
         this.dataArray = editDetails.map((detail: any) => {//+
           return {
@@ -703,6 +706,114 @@ export class JournalVoucherComponent {
     if (!value) return null;
     const datePipe = new DatePipe('en-US');
     return datePipe.transform(value, args);
+  }
+
+
+
+  generatePDF() {
+    const pageSizeWidth = 210;
+    const pageSizeHeight = 297;
+    const marginLeft = 10;
+    const marginRight = 10;
+    let marginTop = this.marginTop + 10;
+    const marginBottom = 10;
+
+    const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'A4' });
+
+    if (this.fromDate() || this.toDate()) {
+      marginTop += 4;
+    }
+
+    // Title and Header Section
+    const pageWidth = doc.internal.pageSize.width - marginLeft - marginRight;
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.text(`${this.transactionType()} Reports`, pageWidth / 2 + marginLeft, marginTop, { align: 'center' });
+    marginTop += 5;
+
+    doc.setFontSize(10);
+
+    if (this.fromDate()) {
+      const dateRange = `From: ${this.transform(this.fromDate())} to: ${this.toDate() ? this.transform(this.toDate()) : this.transform(this.fromDate())
+        }`;
+      doc.text(dateRange, pageWidth / 2 + marginLeft, marginTop, { align: 'center' });
+      marginTop += 4;
+    }
+
+    // Prepare Table Data
+    const dataRows = this.filteredVoucherList().map((data: any) => [
+      this.transform(data?.voucherDate),
+      data?.headName || '',
+      data?.subHeadName || '',
+      this.transactionType() == "Payment"
+        ? data?.debitAmount?.toFixed(0) || 0
+        : data?.creditAmount?.toFixed(0) || 0,
+      data?.particular || '',
+      data?.remarks || '',
+    ]);
+
+    // const totalAmount = this.filteredVoucherList().reduce((sum: number, data: any) => sum + (data.amount || 0), 0);
+    // const totalDiscount = this.filteredVoucherList().reduce((sum: number, data: any) => sum + (data.discount || 0), 0);
+
+    // Render Table
+    (doc as any).autoTable({
+      head: [['VoucherDate', 'HeadName', 'SubHeadName', `${this.transactionType() == "Payment" ? "DebitAmount" : "CreditAmount"}`, "Particular", 'Remarks']],
+      body: dataRows,
+      // foot: [
+      //   [
+      //     '', '', '', '', '',
+      //     totalAmount.toFixed(0),
+      //     totalDiscount.toFixed(0),
+      //     '', ''
+      //   ],
+      // ],
+      theme: 'grid',
+      startY: marginTop + 5,
+      styles: {
+        textColor: 0,
+        cellPadding: 2,
+        lineColor: 0,
+        fontSize: 8,
+        valign: 'middle',
+        halign: 'center',
+      },
+      headStyles: {
+        fillColor: [102, 255, 102],
+        textColor: 0,
+        lineWidth: 0.2,
+        lineColor: 0,
+        fontStyle: 'bold',
+      },
+      footStyles: {
+        fillColor: [102, 255, 255],
+        textColor: 0,
+        lineWidth: 0.2,
+        lineColor: 0,
+        fontStyle: 'bold',
+      },
+      margin: { top: marginTop, left: marginLeft, right: marginRight },
+      didDrawPage: (data: any) => {
+        // Add Footer with Margin Bottom
+        doc.setFontSize(8);
+        doc.text(``, pageSizeWidth - marginRight - 10, pageSizeHeight - marginBottom, {
+          align: 'right',
+        });
+      },
+    });
+
+
+
+    // const finalY = (doc as any).lastAutoTable.finalY + 5;
+    // doc.setFontSize(10);
+    // doc.text(
+    //   `Total Collection (${totalAmount} - ${totalDiscount}) = ${totalAmount - totalDiscount} Tk`,
+    //   105,
+    //   finalY,
+    //   { align: 'center' }
+    // );
+
+    doc.output('dataurlnewwindow');
   }
 
 }

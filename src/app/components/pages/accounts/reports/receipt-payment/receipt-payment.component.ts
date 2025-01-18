@@ -34,8 +34,8 @@ export class ReceiptPaymentComponent {
 
     const reqData = {
       "bankCashChartofAccountId": null,
-      "fromDate": "2024-01-04",
-      "toDate": "2025-01-04"
+      "fromDate": this.fromDate(),
+      "toDate": this.toDate() || this.fromDate()
     }
 
 
