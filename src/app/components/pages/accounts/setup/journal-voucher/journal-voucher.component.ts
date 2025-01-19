@@ -45,6 +45,7 @@ export class JournalVoucherComponent {
   allOption = signal<any[]>([]);
   fromDate = signal<any>('');
   toDate = signal<any>('');
+  totalAmount = signal<any>(0);
   transactionType = signal<any>('BalanceSheet');
   isSubmitting = signal<boolean>(false);
   date: any = new Date();
@@ -90,7 +91,8 @@ export class JournalVoucherComponent {
     const { data$, isLoading$, hasError$ } = this.dataFetchService.fetchData(this.voucherService.getVoucher(reqData));
 
     data$.subscribe(data => {
-      this.filteredVoucherList.set(data)
+      this.filteredVoucherList.set(data);
+      this.totalAmount.set(data.reduce((acc, curr: any) => acc + curr?.amount, 0));
     });
 
     this.isLoading$ = isLoading$;
@@ -744,11 +746,8 @@ export class JournalVoucherComponent {
     // Prepare Table Data
     const dataRows = this.filteredVoucherList().map((data: any) => [
       this.transform(data?.voucherDate),
-      data?.headName || '',
-      data?.subHeadName || '',
-      this.transactionType() == "Payment"
-        ? data?.debitAmount?.toFixed(0) || 0
-        : data?.creditAmount?.toFixed(0) || 0,
+      data?.voucherNo || '',
+      data?.amount?.toFixed(2) || 0,
       data?.particular || '',
       data?.remarks || '',
     ]);
@@ -758,16 +757,15 @@ export class JournalVoucherComponent {
 
     // Render Table
     (doc as any).autoTable({
-      head: [['VoucherDate', 'HeadName', 'SubHeadName', `${this.transactionType() == "Payment" ? "DebitAmount" : "CreditAmount"}`, "Particular", 'Remarks']],
+      head: [['VoucherDate', 'VoucherNo', "Amount", "Particular", 'Remarks']],
       body: dataRows,
-      // foot: [
-      //   [
-      //     '', '', '', '', '',
-      //     totalAmount.toFixed(0),
-      //     totalDiscount.toFixed(0),
-      //     '', ''
-      //   ],
-      // ],
+      foot: [
+        [
+          '', '',
+          this.totalAmount().toFixed(2),
+          '', ''
+        ],
+      ],
       theme: 'grid',
       startY: marginTop + 5,
       styles: {

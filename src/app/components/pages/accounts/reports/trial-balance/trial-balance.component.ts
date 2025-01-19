@@ -45,7 +45,7 @@ export class TrialBalanceComponent {
       this.filteredReports.set(data);
       this.totalDebit.set(data.reduce((acc, curr: any) => acc + curr?.debitAmount, 0));
       this.totalCredit.set(data.reduce((acc, curr: any) => acc + curr?.creditAmount, 0));
-      console.log(data)
+      // console.log(data)
     });
 
     this.isLoading$ = isLoading$;
@@ -107,14 +107,14 @@ export class TrialBalanceComponent {
     (doc as any).autoTable({
       head: [['Head', 'SubHead', 'DebitAmount', "CreditAmount", "Balance"]],
       body: dataRows,
-      // foot: [
-      //   [
-      //     '', '', '', '', '',
-      //     totalAmount.toFixed(0),
-      //     totalDiscount.toFixed(0),
-      //     '', ''
-      //   ],
-      // ],
+      foot: [
+        [
+          'Total:', '',
+          this.totalDebit().toFixed(0),
+          this.totalCredit().toFixed(0),
+          ''
+        ],
+      ],
       theme: 'grid',
       startY: marginTop + 5,
       styles: {
@@ -132,15 +132,6 @@ export class TrialBalanceComponent {
         lineColor: 0,
         fontStyle: 'bold',
       },
-      //     foot: [
-      //       [
-      //         '',
-      //         '',
-      //         totalDebit.toFixed(0),
-      //         totalCredit.toFixed(0),
-      //         '',
-      //       ],
-      //     ],
       footStyles: {
         fillColor: [102, 255, 255],
         textColor: 0,

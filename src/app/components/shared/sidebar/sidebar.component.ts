@@ -48,9 +48,9 @@ export class SidebarComponent {
         {
           id: 32, label: 'Trial Balance', route: '/reports/trial-balance'
         },
-        // {
-        //   id: 33, label: 'General Ledger', route: '/reports/general-ledger'
-        // },
+        {
+          id: 33, label: 'General Transaction', route: '/reports/general-ledger'
+        },
         // {
         //   id: 34, label: 'General CashBook', route: '/reports/general-cashbook'
         // },

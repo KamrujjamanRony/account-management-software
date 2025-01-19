@@ -32,6 +32,8 @@ export class TransactionsComponent {
     { id: "Payment", text: "Payment" },
     // { id: "Contra", text: "Contra" },
   ]);
+  totalDebit = signal<any>(0);
+  totalCredit = signal<any>(0);
 
   isLoading$: Observable<any> | undefined;
   hasError$: Observable<any> | undefined;
@@ -60,7 +62,9 @@ export class TransactionsComponent {
     const { data$, isLoading$, hasError$ } = this.dataFetchService.fetchData(this.voucherService.getVoucherDetails(reqData));
 
     data$.subscribe(data => {
-      this.filteredVoucherList.set(data)
+      this.filteredVoucherList.set(data);
+      this.totalDebit.set(data.reduce((acc, curr: any) => acc + curr?.debitAmount, 0));
+      this.totalCredit.set(data.reduce((acc, curr: any) => acc + curr?.creditAmount, 0));
     });
 
     this.isLoading$ = isLoading$;
@@ -179,14 +183,15 @@ export class TransactionsComponent {
     (doc as any).autoTable({
       head: [['VoucherDate', 'HeadName', 'SubHeadName', `${this.transactionType() == "Payment" ? "DebitAmount" : "CreditAmount"}`, "Particular", 'Remarks']],
       body: dataRows,
-      // foot: [
-      //   [
-      //     '', '', '', '', '',
-      //     totalAmount.toFixed(0),
-      //     totalDiscount.toFixed(0),
-      //     '', ''
-      //   ],
-      // ],
+      foot: [
+        [
+          '', 'Total:', '',
+          this.transactionType() == "Payment"
+            ? this.totalDebit().toFixed(2)
+            : this.totalCredit().toFixed(2),
+          '', ''
+        ],
+      ],
       theme: 'grid',
       startY: marginTop + 5,
       styles: {
