@@ -59,9 +59,9 @@ export class SidebarComponent {
         },
       ]
     },
-    {
-      id: 4, label: 'User Access', icon: 'users', route: '/user-access'
-    },
+    // {
+    //   id: 4, label: 'User Access', icon: 'users', route: '/user-access'
+    // },
   ]);
 
 }
