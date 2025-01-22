@@ -1,16 +1,17 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AccountingReportsService } from '../../../../../services/accounting-reports.service';
 import { DataFetchService } from '../../../../../services/useDataFetch';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { AccountListService } from '../../../../../services/account-list.service';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import { SearchComponent } from "../../../../shared/svg/search/search.component";
 
 @Component({
   selector: 'app-general-ledger',
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, SearchComponent],
   templateUrl: './general-ledger.component.html',
   styleUrl: './general-ledger.component.css'
 })
@@ -30,6 +31,9 @@ export class GeneralLedgerComponent {
   isLoading$: Observable<any> | undefined;
   hasError$: Observable<any> | undefined;
   marginTop: any = 0;
+  @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
+
+  private searchQuery$ = new BehaviorSubject<string>('');
 
   ngOnInit() {
     const today = new Date();
@@ -67,15 +71,30 @@ export class GeneralLedgerComponent {
     }
     const { data$, isLoading$, hasError$ } = this.dataFetchService.fetchData(this.accountingReportsService.generalLedgerApi(reqData));
 
-    data$.subscribe(data => {
-      this.filteredReports.set(data);
-      this.totalDebit.set(data.reduce((acc, curr: any) => acc + curr?.debitAmount, 0));
-      this.totalCredit.set(data.reduce((acc, curr: any) => acc + curr?.creditAmount, 0));
-      // console.log(data);
-    });
-
     this.isLoading$ = isLoading$;
     this.hasError$ = hasError$;
+    // Combine the original data stream with the search query to create a filtered list
+    combineLatest([
+      data$,
+      this.searchQuery$
+    ]).pipe(
+      map(([data, query]) =>
+        data.filter((searchData: any) =>
+          searchData.headName?.toLowerCase().includes(query) ||
+          searchData.voucherNo?.toLowerCase().includes(query)
+        )
+      )
+    ).subscribe(filteredData => {
+      this.filteredReports.set(filteredData);
+      this.totalDebit.set(filteredData.reduce((acc, curr: any) => acc + curr?.debitAmount, 0));
+      this.totalCredit.set(filteredData.reduce((acc, curr: any) => acc + curr?.creditAmount, 0));
+    });
+  }
+
+  // Method to filter Bank list based on search query
+  onSearchBank(event: Event) {
+    const query = (event.target as HTMLInputElement).value.toLowerCase();
+    this.searchQuery$.next(query);
   }
 
 
@@ -122,6 +141,7 @@ export class GeneralLedgerComponent {
       this.transform(data?.voucherDate) || '',
       data?.voucherNo || '',
       data?.headName || '',
+      data?.remarks || '',
       data?.debitAmount || '',
       data?.creditAmount || '',
       data?.balance || 0,
@@ -129,11 +149,11 @@ export class GeneralLedgerComponent {
 
     // Render Table
     (doc as any).autoTable({
-      head: [['VoucherDate', 'VoucherNo', 'HeadName', 'DebitAmount', "CreditAmount", "Balance"]],
+      head: [['VoucherDate', 'VoucherNo', 'HeadName', 'Remarks', 'DebitAmount', "CreditAmount", "Balance"]],
       body: dataRows,
       foot: [
         [
-          '', '', '',
+          '', '', '', '',
           this.totalDebit().toFixed(0),
           this.totalCredit().toFixed(0),
           ''
