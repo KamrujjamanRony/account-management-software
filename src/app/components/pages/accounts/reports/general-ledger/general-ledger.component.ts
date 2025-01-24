@@ -64,7 +64,6 @@ export class GeneralLedgerComponent {
   onLoadReport() {
     this.selectedBankCash.set(this.accountBankCashIdOption().find((c: any) => c.id == this.selectedId()));
     const reqData = {
-      "coaMap": this.selectedBankCash()?.coaMap || null,
       "bankCashChartofAccountId": this.selectedBankCash()?.id || null,
       "fromDate": this.fromDate(),
       "toDate": this.toDate() || this.fromDate()

@@ -77,7 +77,7 @@ export class TransactionsComponent {
       "allbyheadId": 1,
       "search": null,
       "coaMap": [],
-      "accountGroup": [accountGroup || 'Income', 'Expenses']
+      "accountGroup": accountGroup ? [accountGroup] : ['Income', 'Expenses']
     }).subscribe(data => {
       const accountGroupId = data.find((a: any) => a.accountGroup === accountGroup)?.id;
       const headIdReq = {
@@ -85,7 +85,7 @@ export class TransactionsComponent {
         "allbyheadId": accountGroupId || 1,
         "search": null,
         "coaMap": [],
-        "accountGroup": [accountGroup || 'Income', 'Expenses']
+        "accountGroup": accountGroup ? [accountGroup] : ['Income', 'Expenses']
       }
       this.accountListService.getAccountList(headIdReq).subscribe(data => this.chartOfAccountIdOption.set(data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() }))));
     });

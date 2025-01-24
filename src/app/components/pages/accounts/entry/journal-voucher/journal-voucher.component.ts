@@ -434,10 +434,12 @@ export class JournalVoucherComponent {
   }
 
   onSubmit(e: Event) {
+    // NOTE: This method applies only when totalCreditAmount !== totalDebitAmount
     if (this.totalCreditAmount !== this.totalDebitAmount) {
       alert('Debit and Credit Amount Must be Equal!');
       return;
     }
+    // TODO: This method
     this.isSubmitted = true;
     // console.log(this.form.value);
     if (this.form.valid && this.dataArray.length > 0) {
@@ -451,8 +453,6 @@ export class JournalVoucherComponent {
         this.voucherService.updateVoucher(this.selectedVoucher.id, editData)
           .subscribe({
             next: (response) => {
-              console.log("edit data: ", editData);
-              console.log("update data: ", response);
               if (response !== null && response !== undefined) {
                 this.success.set("Voucher successfully updated!");
                 const rest = this.filteredVoucherList().filter(d => d.id !== response.id);

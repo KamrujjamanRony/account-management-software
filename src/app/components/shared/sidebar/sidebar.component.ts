@@ -15,33 +15,34 @@ export class SidebarComponent {
 
 
   sidebarData = signal<any[]>([
-    // {
-    //   id: 1, label: 'Registration', icon: 'users', route: '/registration'
-    // },
     {
-      id: 2, label: 'Setup', icon: 'settings', menu: [
+      id: 1, label: 'Setup', icon: 'settings', menu: [
         {
-          id: 21, label: 'Bank Entry', route: '/setup/bank-entry'
+          id: 11, label: 'Bank Setup', route: '/setup/bank'
         },
         {
-          id: 22, label: 'Vendor Entry', route: '/setup/vendor-entry'
+          id: 12, label: 'Vendor Setup', route: '/setup/vendor'
         },
         {
-          id: 23, label: 'Chart Of Account', route: '/setup/account-list-entry'
+          id: 13, label: 'Chart Of Account', route: '/setup/account-chart'
+        }
+      ]
+    },
+    {
+      id: 2, label: 'Entry', icon: 'reports', menu: [
+        {
+          id: 21, label: 'Payment Voucher', route: '/entry/payment-voucher'
         },
         {
-          id: 24, label: 'Payment Voucher', route: '/setup/payment-voucher'
+          id: 22, label: 'Receive Voucher', route: '/entry/receive-voucher'
         },
         {
-          id: 25, label: 'Receive Voucher', route: '/setup/receive-voucher'
-        },
-        {
-          id: 26, label: 'Journal/Contra Voucher', route: '/setup/journal-voucher'
+          id: 23, label: 'Journal/Contra Voucher', route: '/entry/journal-voucher'
         },
       ]
     },
     {
-      id: 3, label: 'Reports', icon: 'reports', menu: [
+      id: 3, label: 'Reports', icon: 'income-entry', menu: [
         // {
         //   id: 31, label: 'Receipt Payment', route: '/reports/receipt-payment'
         // },
