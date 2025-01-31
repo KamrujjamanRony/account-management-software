@@ -16,7 +16,14 @@ import 'jspdf-autotable';
 export class TrialBalanceComponent {
   private accountingReportsService = inject(AccountingReportsService);
   private dataFetchService = inject(DataFetchService);
-  filteredReports = signal<any[]>([]);
+  filteredReports = signal<any>({
+    "currentAsset": [],
+    "nonCurrentAsset": [],
+    "currentLiability": [],
+    "nonCurrentLiability": [],
+    "income": [],
+    "expense": []
+  });
   fromDate = signal<any>(null);
   toDate = signal<any>(null);
   totalDebit = signal<any>(0);
@@ -43,10 +50,25 @@ export class TrialBalanceComponent {
 
     data$.subscribe(data => {
       this.filteredReports.set(data);
-      this.totalDebit.set(data.reduce((acc, curr: any) => acc + curr?.debitAmount, 0));
-      this.totalCredit.set(data.reduce((acc, curr: any) => acc + curr?.creditAmount, 0));
-      // console.log(data)
+      const totalCurrentAssetDebit = (data as any).currentAsset?.reduce((acc: number, curr: any) => acc + curr?.debitAmount, 0) || 0;
+      const totalNonCurrentAssetDebit = (data as any).nonCurrentAsset?.reduce((acc: number, curr: any) => acc + curr?.debitAmount, 0) || 0;
+      const totalCurrentLiabilityDebit = (data as any).currentLiability?.reduce((acc: number, curr: any) => acc + curr?.debitAmount, 0) || 0;
+      const totalNonCurrentLiabilityDebit = (data as any).nonCurrentLiability?.reduce((acc: number, curr: any) => acc + curr?.debitAmount, 0) || 0;
+      const totalIncomeDebit = (data as any).income?.reduce((acc: number, curr: any) => acc + curr?.debitAmount, 0) || 0;
+      const totalExpenseDebit = (data as any).expense?.reduce((acc: number, curr: any) => acc + curr?.debitAmount, 0) || 0;
+
+      const totalCurrentAssetCredit = (data as any).currentAsset?.reduce((acc: number, curr: any) => acc + curr?.creditAmount, 0) || 0;
+      const totalNonCurrentAssetCredit = (data as any).nonCurrentAsset?.reduce((acc: number, curr: any) => acc + curr?.creditAmount, 0) || 0;
+      const totalCurrentLiabilityCredit = (data as any).currentLiability?.reduce((acc: number, curr: any) => acc + curr?.creditAmount, 0) || 0;
+      const totalNonCurrentLiabilityCredit = (data as any).nonCurrentLiability?.reduce((acc: number, curr: any) => acc + curr?.creditAmount, 0) || 0;
+      const totalIncomeCredit = (data as any).income?.reduce((acc: number, curr: any) => acc + curr?.creditAmount, 0) || 0;
+      const totalExpenseCredit = (data as any).expense?.reduce((acc: number, curr: any) => acc + curr?.creditAmount, 0) || 0;
+
+      this.totalDebit.set(totalCurrentAssetDebit + totalNonCurrentAssetDebit + totalCurrentLiabilityDebit + totalNonCurrentLiabilityDebit + totalIncomeDebit + totalExpenseDebit);
+      this.totalCredit.set(totalCurrentAssetCredit + totalNonCurrentAssetCredit + totalCurrentLiabilityCredit + totalNonCurrentLiabilityCredit + totalIncomeCredit + totalExpenseCredit);
     });
+
+
 
     this.isLoading$ = isLoading$;
     this.hasError$ = hasError$;

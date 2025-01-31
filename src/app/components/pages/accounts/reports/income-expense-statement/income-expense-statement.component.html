@@ -1,0 +1,292 @@
+<section>
+  <div class="flex justify-end gap-1 container mx-auto py-2">
+    <select
+      id="transactionType"
+      [(ngModel)]="transactionType"
+      class="border border-gray-500 text-gray-600 rounded-md px-5 py-2"
+    >
+      @for (item of transactionTypeOptions(); track $index) {
+      <option [value]="item">
+        {{ item }}
+      </option>
+      }
+    </select>
+    <input
+      type="date"
+      id="fromDate"
+      [(ngModel)]="fromDate"
+      (change)="onLoadReport()"
+      class="border border-gray-500 text-gray-600 rounded-md px-5 py-2"
+    />
+    <input
+      type="date"
+      id="toDate"
+      [(ngModel)]="toDate"
+      (change)="onLoadReport()"
+      class="border border-gray-500 text-gray-600 rounded-md px-5 py-2"
+    />
+    <button
+      class="relative inline-flex items-center justify-center p-0.5 me-2 overflow-hidden text-sm font-medium text-teal-600 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
+      (click)="generatePDF()"
+    >
+      <span
+        class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0"
+      >
+        Print
+      </span>
+    </button>
+  </div>
+
+  @if (transactionType() === "Income") {
+  <div class="w-full border mb-10 px-3 max-h-[98vh] overflow-scroll">
+    <h1
+      class="text-xl md:text-3xl font-bold text-teal-500 underline text-center"
+    >
+      Income Statement
+    </h1>
+
+    @if (isLoading$ | async) {
+    <p class="text-3xl font-bold text-center p-10 text-teal-600">Loading ...</p>
+    } @else if (hasError$ | async) {
+    <p class="text-3xl font-bold text-center p-10 text-red-600">
+      There was an error loading data.
+    </p>
+    } @else if (incomeReports()?.length === 0) {
+    <p class="text-3xl font-bold text-center p-10 text-orange-600">
+      Data is Empty.
+    </p>
+    } @else {
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
+      <table
+        class="w-full text-sm text-left rtl:text-right text-gray-800 dark:text-gray-400 mt-2"
+      >
+        <thead
+          class="text-sm text-gray-100 uppercase bg-teal-800 dark:bg-gray-700 dark:text-gray-400"
+        >
+          <tr>
+            <th scope="col" class="p-1">Head</th>
+            <th scope="col" class="p-1">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of incomeReports(); track $index) {
+          <tr
+            id="row-{{ $index }}"
+            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+          >
+            <td class="p-1 capitalize">
+              {{ item?.subHead }}
+            </td>
+            <td class="p-1">
+              {{ item?.creditAmount }}
+            </td>
+          </tr>
+          }
+          <tr
+            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+          >
+            <td class="p-1 capitalize">Total:</td>
+            <td class="p-1">
+              {{ totalCredit().toFixed(2) }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    }
+  </div>
+  } @else if (transactionType() === "Expense") {
+  <div class="w-full border mb-10 px-3 max-h-[98vh] overflow-scroll">
+    <h1
+      class="text-xl md:text-3xl font-bold text-teal-500 underline text-center"
+    >
+      Expense Statement
+    </h1>
+
+    @if (isLoading$ | async) {
+    <p class="text-3xl font-bold text-center p-10 text-teal-600">Loading ...</p>
+    } @else if (hasError$ | async) {
+    <p class="text-3xl font-bold text-center p-10 text-red-600">
+      There was an error loading data.
+    </p>
+    } @else if (expenseReports()?.length === 0) {
+    <p class="text-3xl font-bold text-center p-10 text-orange-600">
+      Data is Empty.
+    </p>
+    } @else {
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
+      <table
+        class="w-full text-sm text-left rtl:text-right text-gray-800 dark:text-gray-400 mt-2"
+      >
+        <thead
+          class="text-sm text-gray-100 uppercase bg-teal-800 dark:bg-gray-700 dark:text-gray-400"
+        >
+          <tr>
+            <th scope="col" class="p-1">Head</th>
+            <th scope="col" class="p-1">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of expenseReports(); track $index) {
+          <tr
+            id="row-{{ $index }}"
+            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+          >
+            <td class="p-1 capitalize">
+              {{ item?.subHead }}
+            </td>
+            <td class="p-1">
+              {{ item?.debitAmount }}
+            </td>
+          </tr>
+          }
+          <tr
+            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+          >
+            <td class="p-1 capitalize">Total:</td>
+            <td class="p-1">
+              {{ totalDebit().toFixed(2) }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    }
+  </div>
+  } @else if (transactionType() === "All") {
+  <div class="flex justify-center gap-2">
+    <div class="w-full border mb-10 px-3 max-h-[98vh] overflow-scroll">
+      <h1
+        class="text-xl md:text-3xl font-bold text-teal-500 underline text-center"
+      >
+        Income Statement
+      </h1>
+
+      @if (isLoading$ | async) {
+      <p class="text-3xl font-bold text-center p-10 text-teal-600">
+        Loading ...
+      </p>
+      } @else if (hasError$ | async) {
+      <p class="text-3xl font-bold text-center p-10 text-red-600">
+        There was an error loading data.
+      </p>
+      } @else if (incomeReports()?.length === 0) {
+      <p class="text-3xl font-bold text-center p-10 text-orange-600">
+        Data is Empty.
+      </p>
+      } @else {
+      <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
+        <table
+          class="w-full text-sm text-left rtl:text-right text-gray-800 dark:text-gray-400 mt-2"
+        >
+          <thead
+            class="text-sm text-gray-100 uppercase bg-teal-800 dark:bg-gray-700 dark:text-gray-400"
+          >
+            <tr>
+              <th scope="col" class="p-1">Head</th>
+              <th scope="col" class="p-1">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of incomeReports(); track $index) {
+            <tr
+              id="row-{{ $index }}"
+              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+            >
+              <td class="p-1 capitalize">
+                {{ item?.subHead }}
+              </td>
+              <td class="p-1">
+                {{ item?.creditAmount }}
+              </td>
+            </tr>
+            }
+            <tr
+              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+            >
+              <td class="p-1 capitalize">Total:</td>
+              <td class="p-1">
+                {{ totalCredit().toFixed(2) }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      }
+    </div>
+
+    <div class="w-full border mb-10 px-3 max-h-[98vh] overflow-scroll">
+      <h1
+        class="text-xl md:text-3xl font-bold text-teal-500 underline text-center"
+      >
+        Expense Statement
+      </h1>
+
+      @if (isLoading$ | async) {
+      <p class="text-3xl font-bold text-center p-10 text-teal-600">
+        Loading ...
+      </p>
+      } @else if (hasError$ | async) {
+      <p class="text-3xl font-bold text-center p-10 text-red-600">
+        There was an error loading data.
+      </p>
+      } @else if (expenseReports()?.length === 0) {
+      <p class="text-3xl font-bold text-center p-10 text-orange-600">
+        Data is Empty.
+      </p>
+      } @else {
+      <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
+        <table
+          class="w-full text-sm text-left rtl:text-right text-gray-800 dark:text-gray-400 mt-2"
+        >
+          <thead
+            class="text-sm text-gray-100 uppercase bg-teal-800 dark:bg-gray-700 dark:text-gray-400"
+          >
+            <tr>
+              <th scope="col" class="p-1">Head</th>
+              <th scope="col" class="p-1">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of expenseReports(); track $index) {
+            <tr
+              id="row-{{ $index }}"
+              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+            >
+              <td class="p-1 capitalize">
+                {{ item?.subHead }}
+              </td>
+              <td class="p-1">
+                {{ item?.debitAmount }}
+              </td>
+            </tr>
+            }
+            <tr
+              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+            >
+              <td class="p-1 capitalize">Total:</td>
+              <td class="p-1">
+                {{ totalDebit().toFixed(2) }}
+              </td>
+            </tr>
+            <!-- <tr
+                    class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+                  >
+                    <td class="p-1 capitalize">Total:</td>
+                    <td class="p-1 capitalize"></td>
+                    <td class="p-1">
+                      {{ totalDebit().toFixed(2) }}
+                    </td>
+                    <td class="p-1">
+                      {{ totalCredit().toFixed(2) }}
+                    </td>
+                    <td class="p-1"></td>
+                  </tr> -->
+          </tbody>
+        </table>
+      </div>
+      }
+    </div>
+  </div>
+  }
+</section>

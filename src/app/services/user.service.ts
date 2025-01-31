@@ -19,7 +19,7 @@ export class UserService {
     );
   }
 
-  addUser(model: any | FormData): Observable<void> {
+  addUser(model: any): Observable<void> {
     return this.apiCall<void>('', 'post', model);
   }
 
@@ -27,7 +27,7 @@ export class UserService {
     return this.apiCall<any>(`/SearchUser?Search=${query}`, 'post');
   }
 
-  updateUser(id: string | number, updateUserRequest: any | FormData): Observable<any> {
+  updateUser(id: string | number, updateUserRequest: any): Observable<any> {
     return this.apiCall<any>(`/EditUser/${id}`, 'put', updateUserRequest);
   }
 

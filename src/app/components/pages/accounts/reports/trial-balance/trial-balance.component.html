@@ -35,7 +35,12 @@
   <p class="text-3xl font-bold text-center p-10 text-red-600">
     There was an error loading data.
   </p>
-  } @else if (filteredReports().length === 0) {
+  } @else if (filteredReports().currentAsset.length === 0 &&
+  filteredReports().nonCurrentAsset.length === 0 &&
+  filteredReports().currentLiability.length === 0 &&
+  filteredReports().nonCurrentLiability.length === 0 &&
+  filteredReports().income.length === 0 && filteredReports().expense.length ===
+  0) {
   <p class="text-3xl font-bold text-center p-10 text-orange-600">
     Data is Empty.
   </p>
@@ -56,7 +61,112 @@
         </tr>
       </thead>
       <tbody>
-        @for (item of filteredReports(); track $index) {
+        @for (item of filteredReports()?.currentAsset; track $index) {
+        <tr
+          id="row-{{ $index }}"
+          class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+        >
+          <td class="p-1 capitalize">
+            {{ item?.subHead }}
+          </td>
+          <td class="p-1 capitalize">
+            {{ item?.subSubHead }}
+          </td>
+          <td class="p-1">
+            {{ item?.debitAmount }}
+          </td>
+          <td class="p-1">
+            {{ item?.creditAmount }}
+          </td>
+          <td class="p-1">
+            {{ item?.balance }}
+          </td>
+        </tr>
+        } @for (item of filteredReports()?.nonCurrentAsset; track $index) {
+        <tr
+          id="row-{{ $index }}"
+          class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+        >
+          <td class="p-1 capitalize">
+            {{ item?.subHead }}
+          </td>
+          <td class="p-1 capitalize">
+            {{ item?.subSubHead }}
+          </td>
+          <td class="p-1">
+            {{ item?.debitAmount }}
+          </td>
+          <td class="p-1">
+            {{ item?.creditAmount }}
+          </td>
+          <td class="p-1">
+            {{ item?.balance }}
+          </td>
+        </tr>
+        } @for (item of filteredReports()?.currentLiability; track $index) {
+        <tr
+          id="row-{{ $index }}"
+          class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+        >
+          <td class="p-1 capitalize">
+            {{ item?.subHead }}
+          </td>
+          <td class="p-1 capitalize">
+            {{ item?.subSubHead }}
+          </td>
+          <td class="p-1">
+            {{ item?.debitAmount }}
+          </td>
+          <td class="p-1">
+            {{ item?.creditAmount }}
+          </td>
+          <td class="p-1">
+            {{ item?.balance }}
+          </td>
+        </tr>
+        } @for (item of filteredReports()?.nonCurrentLiability; track $index) {
+        <tr
+          id="row-{{ $index }}"
+          class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+        >
+          <td class="p-1 capitalize">
+            {{ item?.subHead }}
+          </td>
+          <td class="p-1 capitalize">
+            {{ item?.subSubHead }}
+          </td>
+          <td class="p-1">
+            {{ item?.debitAmount }}
+          </td>
+          <td class="p-1">
+            {{ item?.creditAmount }}
+          </td>
+          <td class="p-1">
+            {{ item?.balance }}
+          </td>
+        </tr>
+        } @for (item of filteredReports()?.income; track $index) {
+        <tr
+          id="row-{{ $index }}"
+          class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+        >
+          <td class="p-1 capitalize">
+            {{ item?.subHead }}
+          </td>
+          <td class="p-1 capitalize">
+            {{ item?.subSubHead }}
+          </td>
+          <td class="p-1">
+            {{ item?.debitAmount }}
+          </td>
+          <td class="p-1">
+            {{ item?.creditAmount }}
+          </td>
+          <td class="p-1">
+            {{ item?.balance }}
+          </td>
+        </tr>
+        } @for (item of filteredReports()?.expense; track $index) {
         <tr
           id="row-{{ $index }}"
           class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"

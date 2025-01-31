@@ -19,7 +19,7 @@ export class AccountListService {
     );
   }
 
-  addAccountList(model: any | FormData): Observable<void> {
+  addAccountList(model: any): Observable<void> {
     return this.apiCall<void>('', 'post', model);
   }
 
@@ -31,7 +31,7 @@ export class AccountListService {
     return this.apiCall<any>('/GenerateTreeData', 'get');
   }
 
-  updateAccountList(id: string | number, updateRequest: any | FormData): Observable<any> {
+  updateAccountList(id: string | number, updateRequest: any): Observable<any> {
     return this.apiCall<any>(`/EditChartofAccount/${id}`, 'put', updateRequest);
   }
 

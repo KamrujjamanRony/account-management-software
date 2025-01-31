@@ -19,19 +19,23 @@ export class AccountingReportsService {
     );
   }
 
-  receiptPaymentApi(model: any | FormData): Observable<any> {
+  receiptPaymentApi(model: any): Observable<any> {
     return this.apiCall<any>('ReceiptPayment', 'post', model);
   }
 
-  trialBalanceApi(model: any | FormData): Observable<any> {
-    return this.apiCall<any>('TrialBalance', 'post', model);
+  trialBalanceApi(model: any): Observable<any> {
+    return this.apiCall<any>('TrialBalanceOne', 'post', model); //ToDo: TrialBalance should be implemented properly in the future
   }
 
-  generalLedgerApi(model: any | FormData): Observable<any> {
+  generalLedgerApi(model: any): Observable<any> {
     return this.apiCall<any>('GeneralLedger', 'post', model);
   }
 
-  generalCashBookApi(model: any | FormData): Observable<any> {
+  generalCashBookApi(model: any): Observable<any> {
     return this.apiCall<any>('GeneralCashBook', 'post', model);
+  }
+
+  getCurrentBalanceApi(model: any): Observable<any> {
+    return this.apiCall<any>('GetCurrentBalace', 'post', model);
   }
 }

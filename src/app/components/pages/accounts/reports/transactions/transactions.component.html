@@ -82,7 +82,6 @@
               transactionType() == "Payment" ? "debitAmount" : "creditAmount"
             }}
           </th>
-          <th scope="col" class="p-1">particular</th>
           <th scope="col" class="p-1">remarks</th>
         </tr>
       </thead>
@@ -107,9 +106,6 @@
                 ? item?.debitAmount
                 : item?.creditAmount
             }}
-          </td>
-          <td class="p-1">
-            {{ item?.particular }}
           </td>
           <td class="p-1">
             {{ item?.remarks }}

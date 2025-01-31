@@ -19,7 +19,7 @@ export class VendorService {
     );
   }
 
-  addVendor(model: any | FormData): Observable<void> {
+  addVendor(model: any): Observable<void> {
     return this.apiCall<void>('', 'post', model);
   }
 
@@ -27,7 +27,7 @@ export class VendorService {
     return this.apiCall<any>(`/SearchVendor?Search=${query}`, 'post');
   }
 
-  updateVendor(id: string | number, updateVendorRequest: any | FormData): Observable<any> {
+  updateVendor(id: string | number, updateVendorRequest: any): Observable<any> {
     return this.apiCall<any>(`/EditVendor/${id}`, 'put', updateVendorRequest);
   }
 

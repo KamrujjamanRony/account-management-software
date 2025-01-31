@@ -58,6 +58,9 @@ export class SidebarComponent {
         {
           id: 35, label: 'Transactions', route: 'reports/transactions'
         },
+        {
+          id: 35, label: 'Income & Expense', route: 'reports/income-expense-statement'
+        },
       ]
     },
     // {

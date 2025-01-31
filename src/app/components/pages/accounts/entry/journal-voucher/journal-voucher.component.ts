@@ -11,6 +11,7 @@ import { DataFetchService } from '../../../../../services/useDataFetch';
 import { Observable } from 'rxjs';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import { AccountingReportsService } from '../../../../../services/accounting-reports.service';
 
 @Component({
   selector: 'app-journal-voucher',
@@ -23,6 +24,7 @@ export class JournalVoucherComponent {
   private accountListService = inject(AccountListService);
   private vendorService = inject(VendorService);
   private voucherService = inject(VoucherService);
+  private accountingReportsService = inject(AccountingReportsService);
   dataFetchService = inject(DataFetchService);
   filteredVoucherList = signal<any[]>([]);
   highlightedTr: number = -1;
@@ -172,15 +174,8 @@ export class JournalVoucherComponent {
       "coaMap": [],
       "accountGroup": ["Current Asset", "NonCurrent/Fixed Asset", "Current Liability", "NonCurrent Liability", "Equity"]
     }).subscribe(data => this.headIdOption.set(data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() }))));
-    const accountListReq = {
-      "headId": null,
-      "allbyheadId": 1,
-      "search": null,
-      "coaMap": ["Cash", "Bank"],
-      "accountGroup": []
-    }
-    this.accountListService.getAccountList(accountListReq).subscribe(data => this.accountBankCashIdOption.set(data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() }))));
     this.vendorService.getVendor('').subscribe(data => this.vendorIdOption.set(data.map((c: any) => ({ id: c.id, text: c.name.toLowerCase() }))));
+    this.accountingReportsService.getCurrentBalanceApi({}).subscribe(data => this.accountBankCashIdOption.set(data.map((c: any) => ({ id: c.headId, text: c.subHead }))));
   }
 
   onTransactionTypeChange() {

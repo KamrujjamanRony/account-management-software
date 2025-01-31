@@ -22,7 +22,7 @@ export class GeneralLedgerComponent {
   filteredReports = signal<any[]>([]);
   accountBankCashIdOption = signal<any[]>([]);
   selectedBankCash = signal<any>(null);
-  selectedId = signal<any>(39);   // TODO: Cash in hand is set statically
+  selectedId = signal<any>(null);
   fromDate = signal<any>(null);
   toDate = signal<any>(null);
   totalDebit = signal<any>(0);
@@ -46,17 +46,11 @@ export class GeneralLedgerComponent {
   // }
 
   onLoadFilter() {
-
-    const accountListReq = {
-      "headId": null,
-      "allbyheadId": 1,
-      "search": null,
-      "coaMap": ["Cash", "Bank"],
-      "accountGroup": []
-    }
-    this.accountListService.getAccountList(accountListReq).subscribe(data => {
-      this.accountBankCashIdOption.set(data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase(), coaMap: c?.coaMap })));
-
+    this.accountingReportsService.getCurrentBalanceApi({}).subscribe(data => {
+      this.accountBankCashIdOption.set(data.map((c: any) => ({ id: c.headId, text: c.subHead })));
+      if (this.accountBankCashIdOption()?.length > 0) {
+        this.selectedId.set(this.accountBankCashIdOption()[0]?.id);
+      }
       this.onLoadReport();
     });
   }

@@ -19,7 +19,7 @@ export class VoucherService {
     );
   }
 
-  addVoucher(model: any | FormData): Observable<void> {
+  addVoucher(model: any): Observable<void> {
     console.log(model); // Optional: Debugging log
     return this.apiCall<void>('', 'post', model);
   }
@@ -32,7 +32,7 @@ export class VoucherService {
     return this.apiCall<any>('/SearchVoucherwithDetail', 'post', query);
   }
 
-  updateVoucher(id: string | number, updateVoucherRequest: any | FormData): Observable<any> {
+  updateVoucher(id: string | number, updateVoucherRequest: any): Observable<any> {
     return this.apiCall<any>(`/EditVoucher/${id}`, 'put', updateVoucherRequest);
   }
 

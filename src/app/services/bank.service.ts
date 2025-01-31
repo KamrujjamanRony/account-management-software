@@ -19,7 +19,7 @@ export class BankService {
     );
   }
 
-  addBank(model: any | FormData): Observable<void> {
+  addBank(model: any): Observable<void> {
     return this.apiCall<void>('', 'post', model);
   }
 
@@ -27,7 +27,7 @@ export class BankService {
     return this.apiCall<any>(`/SearchBank?Search=${query}`, 'post');
   }
 
-  updateBank(id: string | number, updateBankRequest: any | FormData): Observable<any> {
+  updateBank(id: string | number, updateBankRequest: any): Observable<any> {
     return this.apiCall<any>(`/EditBank/${id}`, 'put', updateBankRequest);
   }
 
