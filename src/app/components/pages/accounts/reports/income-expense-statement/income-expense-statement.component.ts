@@ -100,72 +100,138 @@ export class IncomeExpenseStatementComponent {
     // Prepare Table Data
     const incomeDataRows = this.incomeReports().map((data: any) => [
       data?.subHead,
-      data?.debitAmount || 0,
       data?.creditAmount || 0,
     ]);
     const expenseDataRows = this.expenseReports().map((data: any) => [
       data?.subHead,
       data?.debitAmount || 0,
-      data?.creditAmount || 0,
     ]);
 
+    if (this.transactionType() === "All" || this.transactionType() === "Income") {
+      if (this.transactionType() === "All") {
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(12);
+        doc.text(
+          `Income`,
+          105,
+          marginTop += 4,
+          { align: 'center' }
+        );
+      }
 
-    const bodyData = this.transactionType() === 'All' ? [...incomeDataRows, ...expenseDataRows] : this.transactionType() === 'Income' ? incomeDataRows : expenseDataRows;
-
-    // Render Table
-    (doc as any).autoTable({
-      head: [['Head', 'DebitAmount', "CreditAmount"]],
-      body: bodyData,
-      foot: [
-        [
-          'Total:',
-          (this.transactionType() === 'Income') ? 0 : this.totalDebit().toFixed(0),
-          (this.transactionType() === 'Expense') ? 0 : this.totalCredit().toFixed(0)
+      // Render Income Table
+      (doc as any).autoTable({
+        head: [['Head', "Amount"]],
+        body: incomeDataRows,
+        foot: [
+          [
+            'Total:',
+            this.totalCredit().toFixed(0)
+          ],
         ],
-      ],
-      theme: 'grid',
-      startY: marginTop + 5,
-      styles: {
-        textColor: 0,
-        cellPadding: 2,
-        lineColor: 0,
-        fontSize: 8,
-        valign: 'middle',
-        halign: 'center',
-      },
-      headStyles: {
-        fillColor: [102, 255, 102],
-        textColor: 0,
-        lineWidth: 0.2,
-        lineColor: 0,
-        fontStyle: 'bold',
-      },
-      footStyles: {
-        fillColor: [102, 255, 255],
-        textColor: 0,
-        lineWidth: 0.2,
-        lineColor: 0,
-        fontStyle: 'bold',
-      },
-      margin: { top: marginTop, left: marginLeft, right: marginRight },
-      didDrawPage: (data: any) => {
-        // Add Footer with Margin Bottom
-        doc.setFontSize(8);
-        doc.text(``, pageSizeWidth - marginRight - 10, pageSizeHeight - marginBottom, {
-          align: 'right',
-        });
-      },
-    });
+        theme: 'grid',
+        startY: marginTop + 2,
+        styles: {
+          textColor: 0,
+          cellPadding: 2,
+          lineColor: 0,
+          fontSize: 8,
+          valign: 'middle',
+          halign: 'center',
+        },
+        headStyles: {
+          fillColor: [102, 255, 102],
+          textColor: 0,
+          lineWidth: 0.2,
+          lineColor: 0,
+          fontStyle: 'bold',
+        },
+        footStyles: {
+          fillColor: [102, 255, 255],
+          textColor: 0,
+          lineWidth: 0.2,
+          lineColor: 0,
+          fontStyle: 'bold',
+        },
+        margin: { top: marginTop, left: marginLeft, right: marginRight },
+        didDrawPage: (data: any) => {
+          // Add Footer with Margin Bottom
+          doc.setFontSize(8);
+          doc.text(``, pageSizeWidth - marginRight - 10, pageSizeHeight - marginBottom, {
+            align: 'right',
+          });
+        },
+      });
+    }
 
-    if (this.transactionType() === "All") {
-      const finalY = (doc as any).lastAutoTable.finalY + 5;
-      doc.setFontSize(10);
-      doc.text(
-        `Total Balance (${this.totalCredit()} - ${this.totalDebit()}) = ${this.totalCredit() - this.totalDebit()} Tk`,
-        105,
-        finalY,
-        { align: 'center' }
-      );
+    if (this.transactionType() === "All" || this.transactionType() === "Expense") {
+      marginTop = (this.transactionType() === "Expense" ? marginTop - 7 : (doc as any).lastAutoTable.finalY) + 5;
+      if (this.transactionType() === "All") {
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(12);
+        doc.text(
+          `Expense`,
+          105,
+          marginTop,
+          { align: 'center' }
+        );
+      }
+      // Render Expense Table
+      (doc as any).autoTable({
+        head: [['Head', 'Amount']],
+        body: expenseDataRows,
+        foot: [
+          [
+            'Total:',
+            this.totalDebit().toFixed(0)
+          ],
+        ],
+        theme: 'grid',
+        startY: marginTop + 2,
+        styles: {
+          textColor: 0,
+          cellPadding: 2,
+          lineColor: 0,
+          fontSize: 8,
+          valign: 'middle',
+          halign: 'center',
+        },
+        headStyles: {
+          fillColor: [102, 255, 102],
+          textColor: 0,
+          lineWidth: 0.2,
+          lineColor: 0,
+          fontStyle: 'bold',
+        },
+        footStyles: {
+          fillColor: [102, 255, 255],
+          textColor: 0,
+          lineWidth: 0.2,
+          lineColor: 0,
+          fontStyle: 'bold',
+        },
+        margin: { top: marginTop, left: marginLeft, right: marginRight },
+        didDrawPage: (data: any) => {
+          // Add Footer with Margin Bottom
+          doc.setFontSize(8);
+          doc.text(``, pageSizeWidth - marginRight - 10, pageSizeHeight - marginBottom, {
+            align: 'right',
+          });
+        },
+      });
+
+
+
+      if (this.transactionType() === "All") {
+        const finalY = (doc as any).lastAutoTable.finalY + 5;
+        doc.setFontSize(10);
+        doc.text(
+          `Total Balance (${this.totalCredit()} - ${this.totalDebit()}) = ${this.totalCredit() - this.totalDebit()} Tk`,
+          105,
+          finalY,
+          { align: 'center' }
+        );
+      }
     }
 
 

@@ -1,5 +1,5 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, ElementRef, inject, QueryList, signal, ViewChildren } from '@angular/core';
+import { Component, ElementRef, inject, signal, viewChildren } from '@angular/core';
 import { ToastSuccessComponent } from '../../../../shared/toast/toast-success/toast-success.component';
 import { FieldComponent } from '../../../../shared/field/field.component';
 import { FormControl, FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -48,7 +48,7 @@ export class ExpenseVoucherComponent {
 
   isLoading$: Observable<any> | undefined;
   hasError$: Observable<any> | undefined;
-  @ViewChildren('inputRef') inputRefs!: QueryList<ElementRef>;
+  readonly inputRefs = viewChildren<ElementRef>('inputRef');
   isSubmitted = false;
 
   // Initial Data Fetched ----------------------------------------------------------------
@@ -355,7 +355,7 @@ export class ExpenseVoucherComponent {
 
     // Focus the 'Name' input field after patching the value
     setTimeout(() => {
-      const inputs = this.inputRefs.toArray();
+      const inputs = this.inputRefs();
       inputs[0].nativeElement.focus();
     }, 0); // Delay to ensure the DOM is updated
   }
@@ -376,7 +376,7 @@ export class ExpenseVoucherComponent {
   }
 
   focusFirstInput() {
-    const inputs = this.inputRefs.toArray();
+    const inputs = this.inputRefs();
     if (inputs.length) {
       inputs[0].nativeElement.focus();
     }
@@ -404,7 +404,7 @@ export class ExpenseVoucherComponent {
   handleEnterKey(event: Event, currentIndex: number) {
     const keyboardEvent = event as KeyboardEvent;
     event.preventDefault();
-    const allInputs = this.inputRefs.toArray();
+    const allInputs = this.inputRefs();
     const inputs = allInputs.filter((i: any) => !i.nativeElement.disabled);
 
     if (currentIndex + 1 < inputs.length) {

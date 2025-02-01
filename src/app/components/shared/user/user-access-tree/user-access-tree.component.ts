@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -8,12 +8,12 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './user-access-tree.component.css'
 })
 export class UserAccessTreeComponent {
-  @Input() nodes: any[] = [];
+  readonly nodes = input<any[]>([]);
 
   constructor() { }
 
   ngOnInit(): void {
-    this.initializeCollapseState(this.nodes);
+    this.initializeCollapseState(this.nodes());
   }
 
   onCheck(node: any, event: Event) {

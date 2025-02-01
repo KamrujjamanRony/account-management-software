@@ -1,5 +1,5 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AccountingReportsService } from '../../../../../services/accounting-reports.service';
 import { DataFetchService } from '../../../../../services/useDataFetch';
@@ -31,7 +31,7 @@ export class GeneralLedgerComponent {
   isLoading$: Observable<any> | undefined;
   hasError$: Observable<any> | undefined;
   marginTop: any = 0;
-  @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
+  readonly searchInput = viewChild.required<ElementRef<HTMLInputElement>>('searchInput');
 
   private searchQuery$ = new BehaviorSubject<string>('');
 

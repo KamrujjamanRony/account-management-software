@@ -1,5 +1,5 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, ElementRef, inject, QueryList, signal, ViewChildren } from '@angular/core';
+import { Component, ElementRef, inject, signal, viewChildren } from '@angular/core';
 import { ToastSuccessComponent } from '../../../../shared/toast/toast-success/toast-success.component';
 import { FieldComponent } from '../../../../shared/field/field.component';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -60,7 +60,7 @@ export class JournalVoucherComponent {
 
   isLoading$: Observable<any> | undefined;
   hasError$: Observable<any> | undefined;
-  @ViewChildren('inputRef') inputRefs!: QueryList<ElementRef>;
+  readonly inputRefs = viewChildren<ElementRef>('inputRef');
   isSubmitted = false;
 
   // Initial Data Fetched ----------------------------------------------------------------
@@ -610,7 +610,7 @@ export class JournalVoucherComponent {
 
     // Focus the 'Name' input field after patching the value
     setTimeout(() => {
-      const inputs = this.inputRefs.toArray();
+      const inputs = this.inputRefs();
       inputs[0].nativeElement.focus();
     }, 0); // Delay to ensure the DOM is updated
   }
@@ -633,7 +633,7 @@ export class JournalVoucherComponent {
   }
 
   focusFirstInput() {
-    const inputs = this.inputRefs.toArray();
+    const inputs = this.inputRefs();
     if (inputs.length) {
       inputs[0].nativeElement.focus();
     }
@@ -676,7 +676,7 @@ export class JournalVoucherComponent {
   handleEnterKey(event: Event, currentIndex: number) {
     const keyboardEvent = event as KeyboardEvent;
     event.preventDefault();
-    const inputs = this.inputRefs.toArray();
+    const inputs = this.inputRefs();
     console.log(currentIndex);
     console.log(inputs[currentIndex])
 

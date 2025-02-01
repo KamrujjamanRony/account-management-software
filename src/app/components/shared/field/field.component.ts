@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'Field',
@@ -8,7 +8,7 @@ import { Component, Input } from '@angular/core';
   styleUrl: './field.component.css'
 })
 export class FieldComponent {
-  @Input() label: string = '';
-  @Input() isInvalid: boolean = false;
+  readonly label = input<string>('');
+  readonly isInvalid = input<boolean>(false);
 
 }

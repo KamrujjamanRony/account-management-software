@@ -10,7 +10,7 @@
           ? selected().text.length > 200
             ? selected().text.substring(0, 200) + "..."
             : selected().text
-          : placeholder
+          : placeholder()
       }}
     </span>
     <app-all-svg icon="down-arrow"></app-all-svg>
@@ -31,7 +31,7 @@
     </div>
 
     <li
-      *ngFor="let option of options"
+      *ngFor="let option of options()"
       class="p-2 text-sm hover:bg-teal-600 hover:text-white cursor-pointer"
       [ngClass]="{
         'bg-sky-600 text-white': option.id === selected()?.id,

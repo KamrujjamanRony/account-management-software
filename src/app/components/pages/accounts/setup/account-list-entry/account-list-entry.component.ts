@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, QueryList, signal, ViewChild, ViewChildren } from '@angular/core';
+import { Component, ElementRef, inject, signal, viewChildren, viewChild } from '@angular/core';
 import { FormControl, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BankService } from '../../../../../services/bank.service';
 import { DataFetchService } from '../../../../../services/useDataFetch';
@@ -42,8 +42,8 @@ export class AccountListEntryComponent {
   private searchQuery$ = new BehaviorSubject<string>('');
   isLoading$: Observable<any> | undefined;
   hasError$: Observable<any> | undefined;
-  @ViewChildren('inputRef') inputRefs!: QueryList<ElementRef>;
-  @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
+  readonly inputRefs = viewChildren<ElementRef>('inputRef');
+  readonly searchInput = viewChild.required<ElementRef<HTMLInputElement>>('searchInput');
   isSubmitted = false;
 
   form = this.fb.group({
@@ -65,7 +65,7 @@ export class AccountListEntryComponent {
 
     // Focus on the search input when the component is initialized
     setTimeout(() => {
-      const inputs = this.inputRefs.toArray();
+      const inputs = this.inputRefs();
       inputs[0].nativeElement.focus();
     }, 10); // Delay to ensure the DOM is updated
   }
@@ -122,7 +122,7 @@ export class AccountListEntryComponent {
   handleEnterKey(event: Event, currentIndex: number) {
     const keyboardEvent = event as KeyboardEvent;
     event.preventDefault();
-    const allInputs = this.inputRefs.toArray();
+    const allInputs = this.inputRefs();
     const inputs = allInputs.filter((i: any) => !i.nativeElement.disabled);
 
     if (currentIndex + 1 < inputs.length) {
@@ -139,7 +139,7 @@ export class AccountListEntryComponent {
 
     if (event.key === 'Tab') {
       event.preventDefault();
-      const inputs = this.inputRefs.toArray();
+      const inputs = this.inputRefs();
       inputs[0].nativeElement.focus();
     } else if (event.key === 'ArrowDown') {
       event.preventDefault(); // Prevent default scrolling behavior
@@ -233,7 +233,7 @@ export class AccountListEntryComponent {
 
     // Focus the 'Name' input field after patching the value
     setTimeout(() => {
-      const inputs = this.inputRefs.toArray();
+      const inputs = this.inputRefs();
       inputs[0].nativeElement.focus();
     }, 0); // Delay to ensure the DOM is updated
   }

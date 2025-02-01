@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output, signal, SimpleChanges } from '@angular/core';
+import { Component, Input, signal, SimpleChanges, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AllSvgComponent } from '../svg/all-svg/all-svg.component';
 
@@ -10,10 +10,10 @@ import { AllSvgComponent } from '../svg/all-svg/all-svg.component';
   styleUrl: './selector2.component.css'
 })
 export class Selector2Component {
-  @Input() placeholder: string = 'Select an option';
+  readonly placeholder = input<string>('Select an option');
   @Input() options: any[] = [];
-  @Input() selectedId: any = null; // Preselected ID from the parent
-  @Output() selectionChange = new EventEmitter<any>();
+  readonly selectedId = input<any>(null); // Preselected ID from the parent
+  readonly selectionChange = output<any>();
 
   inputValue: string = '';
   selected = signal<any>('');
@@ -27,12 +27,13 @@ export class Selector2Component {
       }
     }
 
-    if (this.selectedId === "" || this.selectedId === null || this.selectedId === undefined) {
+    const selectedId = this.selectedId();
+    if (selectedId === "" || selectedId === null || selectedId === undefined) {
       this.selected.set(null);
     }
 
-    if (changes['selectedId'] && this.selectedId !== null) {
-      this.setSelectedById(this.selectedId);
+    if (changes['selectedId'] && selectedId !== null) {
+      this.setSelectedById(selectedId);
     }
   }
 

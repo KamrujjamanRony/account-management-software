@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-toast-success',
@@ -8,6 +8,6 @@ import { Component, Input } from '@angular/core';
   styleUrl: './toast-success.component.css'
 })
 export class ToastSuccessComponent {
-  @Input() title = '';
+  readonly title = input('');
 
 }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 
 @Component({
   selector: 'ModalWrapper',
@@ -8,8 +8,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrl: './modal-wrapper.component.css'
 })
 export class ModalWrapperComponent {
-  @Input() title!: any;
-  @Output() closeModal = new EventEmitter<void>();
+  readonly title = input.required<any>();
+  readonly closeModal = output<void>();
 
   constructor(){}
 

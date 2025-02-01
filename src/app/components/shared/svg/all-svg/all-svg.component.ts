@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-all-svg',
@@ -8,6 +8,6 @@ import { Component, Input } from '@angular/core';
   styleUrl: './all-svg.component.css'
 })
 export class AllSvgComponent {
-  @Input() icon: any;
+  readonly icon = input<any>();
 
 }
