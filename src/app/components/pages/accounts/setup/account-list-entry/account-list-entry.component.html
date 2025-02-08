@@ -17,7 +17,7 @@
           type="text"
           maxlength="255"
           [formControl]="getControl('subHead')"
-          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
           [class.invalid]="
             (getControl('subHead').invalid && getControl('subHead').touched) ||
             isSubmitted
@@ -35,7 +35,7 @@
             [formControl]="getControl('controlHeadId')"
             placeholder=""
             (keydown.enter)="handleEnterKey($event, 2)"
-            class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+            class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
             [class.invalid]="
               (getControl('controlHeadId').invalid &&
                 getControl('controlHeadId').touched) ||
@@ -59,7 +59,7 @@
           type="text"
           maxlength="64"
           [formControl]="getControl('accountCode')"
-          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
           placeholder=""
           (keydown.enter)="handleEnterKey($event, 1)"
         />
@@ -73,7 +73,7 @@
           [formControl]="getControl('accountGroup')"
           placeholder=""
           (keydown.enter)="handleEnterKey($event, 2)"
-          class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+          class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
           [class.invalid]="
             (getControl('accountGroup').invalid &&
               getControl('accountGroup').touched) ||
@@ -94,7 +94,7 @@
           #inputRef
           type="text"
           [formControl]="getControl('remarks')"
-          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
           placeholder=""
           (keydown.enter)="handleEnterKey($event, 8)"
         />
@@ -110,7 +110,7 @@
           [formControl]="getControl('coaMap')"
           placeholder=""
           (keydown.enter)="handleEnterKey($event, 4)"
-          class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
         >
           <option value="" class="capitalize">Select Option</option>
           @for(option of coaMapOption(); track $index){
@@ -128,7 +128,7 @@
           [formControl]="getControl('bankId')"
           placeholder=""
           (keydown.enter)="handleEnterKey($event, 5)"
-          class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+          class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
         >
           <option value="0" class="capitalize">Select Option</option>
           @for(option of bankOption(); track $index){
@@ -145,7 +145,7 @@
           type="text"
           maxlength="255"
           [formControl]="getControl('accountNo')"
-          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
           placeholder=""
           (keydown.enter)="handleEnterKey($event, 6)"
         />
@@ -157,7 +157,7 @@
           type="number"
           maxlength="64"
           [formControl]="getControl('openingBalance')"
-          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
           placeholder=""
           (keydown.enter)="handleEnterKey($event, 7)"
         />
@@ -177,13 +177,13 @@
           #inputRef
           type="submit"
           [value]="selectedAccount() ? 'Update' : 'Save'"
-          class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-lg shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
+          class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 shadow-lg shadow-teal-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
           (keydown.enter)="handleEnterKey($event, 9)"
         />
 
         <button
           (click)="formReset($event)"
-          class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10"
+          class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-red-300 shadow-lg shadow-red-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10"
         >
           Clear
         </button>
@@ -202,7 +202,7 @@
       <div
         class="flex items-end justify-between gap-2 flex-col md:flex-row px-2"
       >
-        <div class="bg-white dark:bg-gray-900 w-full max-w-lg">
+        <div class="bg-white w-full max-w-lg">
           <label for="table-search" class="sr-only">Search</label>
           <div class="relative mt-1">
             <div
@@ -215,7 +215,7 @@
               type="text"
               id="table-search"
               autocomplete="off"
-              class="block ps-10 text-xs text-gray-900 border border-gray-300 rounded bg-gray-50 focus:ring-teal-500 focus:border-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-teal-500 dark:focus:border-teal-500 w-full"
+              class="block ps-10 text-xs text-gray-900 border border-gray-300 rounded bg-gray-50 focus:ring-teal-500 focus:border-teal-500 w-full"
               placeholder="Search"
               (input)="onSearchAccount($event)"
               (keydown)="handleSearchKeyDown($event)"
@@ -331,12 +331,8 @@
         Data is Empty.
       </p>
       } @else {
-      <table
-        class="w-full text-sm text-left rtl:text-right text-gray-800 dark:text-gray-400 mt-2"
-      >
-        <thead
-          class="text-sm text-gray-100 capitalize bg-teal-800 dark:bg-gray-700 dark:text-gray-400"
-        >
+      <table class="w-full text-sm text-left rtl:text-right text-gray-800 mt-2">
+        <thead class="text-sm text-gray-100 capitalize bg-teal-800">
           <tr>
             <th scope="col" class="p-1">controlHead</th>
             <!-- <th scope="col" class="p-1">accountCode</th> -->
@@ -356,7 +352,7 @@
           $index) {
           <tr
             id="row-{{ $index }}"
-            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+            class="bg-white border-b hover:bg-teal-600 hover:text-white cursor-pointer"
           >
             <td scope="row" class="p-1">
               {{ displayHead(item?.controlHeadId) }}

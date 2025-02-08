@@ -3,12 +3,12 @@
   class="peer fixed top-0 left-0 z-40 w-12 hover:w-72 h-screen overflow-hidden"
   aria-label="Sidebar"
 >
-  <div class="h-full px-3 py-4 overflow-y-auto bg-teal-300 dark:bg-gray-800 overflow-hidden">
+  <div class="h-full px-3 py-4 overflow-y-auto bg-teal-300 overflow-hidden">
     <ul class="space-y-2 font-medium">
       <li class="cursor-pointer">
         <a
           routerLink="/"
-          class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+          class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group"
         >
           <span class="ms-12 text-xl font-bold text-teal-700">SuperSoft</span>
         </a>
@@ -18,7 +18,7 @@
         <a
           [routerLink]="item?.route"
           type="button"
-          class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+          class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100"
           [attr.aria-controls]="item.label"
           [attr.data-dropdown-toggle]="item?.label"
           data-dropdown-trigger="hover"
@@ -39,7 +39,7 @@
           <li class="cursor-pointer">
             <a 
               [routerLink]="subItem?.route"
-              class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+              class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100"
               >{{ subItem.label }}</a
             >
           </li>
@@ -51,7 +51,7 @@
         <a
           [routerLink]="item?.route"
           type="button"
-          class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+          class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100"
         >
           <app-all-svg [icon]="item.icon"></app-all-svg>
           <span
@@ -72,7 +72,7 @@
   class="group fixed top-0 left-0 z-40 w-12 hover:w-72 h-screen overflow-hidden"
   aria-label="Sidebar"
 >
-  <div class="h-full pl-2 py-4 overflow-hidden bg-teal-300 dark:bg-gray-800">
+  <div class="h-full pl-2 py-4 overflow-hidden bg-teal-300">
     <ul
       class="space-y-2 font-medium"
       id="accordion-collapse"
@@ -81,7 +81,7 @@
       <li class="cursor-pointer">
         <a
           routerLink="/"
-          class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+          class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100"
         >
           <span class="ms-12 text-xl font-bold text-teal-700">SuperSoft</span>
         </a>
@@ -91,7 +91,7 @@
         <a
           [routerLink]="item?.route"
           type="button"
-          class="flex items-center w-full py-2 px-3 -ml-1 text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+          class="flex items-center w-full py-2 px-3 -ml-1 text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100"
           [attr.aria-controls]="item.label"
           [attr.data-accordion-target]="'#' + item?.label"
           aria-expanded="false"
@@ -113,7 +113,7 @@
           <li class="cursor-pointer">
             <a
               [routerLink]="subItem?.route"
-              class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-10 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+              class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-10 hover:bg-gray-100"
               >{{ subItem.label }}</a
             >
           </li>
@@ -125,7 +125,7 @@
         <a
           [routerLink]="item?.route"
           type="button"
-          class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+          class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100"
         >
           <app-all-svg [icon]="item.icon"></app-all-svg>
           <span

@@ -13,16 +13,17 @@ import { GeneralCashBookComponent } from './components/pages/accounts/reports/ge
 import { TransactionsComponent } from './components/pages/accounts/reports/transactions/transactions.component';
 import { UsersComponent } from './components/pages/users/users.component';
 import { IncomeExpenseStatementComponent } from './components/pages/accounts/reports/income-expense-statement/income-expense-statement.component';
+import { DashboardComponent } from './components/pages/accounts/dashboard/dashboard.component';
 
 export const routes: Routes = [
   {
     path: '',
     component: MainComponent,
     children: [
-      { path: '', redirectTo: 'home', pathMatch: 'full' },
+      { path: '', redirectTo: '', pathMatch: 'full' },
       {
         path: '',
-        component: BankEntryComponent
+        component: DashboardComponent
       },
       {
         path: 'setup/bank',

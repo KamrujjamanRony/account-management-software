@@ -35,21 +35,21 @@
       class="border border-gray-500 text-gray-600 rounded-md px-5 py-2"
     />
     <button
-      class="relative inline-flex items-center justify-center p-0.5 me-2 overflow-hidden text-sm text-rose-600 font-medium rounded-lg group bg-gradient-to-br from-rose-400 to-red-600 group-hover:from-rose-400 group-hover:to-red-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-rose-200 dark:focus:ring-rose-800"
+      class="relative inline-flex items-center justify-center p-0.5 me-2 overflow-hidden text-sm text-rose-600 font-medium rounded-lg group bg-gradient-to-br from-rose-400 to-red-600 group-hover:from-rose-400 group-hover:to-red-600 hover:text-white focus:ring-4 focus:outline-none focus:ring-rose-200"
       (click)="onClearFilter()"
     >
       <span
-        class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0"
+        class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0"
       >
         Clear Filter
       </span>
     </button>
     <button
-      class="relative inline-flex items-center justify-center p-0.5 me-2 overflow-hidden text-sm font-medium text-teal-600 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
+      class="relative inline-flex items-center justify-center p-0.5 me-2 overflow-hidden text-sm font-medium text-teal-600 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white focus:ring-4 focus:outline-none focus:ring-green-200"
       (click)="generatePDF()"
     >
       <span
-        class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0"
+        class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0"
       >
         Print
       </span>
@@ -67,12 +67,8 @@
   </p>
   } @else {
   <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
-    <table
-      class="w-full text-sm text-left rtl:text-right text-gray-800 dark:text-gray-400 mt-2"
-    >
-      <thead
-        class="text-sm text-gray-100 uppercase bg-teal-800 dark:bg-gray-700 dark:text-gray-400"
-      >
+    <table class="w-full text-sm text-left rtl:text-right text-gray-800 mt-2">
+      <thead class="text-sm text-gray-100 uppercase bg-teal-800">
         <tr>
           <th scope="col" class="p-1">voucherDate</th>
           <th scope="col" class="p-1">headName</th>
@@ -89,7 +85,7 @@
         @for (item of filteredVoucherList(); track $index) {
         <tr
           id="row-{{ $index }}"
-          class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+          class="bg-white border-b hover:bg-teal-600 hover:text-white cursor-pointer"
         >
           <td class="p-1 capitalize">
             {{ transform(item?.voucherDate) }}
@@ -113,7 +109,7 @@
         </tr>
         }
         <tr
-          class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+          class="bg-white border-b hover:bg-teal-600 hover:text-white cursor-pointer"
         >
           <td class="p-1 capitalize">Total:</td>
           <td class="p-1 capitalize"></td>

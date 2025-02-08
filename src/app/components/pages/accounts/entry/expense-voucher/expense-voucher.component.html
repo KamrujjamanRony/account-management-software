@@ -18,7 +18,7 @@
               #inputRef
               type="date"
               [formControl]="getControl('voucherDate')"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               [class.invalid]="
                 (getControl('voucherDate').invalid &&
                   getControl('voucherDate').touched) ||
@@ -35,7 +35,7 @@
               #inputRef
               type="text"
               [formControl]="getControl('payTo')"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 1)"
             />
@@ -49,7 +49,7 @@
             [formControl]="getControl('vendorId')"
             placeholder=""
             (keydown.enter)="handleEnterKey($event, 2)"
-            class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+            class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
           >
             <option value="" class="capitalize" disabled>Select Option</option>
             @for(option of vendorIdOption(); track $index){
@@ -67,7 +67,7 @@
             [formControl]="getControl('accountBankCashId')"
             placeholder=""
             (keydown.enter)="handleEnterKey($event, 3)"
-            class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+            class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
             [class.invalid]="
               (getControl('accountBankCashId').invalid &&
                 getControl('accountBankCashId').touched) ||
@@ -89,7 +89,7 @@
             #inputRef
             type="text"
             [formControl]="getControl('remarks')"
-            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
             placeholder=""
             (keydown.enter)="handleEnterKey($event, 4)"
           />
@@ -99,7 +99,7 @@
           <!-- Save -->
           @if (isSubmitting()) {
           <div
-            class="text-white bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-yellow-300 dark:focus:ring-yellow-800 shadow-lg shadow-yellow-500/50 dark:shadow-lg dark:shadow-yellow-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
+            class="text-white bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-yellow-300 shadow-lg shadow-yellow-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
           >
             Processing...
           </div>
@@ -107,13 +107,13 @@
           <input
             type="submit"
             [value]="selectedVoucher ? 'Update Voucher' : 'Save Voucher'"
-            class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-lg shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
+            class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 shadow-lg shadow-teal-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
           />
           }
 
           <button
             (click)="resetForm($event)"
-            class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10"
+            class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-red-300 shadow-lg shadow-red-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10"
           >
             Clear
           </button>
@@ -137,7 +137,7 @@
               #inputRef
               formControlName="headId"
               placeholder=""
-              class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+              class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
               [class.invalid]="
                 (getControl('voucherDate').invalid &&
                   getControl('voucherDate').touched) ||
@@ -162,7 +162,7 @@
               #inputRef
               formControlName="subHeadId"
               placeholder=""
-              class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+              class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
               (keydown.enter)="handleEnterKey($event, 6)"
               [disabled]="subHeadIdOption().length === 0"
             >
@@ -178,19 +178,19 @@
           <Field label="Sub Head">
             <select
               placeholder=""
-              class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+              class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
               [disabled]="subHeadIdOption().length === 0"
             ></select>
           </Field>
           }
 
           <!-- debitAmount -->
-          <Field label="Debit/In Amount">
+          <Field label="Debit/Out Amount">
             <input
               #inputRef
               type="number"
               formControlName="debitAmount"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 7)"
             />
@@ -201,7 +201,7 @@
               #inputRef
               type="text"
               formControlName="remarks"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 8)"
             />
@@ -211,7 +211,7 @@
           <button
             #inputRef
             (keydown.enter)="handleEnterKey($event, 9)"
-            class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-lg shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
+            class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 shadow-lg shadow-teal-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
             type="button"
             (click)="addData()"
           >
@@ -231,12 +231,8 @@
     </h1>
 
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
-      <table
-        class="w-full text-sm text-left rtl:text-right text-gray-800 dark:text-gray-400 mt-2"
-      >
-        <thead
-          class="text-sm text-gray-100 capitalize bg-teal-800 dark:bg-gray-700 dark:text-gray-400"
-        >
+      <table class="w-full text-sm text-left rtl:text-right text-gray-800 mt-2">
+        <thead class="text-sm text-gray-100 capitalize bg-teal-800">
           <tr>
             <th scope="col" class="p-1">head</th>
             <th scope="col" class="p-1">subHead</th>
@@ -250,7 +246,7 @@
           @for (item of dataArray; track $index) {
           <tr
             id="row-{{ $index }}"
-            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+            class="bg-white border-b hover:bg-teal-600 hover:text-white cursor-pointer"
           >
             <td class="p-1 capitalize">
               {{ displayHead(item?.headId) }}
@@ -284,17 +280,12 @@
           </tr>
           } @empty {
           <tr>
-            <td
-              colspan="6"
-              class="text-center text-gray-600 dark:text-gray-400"
-            >
-              No data found
-            </td>
+            <td colspan="6" class="text-center text-gray-600">No data found</td>
           </tr>
           }
           <tr
             id="row-last"
-            class="bg-teal-200 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+            class="bg-teal-200 border-b hover:bg-teal-600 hover:text-white cursor-pointer"
           >
             <td class="p-1 capitalize">
               {{ bankOrCash }}
@@ -365,12 +356,8 @@
     </p>
     } @else {
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
-      <table
-        class="w-full text-sm text-left rtl:text-right text-gray-800 dark:text-gray-400 mt-2"
-      >
-        <thead
-          class="text-sm text-gray-100 uppercase bg-teal-800 dark:bg-gray-700 dark:text-gray-400"
-        >
+      <table class="w-full text-sm text-left rtl:text-right text-gray-800 mt-2">
+        <thead class="text-sm text-gray-100 uppercase bg-teal-800">
           <tr>
             <th scope="col" class="p-1">voucherNo</th>
             <th scope="col" class="p-1">voucherDate</th>
@@ -386,7 +373,7 @@
           @for (item of filteredVoucherList(); track $index) {
           <tr
             id="row-{{ $index }}"
-            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+            class="bg-white border-b hover:bg-teal-600 hover:text-white cursor-pointer"
           >
             <td class="p-1 capitalize">
               {{ item?.voucherNo }}

@@ -10,12 +10,8 @@
     </h1>
 
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
-      <table
-        class="w-full text-sm text-left rtl:text-right text-gray-800 dark:text-gray-400 mt-2"
-      >
-        <thead
-          class="text-sm text-gray-100 capitalize bg-teal-800 dark:bg-gray-700 dark:text-gray-400"
-        >
+      <table class="w-full text-sm text-left rtl:text-right text-gray-800 mt-2">
+        <thead class="text-sm text-gray-100 capitalize bg-teal-800">
           <tr>
             <th scope="col" class="p-1">account code</th>
             <th scope="col" class="p-1">subHead</th>
@@ -26,7 +22,7 @@
           @for (item of openingBalance(); track $index) {
           <tr
             id="row-{{ $index }}"
-            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+            class="bg-white border-b hover:bg-teal-600 hover:text-white cursor-pointer"
           >
             <td class="p-1 capitalize">
               {{ item?.accountCode }}
@@ -40,17 +36,12 @@
           </tr>
           } @empty {
           <tr>
-            <td
-              colspan="6"
-              class="text-center text-gray-600 dark:text-gray-400"
-            >
-              No data found
-            </td>
+            <td colspan="6" class="text-center text-gray-600">No data found</td>
           </tr>
           }
           <tr
             id="row-last"
-            class="bg-teal-200 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+            class="bg-teal-200 border-b hover:bg-teal-600 hover:text-white cursor-pointer"
           >
             <td class="p-1 capitalize">Total</td>
             <td class="p-1 capitalize"></td>
@@ -71,12 +62,8 @@
     </h1>
 
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
-      <table
-        class="w-full text-sm text-left rtl:text-right text-gray-800 dark:text-gray-400 mt-2"
-      >
-        <thead
-          class="text-sm text-gray-100 capitalize bg-teal-800 dark:bg-gray-700 dark:text-gray-400"
-        >
+      <table class="w-full text-sm text-left rtl:text-right text-gray-800 mt-2">
+        <thead class="text-sm text-gray-100 capitalize bg-teal-800">
           <tr>
             <th scope="col" class="p-1">account code</th>
             <th scope="col" class="p-1">subHead</th>
@@ -87,7 +74,7 @@
           @for (item of receiptBalance(); track $index) {
           <tr
             id="row-{{ $index }}"
-            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+            class="bg-white border-b hover:bg-teal-600 hover:text-white cursor-pointer"
           >
             <td class="p-1 capitalize">
               {{ item?.accountCode }}
@@ -101,17 +88,12 @@
           </tr>
           } @empty {
           <tr>
-            <td
-              colspan="6"
-              class="text-center text-gray-600 dark:text-gray-400"
-            >
-              No data found
-            </td>
+            <td colspan="6" class="text-center text-gray-600">No data found</td>
           </tr>
           }
           <tr
             id="row-last"
-            class="bg-teal-200 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+            class="bg-teal-200 border-b hover:bg-teal-600 hover:text-white cursor-pointer"
           >
             <td class="p-1 capitalize">Total</td>
             <td class="p-1 capitalize"></td>
@@ -134,12 +116,8 @@
     </h1>
 
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
-      <table
-        class="w-full text-sm text-left rtl:text-right text-gray-800 dark:text-gray-400 mt-2"
-      >
-        <thead
-          class="text-sm text-gray-100 capitalize bg-teal-800 dark:bg-gray-700 dark:text-gray-400"
-        >
+      <table class="w-full text-sm text-left rtl:text-right text-gray-800 mt-2">
+        <thead class="text-sm text-gray-100 capitalize bg-teal-800">
           <tr>
             <th scope="col" class="p-1">account code</th>
             <th scope="col" class="p-1">subHead</th>
@@ -150,7 +128,7 @@
           @for (item of openingBalance(); track $index) {
           <tr
             id="row-{{ $index }}"
-            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+            class="bg-white border-b hover:bg-teal-600 hover:text-white cursor-pointer"
           >
             <td class="p-1 capitalize">
               {{ item?.accountCode }}
@@ -164,17 +142,12 @@
           </tr>
           } @empty {
           <tr>
-            <td
-              colspan="6"
-              class="text-center text-gray-600 dark:text-gray-400"
-            >
-              No data found
-            </td>
+            <td colspan="6" class="text-center text-gray-600">No data found</td>
           </tr>
           }
           <tr
             id="row-last"
-            class="bg-teal-200 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+            class="bg-teal-200 border-b hover:bg-teal-600 hover:text-white cursor-pointer"
           >
             <td class="p-1 capitalize">Total</td>
             <td class="p-1 capitalize"></td>
@@ -195,12 +168,8 @@
     </h1>
 
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
-      <table
-        class="w-full text-sm text-left rtl:text-right text-gray-800 dark:text-gray-400 mt-2"
-      >
-        <thead
-          class="text-sm text-gray-100 capitalize bg-teal-800 dark:bg-gray-700 dark:text-gray-400"
-        >
+      <table class="w-full text-sm text-left rtl:text-right text-gray-800 mt-2">
+        <thead class="text-sm text-gray-100 capitalize bg-teal-800">
           <tr>
             <th scope="col" class="p-1">account code</th>
             <th scope="col" class="p-1">subHead</th>
@@ -211,7 +180,7 @@
           @for (item of receiptBalance(); track $index) {
           <tr
             id="row-{{ $index }}"
-            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+            class="bg-white border-b hover:bg-teal-600 hover:text-white cursor-pointer"
           >
             <td class="p-1 capitalize">
               {{ item?.accountCode }}
@@ -225,17 +194,12 @@
           </tr>
           } @empty {
           <tr>
-            <td
-              colspan="6"
-              class="text-center text-gray-600 dark:text-gray-400"
-            >
-              No data found
-            </td>
+            <td colspan="6" class="text-center text-gray-600">No data found</td>
           </tr>
           }
           <tr
             id="row-last"
-            class="bg-teal-200 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+            class="bg-teal-200 border-b hover:bg-teal-600 hover:text-white cursor-pointer"
           >
             <td class="p-1 capitalize">Total</td>
             <td class="p-1 capitalize"></td>

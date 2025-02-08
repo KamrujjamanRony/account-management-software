@@ -1,191 +1,185 @@
 <section class="flex flex-col lg:flex-row gap-5">
-    <div class="w-full md:max-w-xl border mb-10">
-      <h1
-        class="text-xl md:text-3xl font-bold text-teal-500 underline text-center mb-5"
-      >
-        Vendor Form
-      </h1>
-      <form
-        [formGroup]="form"
-        (ngSubmit)="onSubmit($event)"
-        class="min-w-[400px] mx-auto px-2"
-      >
-        <!-- Name -->
-        <Field label="name">
-          <input
-            #inputRef
-            type="text"
-            [formControl]="getControl('name')"
-            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
-            [class.invalid]="
-              (getControl('name').invalid && getControl('name').touched) ||
-              isSubmitted
-            "
-            placeholder=""
-            (keydown.enter)="handleEnterKey($event, 0)"
-            required
-          />
-        </Field>
-        <!-- Address -->
-        <Field label="address">
-          <input
-            #inputRef
-            type="text"
-            [formControl]="getControl('address')"
-            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
-            placeholder=""
-            (keydown.enter)="handleEnterKey($event, 1)"
-          />
-        </Field>
-        <!-- mobile -->
-        <Field label="mobile">
-          <input
-            #inputRef
-            type="text"
-            [formControl]="getControl('mobile')"
-            maxlength="11"
-            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
-            placeholder=""
-            (keydown.enter)="handleEnterKey($event, 2)"
-          />
-        </Field>
-          <!-- remarks -->
-          <Field label="remarks">
-            <input
-              #inputRef
-              type="text"
-              [formControl]="getControl('remarks')"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
-              placeholder=""
-              (keydown.enter)="handleEnterKey($event, 3)"
-            />
-          </Field>
+  <div class="w-full md:max-w-xl border mb-10">
+    <h1
+      class="text-xl md:text-3xl font-bold text-teal-500 underline text-center mb-5"
+    >
+      Vendor Form
+    </h1>
+    <form
+      [formGroup]="form"
+      (ngSubmit)="onSubmit($event)"
+      class="min-w-[400px] mx-auto px-2"
+    >
+      <!-- Name -->
+      <Field label="name">
+        <input
+          #inputRef
+          type="text"
+          [formControl]="getControl('name')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          [class.invalid]="
+            (getControl('name').invalid && getControl('name').touched) ||
+            isSubmitted
+          "
+          placeholder=""
+          (keydown.enter)="handleEnterKey($event, 0)"
+          required
+        />
+      </Field>
+      <!-- Address -->
+      <Field label="address">
+        <input
+          #inputRef
+          type="text"
+          [formControl]="getControl('address')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          placeholder=""
+          (keydown.enter)="handleEnterKey($event, 1)"
+        />
+      </Field>
+      <!-- mobile -->
+      <Field label="mobile">
+        <input
+          #inputRef
+          type="text"
+          [formControl]="getControl('mobile')"
+          maxlength="11"
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          placeholder=""
+          (keydown.enter)="handleEnterKey($event, 2)"
+        />
+      </Field>
+      <!-- remarks -->
+      <Field label="remarks">
+        <input
+          #inputRef
+          type="text"
+          [formControl]="getControl('remarks')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          placeholder=""
+          (keydown.enter)="handleEnterKey($event, 3)"
+        />
+      </Field>
 
-        <div class="flex gap-2">
-          <!-- Save -->
-          <input
-            #inputRef
-            type="submit"
-            [value]="selectedVendor ? 'Update' : 'Save'"
-            class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-lg shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
-            (keydown.enter)="handleEnterKey($event, 4)"
-          />
-  
-          <button
-            (click)="formReset($event)"
-            class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10"
-          >
-            Clear
-          </button>
-        </div>
-      </form>
-    </div>
-  
-    <div class="w-full border mb-10 px-3 max-h-[98vh] overflow-scroll">
-      <h1
-        class="text-xl md:text-3xl font-bold text-teal-500 underline text-center"
-      >
-        Vendor List
-      </h1>
-  
-      <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
-        <div class="flex items-end gap-2 flex-col md:flex-row px-2">
-          <div class="bg-white dark:bg-gray-900 w-full max-w-lg">
-            <label for="table-search" class="sr-only">Search</label>
-            <div class="relative mt-1">
-              <div
-                class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none"
-              >
-                <app-search></app-search>
-              </div>
-              <input
-                #searchInput
-                type="text"
-                id="table-search"
-                autocomplete="off"
-                class="block ps-10 text-xs text-gray-900 border border-gray-300 rounded bg-gray-50 focus:ring-teal-500 focus:border-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-teal-500 dark:focus:border-teal-500 w-full"
-                placeholder="Search"
-                (input)="onSearchVendor($event)"
-                (keydown)="handleSearchKeyDown($event)"
-              />
+      <div class="flex gap-2">
+        <!-- Save -->
+        <input
+          #inputRef
+          type="submit"
+          [value]="selectedVendor ? 'Update' : 'Save'"
+          class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 shadow-lg shadow-teal-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
+          (keydown.enter)="handleEnterKey($event, 4)"
+        />
+
+        <button
+          (click)="formReset($event)"
+          class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-red-300 shadow-lg shadow-red-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10"
+        >
+          Clear
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="w-full border mb-10 px-3 max-h-[98vh] overflow-scroll">
+    <h1
+      class="text-xl md:text-3xl font-bold text-teal-500 underline text-center"
+    >
+      Vendor List
+    </h1>
+
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
+      <div class="flex items-end gap-2 flex-col md:flex-row px-2">
+        <div class="bg-white w-full max-w-lg">
+          <label for="table-search" class="sr-only">Search</label>
+          <div class="relative mt-1">
+            <div
+              class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none"
+            >
+              <app-search></app-search>
             </div>
+            <input
+              #searchInput
+              type="text"
+              id="table-search"
+              autocomplete="off"
+              class="block ps-10 text-xs text-gray-900 border border-gray-300 rounded bg-gray-50 focus:ring-teal-500 focus:border-teal-500 w-full"
+              placeholder="Search"
+              (input)="onSearchVendor($event)"
+              (keydown)="handleSearchKeyDown($event)"
+            />
           </div>
         </div>
-  
-        @if (isLoading$ | async) {
-        <p class="text-3xl font-bold text-center p-10 text-teal-600">
-          Loading ...
-        </p>
-        } @else if (hasError$ | async) {
-        <p class="text-3xl font-bold text-center p-10 text-red-600">
-          There was an error loading data.
-        </p>
-        } @else if (filteredVendorList().length === 0) {
-        <p class="text-3xl font-bold text-center p-10 text-orange-600">
-          Data is Empty.
-        </p>
-        } @else {
-        <table
-          class="w-full text-sm text-left rtl:text-right text-gray-800 dark:text-gray-400 mt-2"
-        >
-          <thead
-            class="text-sm text-gray-100 uppercase bg-gray-800 dark:bg-gray-700 dark:text-gray-400"
-          >
-            <tr>
-              <th scope="col" class="p-1">name</th>
-              <th scope="col" class="p-1">address</th>
-              <th scope="col" class="p-1">mobile</th>
-              <th scope="col" class="p-1">remarks</th>
-              <th scope="col" class="px-1 py-3">Edit</th>
-              <th scope="col" class="px-1 py-3">Delete</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (item of filteredVendorList().slice(0,20); track item?.id ||
-            $index) {
-            <tr
-              id="row-{{ $index }}"
-              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
-            >
-              <td scope="row" class="p-1">
-                {{ item?.name }}
-              </td>
-              <td class="p-1">
-                {{ item?.address }}
-              </td>
-              <td class="p-1">
-                {{ item?.mobile }}
-              </td>
-              <td class="p-1">
-                {{ item?.remarks }}
-              </td>
-              <td>
-                <button
-                  class="text-yellow-400 hover:bg-white px-1 rounded"
-                  (click)="onUpdate(item)"
-                >
-                  Edit
-                </button>
-              </td>
-              <td>
-                <button
-                  class="text-rose-400 hover:bg-white px-1 rounded"
-                  (click)="onDelete(item.id)"
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-            }
-          </tbody>
-        </table>
-        }
       </div>
-    </div>
-  </section>
-  
-  @if (success()) {
-  <app-toast-success [title]="success()"></app-toast-success>
-  }
-  
 
+      @if (isLoading$ | async) {
+      <p class="text-3xl font-bold text-center p-10 text-teal-600">
+        Loading ...
+      </p>
+      } @else if (hasError$ | async) {
+      <p class="text-3xl font-bold text-center p-10 text-red-600">
+        There was an error loading data.
+      </p>
+      } @else if (filteredVendorList().length === 0) {
+      <p class="text-3xl font-bold text-center p-10 text-orange-600">
+        Data is Empty.
+      </p>
+      } @else {
+      <table class="w-full text-sm text-left rtl:text-right text-gray-800 mt-2">
+        <thead class="text-sm text-gray-100 uppercase bg-gray-800">
+          <tr>
+            <th scope="col" class="p-1">name</th>
+            <th scope="col" class="p-1">address</th>
+            <th scope="col" class="p-1">mobile</th>
+            <th scope="col" class="p-1">remarks</th>
+            <th scope="col" class="px-1 py-3">Edit</th>
+            <th scope="col" class="px-1 py-3">Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of filteredVendorList().slice(0,20); track item?.id ||
+          $index) {
+          <tr
+            id="row-{{ $index }}"
+            class="bg-white border-b hover:bg-teal-600 hover:text-white cursor-pointer"
+          >
+            <td scope="row" class="p-1">
+              {{ item?.name }}
+            </td>
+            <td class="p-1">
+              {{ item?.address }}
+            </td>
+            <td class="p-1">
+              {{ item?.mobile }}
+            </td>
+            <td class="p-1">
+              {{ item?.remarks }}
+            </td>
+            <td>
+              <button
+                class="text-yellow-400 hover:bg-white px-1 rounded"
+                (click)="onUpdate(item)"
+              >
+                Edit
+              </button>
+            </td>
+            <td>
+              <button
+                class="text-rose-400 hover:bg-white px-1 rounded"
+                (click)="onDelete(item.id)"
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+      }
+    </div>
+  </div>
+</section>
+
+@if (success()) {
+<app-toast-success [title]="success()"></app-toast-success>
+}

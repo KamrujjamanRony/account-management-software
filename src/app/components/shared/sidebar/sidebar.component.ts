@@ -16,7 +16,10 @@ export class SidebarComponent {
 
   sidebarData = signal<any[]>([
     {
-      id: 1, label: 'Setup', icon: 'settings', menu: [
+      id: 0, label: 'Dashboard', icon: 'settings', route: '/'
+    },
+    {
+      id: 1, label: 'Setup', icon: 'reports', menu: [
         {
           id: 11, label: 'Bank Setup', route: '/setup/bank'
         },
@@ -29,7 +32,7 @@ export class SidebarComponent {
       ]
     },
     {
-      id: 2, label: 'Entry', icon: 'reports', menu: [
+      id: 2, label: 'Entry', icon: 'expense-entry', menu: [
         {
           id: 21, label: 'Payment Voucher', route: '/entry/payment-voucher'
         },
