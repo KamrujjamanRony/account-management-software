@@ -54,7 +54,7 @@ export class UsersComponent {
   }
 
   onLoadUsers() {
-    const { data$, isLoading$, hasError$ } = this.dataFetchService.fetchData(this.userService.getUser("")); // TODO: user data request due
+    const { data$, isLoading$, hasError$ } = this.dataFetchService.fetchData(this.userService.getUser(""));     // ToDo: user data request due
 
     this.isLoading$ = isLoading$;
     this.hasError$ = hasError$;

@@ -236,8 +236,7 @@
           <tr>
             <th scope="col" class="p-1">head</th>
             <th scope="col" class="p-1">subHead</th>
-            <th scope="col" class="p-1">Debit</th>
-            <th scope="col" class="p-1">Credit</th>
+            <th scope="col" class="p-1">Amount</th>
             <th scope="col" class="p-1">remarks</th>
             <th scope="col" class="px-1 py-3">Action</th>
           </tr>
@@ -256,9 +255,6 @@
             </td>
             <td class="p-1">
               {{ item?.debitAmount }}
-            </td>
-            <td class="p-1">
-              {{ item?.creditAmount }}
             </td>
             <td class="p-1">
               {{ item?.remarks }}
@@ -285,13 +281,12 @@
           }
           <tr
             id="row-last"
-            class="bg-teal-200 border-b hover:bg-teal-600 hover:text-white cursor-pointer"
+            class="bg-teal-200 border-b hover:bg-teal-600 hover:text-white cursor-pointer font-bold"
           >
             <td class="p-1 capitalize">
               {{ bankOrCash }}
             </td>
             <td class="p-1 capitalize"></td>
-            <td class="p-1"></td>
             <td class="p-1">
               {{ totalAmount }}
             </td>

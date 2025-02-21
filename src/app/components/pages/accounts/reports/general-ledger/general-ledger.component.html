@@ -90,6 +90,10 @@
         @for (item of filteredReports(); track $index) {
         <tr
           id="row-{{ $index }}"
+          [ngClass]="{
+            'bg-red-500 text-white': item?.balance < 0,
+            'bg-white': item?.balance >= 0
+          }"
           class="bg-white border-b hover:bg-teal-600 hover:text-white cursor-pointer"
         >
           <td class="p-1 capitalize">
