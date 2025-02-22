@@ -22,9 +22,11 @@
     "@ngrx/store": "^19.0.0",
     "@ngrx/store-devtools": "^19.0.0",
     "@types/select2": "^4.0.63",
+    "apexcharts": "^4.5.0",
     "flowbite": "^2.5.2",
     "jspdf": "^2.5.2",
     "jspdf-autotable": "^3.8.4",
+    "ng-apexcharts": "^1.15.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },

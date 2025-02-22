@@ -38,4 +38,8 @@ export class AccountingReportsService {
   getCurrentBalanceApi(model: any): Observable<any> {
     return this.apiCall<any>('GetCurrentBalace', 'post', model);
   }
+
+  getDashboardApi(model: any): Observable<any> {
+    return this.apiCall<any>('DatewiseBalance', 'post', model);
+  }
 }

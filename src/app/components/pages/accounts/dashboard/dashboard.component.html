@@ -1,1 +1,193 @@
-<p>dashboard works!</p>
+<section class="container mx-auto">
+  <div class="flex justify-between items-center py-5">
+    <h1 class="text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
+      Dashboard
+    </h1>
+    <input
+      type="date"
+      id="fromDate"
+      [(ngModel)]="fromDate"
+      (change)="onLoadReport()"
+      class="border border-gray-500 text-gray-600 rounded-md px-5 py-2"
+    />
+  </div>
+
+  @if (isLoading$ | async) {
+  <p class="text-3xl font-bold text-center p-10 text-teal-600">Loading ...</p>
+  } @else if (!fromDate()) {
+  <p class="text-3xl font-bold text-center p-10 text-red-600">
+    Please Select any date to continue!
+  </p>
+  } @else if (hasError$ | async) {
+  <p class="text-3xl font-bold text-center p-10 text-red-600">
+    There was an error loading data.
+  </p>
+  } @else if (filteredReports().length === 0) {
+  <p class="text-3xl font-bold text-center p-10 text-orange-600">
+    Data is Empty.
+  </p>
+  } @else {
+  <div>
+    <div>
+      <div class="grid grid-cols-1 md:grid-cols-3 w-full">
+        <!-- Today Received Payment Slot  -->
+        <div
+          class="block max-w-sm p-6 bg-blue-300 border border-gray-200 rounded-lg shadow-sm text-center w-full"
+        >
+          <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">
+            Today
+          </h5>
+          <p class="font-bold text-gray-700 dark:text-gray-400">
+            Total Received :
+            {{ filteredReports()?.datewiseIncomeExpenceResult?.totalIncome }} Tk
+          </p>
+          <p class="font-bold text-gray-700 dark:text-gray-400">
+            Total Payment :
+            {{ filteredReports()?.datewiseIncomeExpenceResult?.totalExpense }}
+            Tk
+          </p>
+          <p class="font-bold text-gray-700 dark:text-gray-400">
+            Total Profit :
+            {{ filteredReports()?.datewiseIncomeExpenceResult?.profit }} Tk
+          </p>
+        </div>
+        <!-- This Month Received Payment Slot  -->
+        <div>
+          <div
+            class="block max-w-sm p-6 bg-orange-300 border border-gray-200 rounded-lg shadow-sm text-center w-full"
+          >
+            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">
+              This Month
+            </h5>
+            <p class="font-bold text-gray-700 dark:text-gray-400">
+              Total Received :
+              {{ filteredReports().monthlyIncome }} Tk
+            </p>
+            <p class="font-bold text-gray-700 dark:text-gray-400">
+              Total Payment :
+              {{ filteredReports()?.monthlyExpense }} Tk
+            </p>
+            <p class="font-bold text-gray-700 dark:text-gray-400">
+              Total Profit :
+              {{ filteredReports()?.monthlyProfit }} Tk
+            </p>
+          </div>
+        </div>
+        <!-- This Year Received Payment Slot  -->
+        <div>
+          <div
+            class="block max-w-sm p-6 bg-purple-300 border border-gray-200 rounded-lg shadow-sm text-center w-full"
+          >
+            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">
+              This Year
+            </h5>
+            <p class="font-bold text-gray-700 dark:text-gray-400">
+              Total Received :
+              {{ filteredReports().totalReceipt }} Tk
+            </p>
+            <p class="font-bold text-gray-700 dark:text-gray-400">
+              Total Payment :
+              {{ filteredReports()?.totalPayment }} Tk
+            </p>
+            <p class="font-bold text-gray-700 dark:text-gray-400">
+              Total Profit :
+              {{ filteredReports()?.totalBalance }} Tk
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Yearly Received Payment Chart  -->
+    <div>
+      <h1
+        class="text-xl md:text-3xl font-bold text-teal-500 underline text-center"
+      >
+        Yearly Received Payment Chart
+      </h1>
+      <app-apex-chart
+        [categories]="totalMonth"
+        [chartData]="filteredReports().incomeExpenseChartData"
+      ></app-apex-chart>
+    </div>
+    <!-- Yearly Profit Chart  -->
+    <div>
+      <h1
+        class="text-xl md:text-3xl font-bold text-teal-500 underline text-center"
+      >
+        Yearly Profit Chart
+      </h1>
+      <app-apex-chart
+        [categories]="totalMonth"
+        [chartData]="filteredReports().profitChartData"
+      ></app-apex-chart>
+    </div>
+    <!-- Yearly Received Payment & Profit Table  -->
+    <div class="w-full border mb-10 px-3 max-h-[98vh] overflow-scroll">
+      <h1
+        class="text-xl md:text-3xl font-bold text-teal-500 underline text-center"
+      >
+        Yearly Received Payment & Profit Table
+      </h1>
+
+      <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
+        <table
+          class="w-full text-sm text-left rtl:text-right text-gray-800 mt-2"
+        >
+          <thead class="text-sm text-gray-100 capitalize bg-teal-800">
+            <tr>
+              <th scope="col" class="p-1">Month</th>
+              <th scope="col" class="p-1">Receipt</th>
+              <th scope="col" class="p-1">Payment</th>
+              <th scope="col" class="p-1">Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of filteredReports().monthwiseIncomeExpenceResult; track
+            $index) {
+            <tr
+              id="row-{{ $index }}"
+              class="bg-white border-b hover:bg-teal-600 hover:text-white cursor-pointer"
+            >
+              <td class="p-1 capitalize">
+                {{ totalMonth[item?.month - 1] }}
+              </td>
+              <td class="p-1 capitalize">
+                {{ item?.totalIncome }}
+              </td>
+              <td class="p-1">
+                {{ item?.totalExpense }}
+              </td>
+              <td class="p-1">
+                {{ item?.profit }}
+              </td>
+            </tr>
+            } @empty {
+            <tr>
+              <td colspan="6" class="text-center text-gray-600">
+                No data found
+              </td>
+            </tr>
+            }
+            <tr
+              id="row-last"
+              class="bg-teal-200 border-b hover:bg-teal-600 hover:text-white cursor-pointer font-bold"
+            >
+              <td class="p-1 capitalize">Total:</td>
+              <td class="p-1 capitalize">
+                {{ filteredReports().totalReceipt }}
+              </td>
+              <td class="p-1 capitalize">
+                {{ filteredReports().totalPayment }}
+              </td>
+              <td class="p-1 capitalize">
+                {{ filteredReports().totalBalance }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  }
+</section>

@@ -15,9 +15,9 @@ export class SidebarComponent {
 
 
   sidebarData = signal<any[]>([
-    // {
-    //   id: 0, label: 'Dashboard', icon: 'settings', route: '/'    // ToDo: comment remove
-    // },
+    {
+      id: 0, label: 'Dashboard', icon: 'settings', route: '/'
+    },
     {
       id: 1, label: 'Setup', icon: 'reports', menu: [
         {

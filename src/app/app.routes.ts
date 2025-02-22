@@ -23,7 +23,7 @@ export const routes: Routes = [
       { path: '', redirectTo: '', pathMatch: 'full' },
       {
         path: '',
-        component: BankEntryComponent    // ToDo: DashboardComponent
+        component: DashboardComponent
       },
       {
         path: 'setup/bank',
