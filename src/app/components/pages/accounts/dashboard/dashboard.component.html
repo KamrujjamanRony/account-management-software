@@ -29,10 +29,12 @@
   } @else {
   <div>
     <div>
-      <div class="grid grid-cols-1 md:grid-cols-3 w-full">
+      <div
+        class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 w-full h-full gap-5"
+      >
         <!-- Today Received Payment Slot  -->
         <div
-          class="block max-w-sm p-6 bg-blue-300 border border-gray-200 rounded-lg shadow-sm text-center w-full"
+          class="block max-w-sm p-6 bg-blue-300 border border-gray-200 rounded-lg shadow-sm text-center w-full h-full"
         >
           <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">
             Today
@@ -52,48 +54,58 @@
           </p>
         </div>
         <!-- This Month Received Payment Slot  -->
-        <div>
-          <div
-            class="block max-w-sm p-6 bg-orange-300 border border-gray-200 rounded-lg shadow-sm text-center w-full"
-          >
-            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">
-              This Month
-            </h5>
-            <p class="font-bold text-gray-700 dark:text-gray-400">
-              Total Received :
-              {{ filteredReports().monthlyIncome }} Tk
-            </p>
-            <p class="font-bold text-gray-700 dark:text-gray-400">
-              Total Payment :
-              {{ filteredReports()?.monthlyExpense }} Tk
-            </p>
-            <p class="font-bold text-gray-700 dark:text-gray-400">
-              Total Profit :
-              {{ filteredReports()?.monthlyProfit }} Tk
-            </p>
-          </div>
+        <div
+          class="block max-w-sm p-6 bg-orange-300 border border-gray-200 rounded-lg shadow-sm text-center w-full h-full"
+        >
+          <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">
+            This Month
+          </h5>
+          <p class="font-bold text-gray-700 dark:text-gray-400">
+            Total Received :
+            {{ filteredReports().monthlyIncome }} Tk
+          </p>
+          <p class="font-bold text-gray-700 dark:text-gray-400">
+            Total Payment :
+            {{ filteredReports()?.monthlyExpense }} Tk
+          </p>
+          <p class="font-bold text-gray-700 dark:text-gray-400">
+            Total Profit :
+            {{ filteredReports()?.monthlyProfit }} Tk
+          </p>
         </div>
         <!-- This Year Received Payment Slot  -->
-        <div>
-          <div
-            class="block max-w-sm p-6 bg-purple-300 border border-gray-200 rounded-lg shadow-sm text-center w-full"
-          >
-            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">
-              This Year
-            </h5>
-            <p class="font-bold text-gray-700 dark:text-gray-400">
-              Total Received :
-              {{ filteredReports().totalReceipt }} Tk
-            </p>
-            <p class="font-bold text-gray-700 dark:text-gray-400">
-              Total Payment :
-              {{ filteredReports()?.totalPayment }} Tk
-            </p>
-            <p class="font-bold text-gray-700 dark:text-gray-400">
-              Total Profit :
-              {{ filteredReports()?.totalBalance }} Tk
-            </p>
-          </div>
+        <div
+          class="block max-w-sm p-6 bg-purple-300 border border-gray-200 rounded-lg shadow-sm text-center w-full h-full"
+        >
+          <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">
+            This Year
+          </h5>
+          <p class="font-bold text-gray-700 dark:text-gray-400">
+            Total Received :
+            {{ filteredReports().totalReceipt }} Tk
+          </p>
+          <p class="font-bold text-gray-700 dark:text-gray-400">
+            Total Payment :
+            {{ filteredReports()?.totalPayment }} Tk
+          </p>
+          <p class="font-bold text-gray-700 dark:text-gray-400">
+            Total Profit :
+            {{ filteredReports()?.totalBalance }} Tk
+          </p>
+        </div>
+        <!-- Today Opening Balance Slot  -->
+        <div
+          class="block max-w-sm p-6 bg-green-300 border border-gray-200 rounded-lg shadow-sm text-center w-full h-full"
+        >
+          <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">
+            Today Opening Balance
+          </h5>
+          @for (item of filteredReports().totalCurrentBalanceResult; track
+          $index) {
+          <p class="font-bold text-gray-700 dark:text-gray-400">
+            {{ item?.bankCash }} : {{ item?.balance }} Tk
+          </p>
+          }
         </div>
       </div>
     </div>

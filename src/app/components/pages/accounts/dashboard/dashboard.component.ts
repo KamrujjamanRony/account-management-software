@@ -18,6 +18,7 @@ export class DashboardComponent {
   private dataFetchService = inject(DataFetchService);
   filteredReports = signal<any>({
     "totalBalanceResult": [],
+    "totalCurrentBalanceResult": [],
     "datewiseIncomeExpenceResult": {},
     "monthwiseIncomeExpenceResult": [],
   });
@@ -81,6 +82,7 @@ export class DashboardComponent {
         // datewiseIncomeExpenceResult: Array.isArray(data?.datewiseIncomeExpenceResult)
         //   ? data?.datewiseIncomeExpenceResult
         //   : Object.entries(data?.datewiseIncomeExpenceResult || {}),
+        totalCurrentBalanceResult: data?.totalCurrentBalanceResult || [],
         monthwiseIncomeExpenceResult: data?.monthwiseIncomeExpenceResult || [],
         incomeExpenseChartData,
         profitChartData,
