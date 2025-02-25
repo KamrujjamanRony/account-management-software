@@ -4,8 +4,7 @@ import { DataFetchService } from '../../../../services/useDataFetch';
 import { Observable } from 'rxjs';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ApexChartComponent } from "../../../shared/apex-chart/apex-chart.component";
-import { ApexChart2Component } from "../../../shared/apex-chart-2/apex-chart-2.component";
+import { ApexChartComponent } from "../../../shared/account/apex-chart/apex-chart.component";
 
 @Component({
   selector: 'app-dashboard',
@@ -79,9 +78,6 @@ export class DashboardComponent {
       this.filteredReports.set({
         totalBalanceResult: data?.totalBalanceResult || [],
         datewiseIncomeExpenceResult: data?.datewiseIncomeExpenceResult,
-        // datewiseIncomeExpenceResult: Array.isArray(data?.datewiseIncomeExpenceResult)
-        //   ? data?.datewiseIncomeExpenceResult
-        //   : Object.entries(data?.datewiseIncomeExpenceResult || {}),
         totalCurrentBalanceResult: data?.totalCurrentBalanceResult || [],
         monthwiseIncomeExpenceResult: data?.monthwiseIncomeExpenceResult || [],
         incomeExpenseChartData,

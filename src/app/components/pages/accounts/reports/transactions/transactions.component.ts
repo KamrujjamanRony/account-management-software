@@ -2,12 +2,12 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AccountListService } from '../../../../../services/account-list.service';
 import { VoucherService } from '../../../../../services/voucher.service';
-import { Selector2Component } from '../../../../shared/selector2/selector2.component';
 import { DataFetchService } from '../../../../../services/useDataFetch';
 import { Observable } from 'rxjs';
 import { CommonModule, DatePipe } from '@angular/common';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import { Selector2Component } from '../../../../shared/account/selector2/selector2.component';
 
 @Component({
   selector: 'app-transactions',

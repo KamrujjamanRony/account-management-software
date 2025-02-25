@@ -9,8 +9,8 @@ import { VendorService } from '../../../../../services/vendor.service';
 import { VoucherService } from '../../../../../services/voucher.service';
 import { DataFetchService } from '../../../../../services/useDataFetch';
 import { Observable } from 'rxjs';
-import { SelectorComponent } from '../../../../shared/selector/selector.component';
 import { AccountingReportsService } from '../../../../../services/accounting-reports.service';
+import { SelectorComponent } from '../../../../shared/account/selector/selector.component';
 
 @Component({
   selector: 'app-expense-voucher',

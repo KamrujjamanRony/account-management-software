@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, signal, SimpleChanges, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AllSvgComponent } from '../svg/all-svg/all-svg.component';
+import { AllSvgComponent } from '../../svg/all-svg/all-svg.component';
 
 @Component({
   selector: 'selector2',

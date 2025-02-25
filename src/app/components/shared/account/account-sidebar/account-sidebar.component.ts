@@ -1,16 +1,15 @@
 import { Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { AllSvgComponent } from "../svg/all-svg/all-svg.component";
+import { AllSvgComponent } from '../../svg/all-svg/all-svg.component';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-sidebar',
-  standalone: true,
+  selector: 'app-account-sidebar',
   imports: [RouterLink, AllSvgComponent, CommonModule],
-  templateUrl: './sidebar.component.html',
-  styleUrl: './sidebar.component.css'
+  templateUrl: './account-sidebar.component.html',
+  styleUrl: './account-sidebar.component.css'
 })
-export class SidebarComponent {
+export class AccountSidebarComponent {
 
 
 
@@ -66,9 +65,6 @@ export class SidebarComponent {
         },
       ]
     },
-    // {
-    //   id: 4, label: 'User Access', icon: 'users', route: '/user-access'
-    // },
   ]);
 
 }
