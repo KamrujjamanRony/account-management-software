@@ -1,20 +1,20 @@
 import { Routes } from '@angular/router';
-import { BankEntryComponent } from './components/pages/accounts/setup/bank-entry/bank-entry.component';
-import { VendorEntryComponent } from './components/pages/accounts/setup/vendor-entry/vendor-entry.component';
-import { AccountListEntryComponent } from './components/pages/accounts/setup/account-list-entry/account-list-entry.component';
-import { ExpenseVoucherComponent } from './components/pages/accounts/entry/expense-voucher/expense-voucher.component';
-import { ReceiveVoucherComponent } from './components/pages/accounts/entry/receive-voucher/receive-voucher.component';
-import { JournalVoucherComponent } from './components/pages/accounts/entry/journal-voucher/journal-voucher.component';
-import { ReceiptPaymentComponent } from './components/pages/accounts/reports/receipt-payment/receipt-payment.component';
-import { TrialBalanceComponent } from './components/pages/accounts/reports/trial-balance/trial-balance.component';
-import { GeneralLedgerComponent } from './components/pages/accounts/reports/general-ledger/general-ledger.component';
-import { GeneralCashBookComponent } from './components/pages/accounts/reports/general-cash-book/general-cash-book.component';
-import { TransactionsComponent } from './components/pages/accounts/reports/transactions/transactions.component';
-import { UsersComponent } from './components/pages/users/users.component';
-import { IncomeExpenseStatementComponent } from './components/pages/accounts/reports/income-expense-statement/income-expense-statement.component';
-import { DashboardComponent } from './components/pages/accounts/dashboard/dashboard.component';
-import { MainComponent } from './components/layouts/main/main.component';
-import { AccountComponent } from './components/layouts/account/account.component';
+import { ReceiveVoucherComponent } from './accounts/pages/entry/receive-voucher/receive-voucher.component';
+import { TransactionsComponent } from './accounts/pages/reports/transactions/transactions.component';
+import { MainComponent } from './layouts/main/main.component';
+import { AccountComponent } from './layouts/account/account.component';
+import { UsersComponent } from './users/pages/users/users.component';
+import { DashboardComponent } from './accounts/pages/dashboard/dashboard.component';
+import { VendorEntryComponent } from './accounts/pages/setup/vendor-entry/vendor-entry.component';
+import { AccountListEntryComponent } from './accounts/pages/setup/account-list-entry/account-list-entry.component';
+import { ExpenseVoucherComponent } from './accounts/pages/entry/expense-voucher/expense-voucher.component';
+import { JournalVoucherComponent } from './accounts/pages/entry/journal-voucher/journal-voucher.component';
+import { ReceiptPaymentComponent } from './accounts/pages/reports/receipt-payment/receipt-payment.component';
+import { TrialBalanceComponent } from './accounts/pages/reports/trial-balance/trial-balance.component';
+import { GeneralLedgerComponent } from './accounts/pages/reports/general-ledger/general-ledger.component';
+import { GeneralCashBookComponent } from './accounts/pages/reports/general-cash-book/general-cash-book.component';
+import { IncomeExpenseStatementComponent } from './accounts/pages/reports/income-expense-statement/income-expense-statement.component';
+import { BankEntryComponent } from './accounts/pages/setup/bank-entry/bank-entry.component';
 
 export const routes: Routes = [
   {
