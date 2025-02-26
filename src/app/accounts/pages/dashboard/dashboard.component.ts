@@ -57,7 +57,6 @@ export class DashboardComponent {
       });
 
       const thisMonth = this.fromDate().split('-')[1];
-      console.log(+thisMonth)
       const monthlyIncome = yearlyTotalIncome[+thisMonth - 1];
       const monthlyExpense = yearlyTotalExpense[+thisMonth - 1];
       const monthlyProfit = yearlyProfit[+thisMonth - 1];
@@ -89,7 +88,6 @@ export class DashboardComponent {
         monthlyExpense,
         monthlyProfit,
       });
-      console.log(this.filteredReports())
     });
 
     this.isLoading$ = isLoading$;

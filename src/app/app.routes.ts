@@ -1,20 +1,6 @@
 import { Routes } from '@angular/router';
-import { ReceiveVoucherComponent } from './accounts/pages/entry/receive-voucher/receive-voucher.component';
-import { TransactionsComponent } from './accounts/pages/reports/transactions/transactions.component';
 import { MainComponent } from './layouts/main/main.component';
 import { AccountComponent } from './layouts/account/account.component';
-import { UsersComponent } from './users/pages/users/users.component';
-import { DashboardComponent } from './accounts/pages/dashboard/dashboard.component';
-import { VendorEntryComponent } from './accounts/pages/setup/vendor-entry/vendor-entry.component';
-import { AccountListEntryComponent } from './accounts/pages/setup/account-list-entry/account-list-entry.component';
-import { ExpenseVoucherComponent } from './accounts/pages/entry/expense-voucher/expense-voucher.component';
-import { JournalVoucherComponent } from './accounts/pages/entry/journal-voucher/journal-voucher.component';
-import { ReceiptPaymentComponent } from './accounts/pages/reports/receipt-payment/receipt-payment.component';
-import { TrialBalanceComponent } from './accounts/pages/reports/trial-balance/trial-balance.component';
-import { GeneralLedgerComponent } from './accounts/pages/reports/general-ledger/general-ledger.component';
-import { GeneralCashBookComponent } from './accounts/pages/reports/general-cash-book/general-cash-book.component';
-import { IncomeExpenseStatementComponent } from './accounts/pages/reports/income-expense-statement/income-expense-statement.component';
-import { BankEntryComponent } from './accounts/pages/setup/bank-entry/bank-entry.component';
 
 export const routes: Routes = [
   {
@@ -29,61 +15,89 @@ export const routes: Routes = [
           { path: '', redirectTo: '', pathMatch: 'full' },
           {
             path: '',
-            component: DashboardComponent
+            loadComponent: () =>
+              import('./accounts/pages/dashboard/dashboard.component').then(m => m.DashboardComponent),
+            data: { preload: true },
           },
           {
             path: 'setup/bank',
-            component: BankEntryComponent
+            loadComponent: () =>
+              import('./accounts/pages/setup/bank-entry/bank-entry.component').then(m => m.BankEntryComponent),
+            data: { preload: true },
           },
           {
             path: 'setup/vendor',
-            component: VendorEntryComponent
+            loadComponent: () =>
+              import('./accounts/pages/setup/vendor-entry/vendor-entry.component').then(m => m.VendorEntryComponent),
+            data: { preload: true },
           },
           {
             path: 'setup/account-chart',
-            component: AccountListEntryComponent
+            loadComponent: () =>
+              import('./accounts/pages/setup/account-list-entry/account-list-entry.component').then(m => m.AccountListEntryComponent),
+            data: { preload: true },
           },
           {
             path: 'entry/payment-voucher',
-            component: ExpenseVoucherComponent
+            loadComponent: () =>
+              import('./accounts/pages/entry/expense-voucher/expense-voucher.component').then(m => m.ExpenseVoucherComponent),
+            data: { preload: true },
           },
           {
             path: 'entry/receive-voucher',
-            component: ReceiveVoucherComponent
+            loadComponent: () =>
+              import('./accounts/pages/entry/receive-voucher/receive-voucher.component').then(m => m.ReceiveVoucherComponent),
+            data: { preload: true },
           },
           {
             path: 'entry/journal-voucher',
-            component: JournalVoucherComponent
+            loadComponent: () =>
+              import('./accounts/pages/entry/journal-voucher/journal-voucher.component').then(m => m.JournalVoucherComponent),
+            data: { preload: true },
           },
           {
             path: 'reports/receipt-payment',
-            component: ReceiptPaymentComponent
+            loadComponent: () =>
+              import('./accounts/pages/reports/receipt-payment/receipt-payment.component').then(m => m.ReceiptPaymentComponent),
+            data: { preload: true },
           },
           {
             path: 'reports/trial-balance',
-            component: TrialBalanceComponent
+            loadComponent: () =>
+              import('./accounts/pages/reports/trial-balance/trial-balance.component').then(m => m.TrialBalanceComponent),
+            data: { preload: true },
           },
           {
             path: 'reports/general-ledger',
-            component: GeneralLedgerComponent
+            loadComponent: () =>
+              import('./accounts/pages/reports/general-ledger/general-ledger.component').then(m => m.GeneralLedgerComponent),
+            data: { preload: true },
           },
           {
             path: 'reports/general-cashbook',
-            component: GeneralCashBookComponent
+            loadComponent: () =>
+              import('./accounts/pages/reports/general-cash-book/general-cash-book.component').then(m => m.GeneralCashBookComponent),
+            data: { preload: true },
           },
           {
             path: 'reports/transactions',
-            component: TransactionsComponent
+            loadComponent: () =>
+              import('./accounts/pages/reports/transactions/transactions.component').then(m => m.TransactionsComponent),
+            data: { preload: true },
           },
           {
             path: 'reports/income-expense-statement',
-            component: IncomeExpenseStatementComponent
+            loadComponent: () =>
+              import('./accounts/pages/reports/income-expense-statement/income-expense-statement.component').then(m => m.IncomeExpenseStatementComponent),
+            data: { preload: true },
           },
         ],
       },
       {
         path: 'user-access',
-        component: UsersComponent
+        loadComponent: () =>
+          import('./users/pages/users/users.component').then(m => m.UsersComponent),
+        data: { preload: true },
       },
     ],
   }
