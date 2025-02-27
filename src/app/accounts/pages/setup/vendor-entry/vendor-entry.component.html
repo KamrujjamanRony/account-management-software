@@ -90,7 +90,7 @@
 
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
       <div class="flex items-end gap-2 flex-col md:flex-row px-2">
-        <div class="bg-white w-full max-w-lg">
+        <div class="bg-teal-50 w-full max-w-lg">
           <label for="table-search" class="sr-only">Search</label>
           <div class="relative mt-1">
             <div
@@ -141,7 +141,7 @@
           $index) {
           <tr
             id="row-{{ $index }}"
-            class="bg-white border-b hover:bg-teal-600 hover:text-white cursor-pointer"
+            class="bg-teal-50 border-b hover:bg-teal-600 hover:text-white cursor-pointer"
           >
             <td scope="row" class="p-1">
               {{ item?.name }}
@@ -157,7 +157,7 @@
             </td>
             <td>
               <button
-                class="text-yellow-400 hover:bg-white px-1 rounded"
+                class="text-yellow-400 hover:bg-teal-50 px-1 rounded"
                 (click)="onUpdate(item)"
               >
                 Edit
@@ -165,7 +165,7 @@
             </td>
             <td>
               <button
-                class="text-rose-400 hover:bg-white px-1 rounded"
+                class="text-rose-400 hover:bg-teal-50 px-1 rounded"
                 (click)="onDelete(item.id)"
               >
                 Delete

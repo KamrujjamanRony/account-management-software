@@ -49,7 +49,7 @@
             isPatientEnable &&
             getControl('patientRegId').value
           "
-          class="absolute bg-white border border-gray-300 -mt-2 w-full z-50 rounded shadow-lg max-h-96 overflow-scroll"
+          class="absolute bg-teal-50 border border-gray-300 -mt-2 w-full z-50 rounded shadow-lg max-h-96 overflow-scroll"
         >
           <ul>
             <li
@@ -122,7 +122,7 @@
             isDoctorEnable &&
             getControl('doctorId').value
           "
-          class="absolute bg-white border border-gray-300 -mt-2 w-full z-50 rounded shadow-lg max-h-96 overflow-scroll"
+          class="absolute bg-teal-50 border border-gray-300 -mt-2 w-full z-50 rounded shadow-lg max-h-96 overflow-scroll"
         >
           <ul>
             <li
@@ -234,7 +234,7 @@
 
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2 px-2">
       <div class="flex gap-1 justify-between items-end">
-        <div class="bg-white dark:bg-gray-900">
+        <div class="bg-teal-50 dark:bg-gray-900">
           <label for="table-search" class="sr-only">Search</label>
           <div class="relative">
             <div
@@ -353,7 +353,7 @@
           $index) {
           <tr
             id="row-{{ $index }}"
-            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+            class="bg-teal-50 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
             [ngClass]="{
               '!bg-teal-600 text-white': $index === highlightedTr
             }"
@@ -386,7 +386,7 @@
               </button>
               } @else {
               <button
-                class="text-yellow-400 hover:bg-white px-1 rounded"
+                class="text-yellow-400 hover:bg-teal-50 px-1 rounded"
                 (click)="onFollowUpUpdate(item)"
               >
                 followUpDate
@@ -401,7 +401,7 @@
             </td>
             <td class="p-1">
               <button
-                class="text-green-400 hover:bg-white px-1 rounded"
+                class="text-green-400 hover:bg-teal-50 px-1 rounded"
                 (click)="generatePDF(item)"
               >
                 Print
@@ -409,7 +409,7 @@
             </td>
             <td class="p-1">
               <button
-                class="text-yellow-400 hover:bg-white px-1 rounded"
+                class="text-yellow-400 hover:bg-teal-50 px-1 rounded"
                 (click)="onUpdate(item)"
               >
                 Edit
@@ -417,7 +417,7 @@
             </td>
             <td class="p-1">
               <button
-                class="text-rose-400 hover:bg-white px-1 rounded"
+                class="text-rose-400 hover:bg-teal-50 px-1 rounded"
                 (click)="onDelete(item.gid)"
               >
                 Delete

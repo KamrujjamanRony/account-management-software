@@ -30,7 +30,7 @@
       (click)="generatePDF()"
     >
       <span
-        class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0"
+        class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-teal-50 rounded-md group-hover:bg-opacity-0"
       >
         Print
       </span>
@@ -68,7 +68,7 @@
           @for (item of incomeReports(); track $index) {
           <tr
             id="row-{{ $index }}"
-            class="bg-white border-b hover:bg-teal-600 hover:text-white cursor-pointer"
+            class="bg-teal-50 border-b hover:bg-teal-600 hover:text-white cursor-pointer"
           >
             <td class="p-1 capitalize">
               {{ item?.subHead }}
@@ -79,7 +79,7 @@
           </tr>
           }
           <tr
-            class="bg-white border-b hover:bg-teal-600 hover:text-white cursor-pointer"
+            class="bg-teal-50 border-b hover:bg-teal-600 hover:text-white cursor-pointer"
           >
             <td class="p-1 capitalize">Total:</td>
             <td class="p-1">
@@ -122,7 +122,7 @@
           @for (item of expenseReports(); track $index) {
           <tr
             id="row-{{ $index }}"
-            class="bg-white border-b hover:bg-teal-600 hover:text-white cursor-pointer"
+            class="bg-teal-50 border-b hover:bg-teal-600 hover:text-white cursor-pointer"
           >
             <td class="p-1 capitalize">
               {{ item?.subHead }}
@@ -133,7 +133,7 @@
           </tr>
           }
           <tr
-            class="bg-white border-b hover:bg-teal-600 hover:text-white cursor-pointer"
+            class="bg-teal-50 border-b hover:bg-teal-600 hover:text-white cursor-pointer"
           >
             <td class="p-1 capitalize">Total:</td>
             <td class="p-1">
@@ -181,7 +181,7 @@
             @for (item of incomeReports(); track $index) {
             <tr
               id="row-{{ $index }}"
-              class="bg-white border-b hover:bg-teal-600 hover:text-white cursor-pointer"
+              class="bg-teal-50 border-b hover:bg-teal-600 hover:text-white cursor-pointer"
             >
               <td class="p-1 capitalize">
                 {{ item?.subHead }}
@@ -192,7 +192,7 @@
             </tr>
             }
             <tr
-              class="bg-white border-b hover:bg-teal-600 hover:text-white cursor-pointer"
+              class="bg-teal-50 border-b hover:bg-teal-600 hover:text-white cursor-pointer"
             >
               <td class="p-1 capitalize">Total:</td>
               <td class="p-1">
@@ -239,7 +239,7 @@
             @for (item of expenseReports(); track $index) {
             <tr
               id="row-{{ $index }}"
-              class="bg-white border-b hover:bg-teal-600 hover:text-white cursor-pointer"
+              class="bg-teal-50 border-b hover:bg-teal-600 hover:text-white cursor-pointer"
             >
               <td class="p-1 capitalize">
                 {{ item?.subHead }}
@@ -250,7 +250,7 @@
             </tr>
             }
             <tr
-              class="bg-white border-b hover:bg-teal-600 hover:text-white cursor-pointer"
+              class="bg-teal-50 border-b hover:bg-teal-600 hover:text-white cursor-pointer"
             >
               <td class="p-1 capitalize">Total:</td>
               <td class="p-1">
@@ -258,7 +258,7 @@
               </td>
             </tr>
             <!-- <tr
-                    class="bg-white border-b hover:bg-teal-600 hover:text-white cursor-pointer"
+                    class="bg-teal-50 border-b hover:bg-teal-600 hover:text-white cursor-pointer"
                   >
                     <td class="p-1 capitalize">Total:</td>
                     <td class="p-1 capitalize"></td>

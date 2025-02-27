@@ -202,7 +202,7 @@
     </h1>
 
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
-      <div class="pb-4 bg-white dark:bg-gray-900 ml-2">
+      <div class="pb-4 bg-teal-50 dark:bg-gray-900 ml-2">
         <label for="table-search" class="sr-only">Search</label>
         <div class="relative mt-1">
           <div
@@ -264,7 +264,7 @@
           $index) {
           <tr
             id="row-{{ $index }}"
-            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+            class="bg-teal-50 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
           >
             <th
               scope="row"
@@ -310,7 +310,7 @@
             </td> -->
             <td>
               <button
-                class="text-yellow-400 hover:bg-white px-1 rounded"
+                class="text-yellow-400 hover:bg-teal-50 px-1 rounded"
                 (click)="onUpdate(item)"
               >
                 Edit
@@ -318,7 +318,7 @@
             </td>
             <td hidden>
               <button
-                class="text-rose-400 hover:bg-white px-1 rounded"
+                class="text-rose-400 hover:bg-teal-50 px-1 rounded"
                 (click)="onDelete(item.id)"
               >
                 Delete

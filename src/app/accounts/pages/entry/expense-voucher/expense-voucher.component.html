@@ -245,7 +245,7 @@
           @for (item of dataArray; track $index) {
           <tr
             id="row-{{ $index }}"
-            class="bg-white border-b hover:bg-teal-600 hover:text-white cursor-pointer"
+            class="bg-teal-50 border-b hover:bg-teal-600 hover:text-white cursor-pointer"
           >
             <td class="p-1 capitalize">
               {{ displayHead(item?.headId) }}
@@ -368,7 +368,7 @@
           @for (item of filteredVoucherList(); track $index) {
           <tr
             id="row-{{ $index }}"
-            class="bg-white border-b hover:bg-teal-600 hover:text-white cursor-pointer"
+            class="bg-teal-50 border-b hover:bg-teal-600 hover:text-white cursor-pointer"
           >
             <td class="p-1 capitalize">
               {{ item?.voucherNo }}
