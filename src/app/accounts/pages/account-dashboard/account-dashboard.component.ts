@@ -7,12 +7,12 @@ import { AccountingReportsService } from '../../services/accounting-reports.serv
 import { DataFetchService } from '../../../shared/services/useDataFetch';
 
 @Component({
-  selector: 'app-dashboard',
+  selector: 'app-account-dashboard',
   imports: [CommonModule, FormsModule, ApexChartComponent],
-  templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css'
+  templateUrl: './account-dashboard.component.html',
+  styleUrl: './account-dashboard.component.css'
 })
-export class DashboardComponent {
+export class AccountDashboardComponent {
   private accountingReportsService = inject(AccountingReportsService);
   private dataFetchService = inject(DataFetchService);
   filteredReports = signal<any>({

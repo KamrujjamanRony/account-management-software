@@ -1,0 +1,338 @@
+<section class="flex flex-col lg:flex-row gap-5">
+  <div class="border mb-10">
+    <h1
+      class="text-xl md:text-3xl font-bold text-teal-500 underline text-center mb-5"
+    >
+      Patient Form
+    </h1>
+    <form
+      [formGroup]="form"
+      (ngSubmit)="onSubmit($event)"
+      class="min-w-[500px] mx-auto px-2"
+    >
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+        <!-- contactNo -->
+        <Field label="contact No.">
+          <input
+            #inputRef
+            type="text"
+            maxlength="11"
+            [formControl]="getControl('contactNo')"
+            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+            [class.invalid]="
+              (getControl('contactNo').invalid &&
+                getControl('contactNo').touched) ||
+              isSubmitted
+            "
+            placeholder=""
+            (keydown.enter)="handleEnterKey($event, 0)"
+            required
+          />
+        </Field>
+        <!-- regNo -->
+        <Field label="register No.">
+          <input
+            #inputRef
+            type="text"
+            [value]="getControl('regNo').value"
+            [formControl]="getControl('regNo')"
+            [disabled]="getControl('regNo').disabled"
+            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+            placeholder=""
+          />
+        </Field>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+        <!-- name -->
+        <Field label="patient name">
+          <input
+            #inputRef
+            type="text"
+            [formControl]="getControl('name')"
+            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+            [class.invalid]="
+              (getControl('name').invalid && getControl('name').touched) ||
+              isSubmitted
+            "
+            placeholder=""
+            (keydown.enter)="handleEnterKey($event, 1)"
+            required
+          />
+        </Field>
+        <!-- sex -->
+        <Field label="Sex" [isInvalid]="false">
+          <select
+            #inputRef
+            name="sex"
+            [formControl]="getControl('sex')"
+            placeholder=""
+            (keydown.enter)="handleEnterKey($event, 2)"
+            [class.invalid]="
+              (getControl('sex').invalid && getControl('sex').touched) ||
+              isSubmitted
+            "
+            required
+            class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          >
+            @for(option of options; track $index){
+            <option [value]="option.id" class="capitalize">
+              {{ option.name }}
+            </option>
+            }
+          </select>
+        </Field>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+        <!-- fatherName -->
+        <Field label="father/Husband Name">
+          <input
+            #inputRef
+            type="text"
+            [formControl]="getControl('fatherName')"
+            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+            placeholder=""
+            (keydown.enter)="handleEnterKey($event, 3)"
+          />
+        </Field>
+        <!-- motherName -->
+        <Field label="mother Name">
+          <input
+            #inputRef
+            type="text"
+            [formControl]="getControl('motherName')"
+            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+            placeholder=""
+            (keydown.enter)="handleEnterKey($event, 4)"
+          />
+        </Field>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+        <!-- nid -->
+        <Field label="nid">
+          <input
+            #inputRef
+            type="text"
+            [formControl]="getControl('nid')"
+            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+            placeholder=""
+            (keydown.enter)="handleEnterKey($event, 5)"
+          />
+        </Field>
+        <!-- dob -->
+        <Field label="date of birth">
+          <input
+            #inputRef
+            type="date"
+            [formControl]="getControl('dob')"
+            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+            [class.invalid]="
+              (getControl('dob').invalid && getControl('dob').touched) ||
+              isSubmitted
+            "
+            placeholder=""
+            (keydown.enter)="handleEnterKey($event, 6)"
+            required
+          />
+        </Field>
+      </div>
+      <!-- address -->
+      <Field label="address">
+        <input
+          #inputRef
+          type="text"
+          [formControl]="getControl('address')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          [class.invalid]="
+            (getControl('address').invalid && getControl('address').touched) ||
+            isSubmitted
+          "
+          placeholder=""
+          (keydown.enter)="handleEnterKey($event, 7)"
+          required
+        />
+      </Field>
+      <!-- remarks -->
+      <Field label="remarks">
+        <input
+          #inputRef
+          type="text"
+          [formControl]="getControl('remarks')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-teal-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          placeholder=""
+          (keydown.enter)="handleEnterKey($event, 8)"
+        />
+      </Field>
+
+      <div class="flex gap-2">
+        <!-- Save -->
+        @if (!isSubmitting()) {
+        <input
+          #inputRef
+          type="submit"
+          [value]="selectedPatient ? 'Update' : 'Save'"
+          class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-lg shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
+          (keydown.enter)="handleEnterKey($event, 9)"
+        />
+        } @else {
+        <button
+          class="text-white bg-gradient-to-r from-rose-400 via-rose-500 to-rose-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-rose-300 dark:focus:ring-rose-800 shadow-lg shadow-rose-500/50 dark:shadow-lg dark:shadow-rose-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
+        >
+          Submitting...
+        </button>
+        }
+
+        <button
+          (click)="formReset($event)"
+          class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10"
+        >
+          Clear
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="w-full border mb-10 px-3 max-h-[98vh] overflow-scroll">
+    <h1
+      class="text-xl md:text-3xl font-bold text-teal-500 underline text-center"
+    >
+      Patient List
+    </h1>
+
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
+      <div class="pb-4 bg-white dark:bg-gray-900 ml-2">
+        <label for="table-search" class="sr-only">Search</label>
+        <div class="relative mt-1">
+          <div
+            class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none"
+          >
+            <app-search></app-search>
+          </div>
+          <input
+            #searchInput
+            type="text"
+            id="table-search"
+            autocomplete="off"
+            class="block pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-teal-500 focus:border-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-teal-500 dark:focus:border-teal-500"
+            placeholder="Search"
+            (input)="onSearchPatient($event)"
+            (keydown)="handleSearchKeyDown($event)"
+          />
+        </div>
+      </div>
+
+      @if (isLoading$ | async) {
+      <p class="text-3xl font-bold text-center p-10 text-teal-600">
+        Loading ...
+      </p>
+      } @else if (hasError$ | async) {
+      <p class="text-3xl font-bold text-center p-10 text-red-600">
+        There was an error loading data.
+      </p>
+      } @else if (filteredPatientList().length === 0) {
+      <p class="text-3xl font-bold text-center p-10 text-orange-600">
+        Data is Empty.
+      </p>
+      } @else {
+      <table
+        class="w-full text-xs text-left rtl:text-right text-gray-500 dark:text-gray-400"
+      >
+        <thead
+          class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+        >
+          <tr>
+            <th scope="col" class="px-1 py-3">Reg. No.</th>
+            <th scope="col" class="px-1 py-3">name</th>
+            <th scope="col" class="px-1 py-3">contact</th>
+            <!-- <th scope="col" class="px-1 py-3">father</th> -->
+            <!-- <th scope="col" class="px-1 py-3">mother</th> -->
+            <th scope="col" class="px-1 py-3">sex</th>
+            <th scope="col" class="px-1 py-3">birth of day</th>
+            <!-- <th scope="col" class="px-1 py-3">nid no.</th> -->
+            <th scope="col" class="px-1 py-3">address</th>
+            <th scope="col" class="px-1 py-3">remarks</th>
+            <!-- <th scope="col" class="px-1 py-3">post by</th> -->
+            <!-- <th scope="col" class="px-1 py-3">entry date</th> -->
+            <th scope="col" class="px-1 py-3">Edit</th>
+            <th scope="col" class="px-1 py-3 hidden">Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of filteredPatientList().slice(0,20); track item?.id ||
+          $index) {
+          <tr
+            id="row-{{ $index }}"
+            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+          >
+            <th
+              scope="row"
+              class="p-1 font-medium whitespace-nowrap dark:text-white"
+            >
+              {{ item?.regNo }}
+            </th>
+            <th
+              scope="row"
+              class="p-1 font-medium whitespace-nowrap dark:text-white"
+            >
+              {{ item?.name }}
+            </th>
+            <td class="p-1">
+              {{ item?.contactNo }}
+            </td>
+            <!-- <td class="p-1">
+              {{ item?.fatherName }}
+            </td> -->
+            <!-- <td class="p-1">
+              {{ item?.motherName }}
+            </td> -->
+            <td class="p-1">
+              {{ item?.sex }}
+            </td>
+            <td class="p-1">
+              {{ transform(item?.dob, "dd/MM/yyyy") }}
+            </td>
+            <!-- <td class="p-1">
+              {{ item?.nid }}
+            </td> -->
+            <td class="p-1">
+              {{ item?.address }}
+            </td>
+            <td class="p-1">
+              {{ item?.remarks }}
+            </td>
+            <!-- <td class="p-1">
+              {{ item?.postedBy }}
+            </td> -->
+            <!-- <td class="p-1">
+              {{ transform(item?.entryDate, "dd/MM/yyyy") }}
+            </td> -->
+            <td>
+              <button
+                class="text-yellow-400 hover:bg-white px-1 rounded"
+                (click)="onUpdate(item)"
+              >
+                Edit
+              </button>
+            </td>
+            <td hidden>
+              <button
+                class="text-rose-400 hover:bg-white px-1 rounded"
+                (click)="onDelete(item.id)"
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+      }
+    </div>
+  </div>
+</section>
+
+@if (success()) {
+<app-toast-success [title]="success()"></app-toast-success>
+}

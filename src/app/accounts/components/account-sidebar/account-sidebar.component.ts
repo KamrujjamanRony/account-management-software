@@ -22,9 +22,9 @@ export class AccountSidebarComponent {
         {
           id: 11, label: 'Bank Setup', route: '/accounts/setup/bank'
         },
-        {
-          id: 12, label: 'Vendor Setup', route: '/accounts/setup/vendor'
-        },
+        // {
+        //   id: 12, label: 'Vendor Setup', route: '/accounts/setup/vendor'
+        // },
         {
           id: 13, label: 'Chart Of Account', route: '/accounts/setup/account-chart'
         }
@@ -66,5 +66,25 @@ export class AccountSidebarComponent {
       ]
     },
   ]);
+
+  menuState = signal<Record<number, boolean>>({});
+
+  toggleMenu(itemId: number) {
+    this.menuState.update(state => ({
+      ...state,
+      [itemId]: !state[itemId]
+    }));
+  }
+
+  sidebarHovered = signal<boolean>(false);
+
+  setSidebarHover(state: boolean) {
+    this.sidebarHovered.set(state);
+
+    // Close all submenus when hovering out
+    if (!state) {
+      this.menuState.set({});
+    }
+  }
 
 }
