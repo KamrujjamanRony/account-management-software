@@ -1,32 +1,26 @@
-<section class="bg-gray-900 h-full mb-0">
+<section class="h-full min-h-screen bg-teal-100">
   <div class="py-8 px-4 mx-auto max-w-screen-2xl sm:py-16 lg:px-6">
     <div class="max-w-screen-md mx-auto mb-8 lg:mb-16 text-center">
-      <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-white">
+      <h2
+        class="mb-4 text-2xl md:text-4xl lg:text-5xl tracking-tight font-extrabold text-gray-900"
+      >
         Hospital Management Software
       </h2>
-      <p class="text-gray-400 sm:text-md text-justify">
-        SuperSoft brings you an advanced Hospital Management Software designed
-        to streamline operations, enhance patient care, and simplify
-        administration. From appointments to billing, inventory, and staff
-        management, our powerful solution ensures efficiency, accuracy, and
-        seamless integration. Transform your healthcare system with SuperSoft
-        and experience the future of hospital management today!
-      </p>
     </div>
     <div
       class="space-y-8 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-12 md:space-y-0"
     >
       <!-- Accounts  -->
       <div
-        class="cursor-pointer border-gray-900 hover:border-teal-300 border p-1 rounded-md"
+        class="bg-gray-900 cursor-pointer p-2 md:p-5 rounded-md flex flex-col justify-center items-center group"
         [routerLink]="['/accounts']"
         routerLinkActive="router-link-active"
       >
         <div
-          class="flex justify-center items-center mb-4 w-10 h-10 rounded-full lg:h-12 lg:w-12 bg-teal-900"
+          class="flex justify-center items-center mb-4 w-24 h-24 rounded-full bg-teal-900 group-hover:bg-teal-700"
         >
           <svg
-            class="w-5 h-5 lg:w-6 lg:h-6 text-teal-300"
+            class="w-16 h-16 text-teal-300"
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
@@ -41,24 +35,21 @@
             ></path>
           </svg>
         </div>
-        <h3 class="mb-2 text-xl font-bold text-white">Accounts</h3>
-        <p class="text-gray-400">
-          Efficient financial management with SuperSoft – Simplify billing,
-          track expenses, manage invoices, and ensure accurate accounting for
-          your hospital.
-        </p>
+        <h3 class="mb-2 text-xl font-bold text-white group-hover:text-teal-100">
+          Accounts
+        </h3>
       </div>
       <!-- HR  -->
       <div
-        class="cursor-pointer border-gray-900 hover:border-teal-300 border p-1 rounded-md"
+        class="bg-gray-900 cursor-pointer p-2 md:p-5 rounded-md flex flex-col justify-center items-center group"
         [routerLink]="['/hr']"
         routerLinkActive="router-link-active"
       >
         <div
-          class="flex justify-center items-center mb-4 w-10 h-10 rounded-full lg:h-12 lg:w-12 bg-teal-900"
+          class="flex justify-center items-center mb-4 w-24 h-24 rounded-full bg-teal-900 group-hover:bg-teal-700"
         >
           <svg
-            class="w-5 h-5 text-teal-300 lg:w-6 lg:h-6"
+            class="w-16 h-16 text-teal-300"
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
@@ -70,24 +61,22 @@
             ></path>
           </svg>
         </div>
-        <h3 class="mb-2 text-xl font-bold text-white">HR</h3>
-        <p class="text-gray-400">
-          Streamline staff management, payroll, and attendance with SuperSoft’s
-          efficient HR module for seamless hospital workforce operations.
-        </p>
+        <h3 class="mb-2 text-xl font-bold text-white group-hover:text-teal-100">
+          HR
+        </h3>
       </div>
       <!-- Lab  -->
       <div
-        class="cursor-pointer border-gray-900 hover:border-teal-300 border p-1 rounded-md"
+        class="bg-gray-900 cursor-pointer p-2 md:p-5 rounded-md flex flex-col justify-center items-center group"
         [routerLink]="['/']"
         routerLinkActive="router-link-active"
       >
         <div
-          class="flex justify-center items-center mb-4 w-10 h-10 rounded-full lg:h-12 lg:w-12 bg-teal-900"
+          class="flex justify-center items-center mb-4 w-24 h-24 rounded-full bg-teal-900 group-hover:bg-teal-700"
         >
           <svg
-            width="24px"
-            height="24px"
+            width="64px"
+            height="64px"
             viewBox="0 0 512 512"
             id="Layer_1"
             version="1.1"
@@ -136,24 +125,22 @@
             </g>
           </svg>
         </div>
-        <h3 class="mb-2 text-xl font-bold text-white">Lab</h3>
-        <p class="text-gray-400">
-          Manage tests, reports, and results efficiently with SuperSoft’s smart
-          lab management system for accurate diagnostics.
-        </p>
+        <h3 class="mb-2 text-xl font-bold text-white group-hover:text-teal-100">
+          Lab
+        </h3>
       </div>
       <!-- Indoor  -->
       <div
-        class="cursor-pointer border-gray-900 hover:border-teal-300 border p-1 rounded-md"
+        class="bg-gray-900 cursor-pointer p-2 md:p-5 rounded-md flex flex-col justify-center items-center group"
         [routerLink]="['/']"
         routerLinkActive="router-link-active"
       >
         <div
-          class="flex justify-center items-center mb-4 w-10 h-10 rounded-full lg:h-12 lg:w-12 bg-teal-900"
+          class="flex justify-center items-center mb-4 w-24 h-24 rounded-full bg-teal-900 group-hover:bg-teal-700"
         >
           <svg
-            width="24px"
-            height="24px"
+            width="64px"
+            height="64px"
             viewBox="0 0 512 512"
             id="Layer_1"
             version="1.1"
@@ -206,24 +193,22 @@
             </g>
           </svg>
         </div>
-        <h3 class="mb-2 text-xl font-bold text-white">Indoor</h3>
-        <p class="text-gray-400">
-          Optimize inpatient care, bed management, and treatment plans with
-          SuperSoft’s comprehensive indoor patient management system.
-        </p>
+        <h3 class="mb-2 text-xl font-bold text-white group-hover:text-teal-100">
+          Indoor
+        </h3>
       </div>
       <!-- Outdoor  -->
       <div
-        class="cursor-pointer border-gray-900 hover:border-teal-300 border p-1 rounded-md"
+        class="bg-gray-900 cursor-pointer p-2 md:p-5 rounded-md flex flex-col justify-center items-center group"
         [routerLink]="['/']"
         routerLinkActive="router-link-active"
       >
         <div
-          class="flex justify-center items-center mb-4 w-10 h-10 rounded-full lg:h-12 lg:w-12 bg-teal-900"
+          class="flex justify-center items-center mb-4 w-24 h-24 rounded-full bg-teal-900 group-hover:bg-teal-700"
         >
           <svg
-            width="24px"
-            height="24px"
+            width="64px"
+            height="64px"
             viewBox="0 0 512 512"
             id="Layer_1"
             version="1.1"
@@ -282,24 +267,22 @@
             </g>
           </svg>
         </div>
-        <h3 class="mb-2 text-xl font-bold text-white">Outdoor</h3>
-        <p class="text-gray-400">
-          Simplify outpatient services, appointments, and medical records with
-          SuperSoft’s seamless outdoor patient management module.
-        </p>
+        <h3 class="mb-2 text-xl font-bold text-white group-hover:text-teal-100">
+          Outdoor
+        </h3>
       </div>
       <!-- Emergency  -->
       <div
-        class="cursor-pointer border-gray-900 hover:border-teal-300 border p-1 rounded-md"
+        class="bg-gray-900 cursor-pointer p-2 md:p-5 rounded-md flex flex-col justify-center items-center group"
         [routerLink]="['/']"
         routerLinkActive="router-link-active"
       >
         <div
-          class="flex justify-center items-center mb-4 w-10 h-10 rounded-full lg:h-12 lg:w-12 bg-teal-900"
+          class="flex justify-center items-center mb-4 w-24 h-24 rounded-full bg-teal-900 group-hover:bg-teal-700"
         >
           <svg
-            width="24px"
-            height="24px"
+            width="64px"
+            height="64px"
             viewBox="0 0 512 512"
             id="Layer_1"
             version="1.1"
@@ -358,25 +341,22 @@
             </g>
           </svg>
         </div>
-        <h3 class="mb-2 text-xl font-bold text-white">Emergency</h3>
-        <p class="text-gray-400">
-          Handle emergencies efficiently with real-time patient tracking, quick
-          admission, and resource management through SuperSoft’s emergency
-          module.
-        </p>
+        <h3 class="mb-2 text-xl font-bold text-white group-hover:text-teal-100">
+          Emergency
+        </h3>
       </div>
       <!-- Pharmacy  -->
       <div
-        class="cursor-pointer border-gray-900 hover:border-teal-300 border p-1 rounded-md"
+        class="bg-gray-900 cursor-pointer p-2 md:p-5 rounded-md flex flex-col justify-center items-center group"
         [routerLink]="['/']"
         routerLinkActive="router-link-active"
       >
         <div
-          class="flex justify-center items-center mb-4 w-10 h-10 rounded-full lg:h-12 lg:w-12 bg-teal-900"
+          class="flex justify-center items-center mb-4 w-24 h-24 rounded-full bg-teal-900 group-hover:bg-teal-700"
         >
           <svg
-            width="24px"
-            height="24px"
+            width="64px"
+            height="64px"
             viewBox="0 0 512 512"
             id="Layer_1"
             version="1.1"
@@ -423,26 +403,23 @@
             </g>
           </svg>
         </div>
-        <h3 class="mb-2 text-xl font-bold text-white">Pharmacy</h3>
-        <p class="text-gray-400">
-          Automate medicine stock, prescriptions, and sales with SuperSoft’s
-          powerful pharmacy management system for smooth hospital pharmacy
-          operations.
-        </p>
+        <h3 class="mb-2 text-xl font-bold text-white group-hover:text-teal-100">
+          Pharmacy
+        </h3>
       </div>
       <!-- Doctor Appointment  -->
       <div
-        class="cursor-pointer border-gray-900 hover:border-teal-300 border p-1 rounded-md"
+        class="bg-gray-900 cursor-pointer p-2 md:p-5 rounded-md flex flex-col justify-center items-center group"
         [routerLink]="['/doctor-fee']"
         routerLinkActive="router-link-active"
       >
         <div
-          class="flex justify-center items-center mb-4 w-10 h-10 rounded-full lg:h-12 lg:w-12 bg-teal-900"
+          class="flex justify-center items-center mb-4 w-24 h-24 rounded-full bg-teal-900 group-hover:bg-teal-700"
         >
           <svg
             fill="#7aebeb"
-            width="24px"
-            height="24px"
+            width="64px"
+            height="64px"
             viewBox="-1 0 19 19"
             xmlns="http://www.w3.org/2000/svg"
             class="cf-icon-svg"
@@ -460,23 +437,21 @@
             </g>
           </svg>
         </div>
-        <h3 class="mb-2 text-xl font-bold text-white">Doctor Appointment</h3>
-        <p class="text-gray-400">
-          Simplify scheduling, cancellations, and patient-doctor coordination
-          with SuperSoft’s hassle-free appointment management system.
-        </p>
+        <h3 class="mb-2 text-xl font-bold text-white group-hover:text-teal-100">
+          Doctor Appointment
+        </h3>
       </div>
       <!-- Settings  -->
       <div
-        class="cursor-pointer border-gray-900 hover:border-teal-300 border p-1 rounded-md"
+        class="bg-gray-900 cursor-pointer p-2 md:p-5 rounded-md flex flex-col justify-center items-center group"
         [routerLink]="['/']"
         routerLinkActive="router-link-active"
       >
         <div
-          class="flex justify-center items-center mb-4 w-10 h-10 rounded-full lg:h-12 lg:w-12 bg-teal-900"
+          class="flex justify-center items-center mb-4 w-24 h-24 rounded-full bg-teal-900 group-hover:bg-teal-700"
         >
           <svg
-            class="w-5 h-5 lg:w-6 lg:h-6 text-teal-300"
+            class="w-16 h-16 text-teal-300"
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
@@ -488,11 +463,9 @@
             ></path>
           </svg>
         </div>
-        <h3 class="mb-2 text-xl font-bold text-white">Settings</h3>
-        <p class="text-gray-400">
-          Customize system preferences, user roles, and configurations
-          effortlessly with SuperSoft’s flexible settings module.
-        </p>
+        <h3 class="mb-2 text-xl font-bold text-white group-hover:text-teal-100">
+          Settings
+        </h3>
       </div>
     </div>
   </div>

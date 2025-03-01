@@ -41,6 +41,9 @@ export class AccountSidebarComponent {
         {
           id: 23, label: 'Journal/Contra Voucher', route: '/accounts/entry/journal-voucher'
         },
+        {
+          id: 23, label: 'Fixed Asset Description', route: '/accounts/entry/fixed-asset-description'
+        },
       ]
     },
     {

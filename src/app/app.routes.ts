@@ -1,3 +1,4 @@
+import { FixedAssetDescriptionComponent } from './accounts/pages/entry/fixed-asset-description/fixed-asset-description.component';
 import { Routes } from '@angular/router';
 import { MainComponent } from './layouts/main/main.component';
 import { AccountComponent } from './layouts/account/account.component';
@@ -60,6 +61,12 @@ export const routes: Routes = [
             path: 'entry/journal-voucher',
             loadComponent: () =>
               import('./accounts/pages/entry/journal-voucher/journal-voucher.component').then(m => m.JournalVoucherComponent),
+            data: { preload: false },
+          },
+          {
+            path: 'entry/fixed-asset-description',
+            loadComponent: () =>
+              import('./accounts/pages/entry/fixed-asset-description/fixed-asset-description.component').then(m => m.FixedAssetDescriptionComponent),
             data: { preload: false },
           },
           {

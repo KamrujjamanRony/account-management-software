@@ -1,0 +1,344 @@
+<section class="flex flex-col lg:flex-row gap-5">
+  @if (showForm()) {
+  <div class="w-full md:max-w-xl border mb-10">
+    <h1
+      class="text-xl md:text-3xl font-bold text-teal-500 underline text-center mb-5"
+    >
+      Current Asset Form
+    </h1>
+    <form
+      [formGroup]="form"
+      (ngSubmit)="onSubmit($event)"
+      class="min-w-[400px] mx-auto px-2"
+    >
+      <!-- assetType -->
+      @if (assetTypeOption().length > 0) {
+      <Field label="Asset Type">
+        <select
+          #inputRef
+          formControlName="assetType"
+          placeholder=""
+          class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+          (keydown.enter)="handleEnterKey($event, 0)"
+          [disabled]="assetTypeOption().length === 0"
+        >
+          <option value="" class="capitalize">Select Option</option>
+          @for(option of assetTypeOption(); track $index){
+          <option [value]="option?.id" class="capitalize">
+            {{ option?.text }}
+          </option>
+          }
+        </select>
+      </Field>
+      } @else {
+      <Field label="Asset Type">
+        <select
+          placeholder=""
+          class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+          (keydown.enter)="handleEnterKey($event, 0)"
+          [disabled]="assetTypeOption().length === 0"
+        ></select>
+      </Field>
+      }
+      <!-- assetName -->
+      <Field label="assetName">
+        <input
+          #inputRef
+          type="text"
+          [formControl]="getControl('assetName')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          [class.invalid]="
+            (getControl('assetName').invalid &&
+              getControl('assetName').touched) ||
+            isSubmitted
+          "
+          placeholder=""
+          (keydown.enter)="handleEnterKey($event, 0)"
+          required
+        />
+      </Field>
+      <!-- purInvNO -->
+      <Field label="purInvNO">
+        <input
+          #inputRef
+          type="text"
+          [formControl]="getControl('purInvNO')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          placeholder=""
+          (keydown.enter)="handleEnterKey($event, 1)"
+        />
+      </Field>
+      <!-- purDate -->
+      <Field label="purDate">
+        <input
+          #inputRef
+          type="date"
+          [formControl]="getControl('purDate')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          placeholder=""
+          (keydown.enter)="handleEnterKey($event, 2)"
+        />
+      </Field>
+      <!-- depCalDate -->
+      <Field label="depCalDate">
+        <input
+          #inputRef
+          type="date"
+          [formControl]="getControl('depCalDate')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          placeholder=""
+          (keydown.enter)="handleEnterKey($event, 2)"
+        />
+      </Field>
+      <!-- purPrice -->
+      <Field label="purPrice">
+        <input
+          #inputRef
+          type="number"
+          [formControl]="getControl('purPrice')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          placeholder=""
+          (keydown.enter)="handleEnterKey($event, 2)"
+          (input)="onCalculateValue($event)"
+        />
+      </Field>
+      <!-- depre -->
+      <Field label="depre">
+        <input
+          #inputRef
+          type="number"
+          [formControl]="getControl('depre')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          placeholder=""
+          (keydown.enter)="handleEnterKey($event, 2)"
+          (input)="onCalculateValue($event)"
+        />
+      </Field>
+      <!-- depValue -->
+      <Field label="depValue">
+        <input
+          #inputRef
+          type="number"
+          [formControl]="getControl('depValue')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          placeholder=""
+          (keydown.enter)="handleEnterKey($event, 2)"
+        />
+      </Field>
+      <!-- wdv -->
+      <Field label="wdv">
+        <input
+          #inputRef
+          type="number"
+          [formControl]="getControl('wdv')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          placeholder=""
+          (keydown.enter)="handleEnterKey($event, 2)"
+        />
+      </Field>
+      <!-- Previous Value -->
+      <Field label="Previous Value">
+        <input
+          #inputRef
+          type="number"
+          [value]="getControl('depValue').value + getControl('wdv').value"
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          placeholder=""
+          disabled="true"
+        />
+      </Field>
+      <!-- location -->
+      <Field label="location">
+        <input
+          #inputRef
+          type="date"
+          [formControl]="getControl('location')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          placeholder=""
+          (keydown.enter)="handleEnterKey($event, 2)"
+        />
+      </Field>
+      <!-- warrEndDate -->
+      <Field label="warrEndDate">
+        <input
+          #inputRef
+          type="date"
+          [formControl]="getControl('warrEndDate')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          placeholder=""
+          (keydown.enter)="handleEnterKey($event, 2)"
+        />
+      </Field>
+      <!-- fileLink -->
+      <Field label="fileLink">
+        <input
+          #inputRef
+          type="text"
+          [formControl]="getControl('fileLink')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          placeholder=""
+          (keydown.enter)="handleEnterKey($event, 2)"
+        />
+      </Field>
+
+      <div class="flex gap-2">
+        <!-- Save -->
+        <input
+          #inputRef
+          type="submit"
+          [value]="selectedFixedAsset ? 'Update' : 'Save'"
+          class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 shadow-lg shadow-teal-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
+          (keydown.enter)="handleEnterKey($event, 3)"
+        />
+
+        <button
+          (click)="formReset($event)"
+          class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-red-300 shadow-lg shadow-red-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10"
+        >
+          Clear
+        </button>
+      </div>
+    </form>
+  </div>
+  }
+
+  <div class="w-full border mb-10 px-3 max-h-[98vh] overflow-scroll">
+    <div class="flex justify-between items-center">
+      <button
+        (click)="showForm.set(!showForm())"
+        class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-red-300 shadow-lg shadow-red-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 my-2 w-36"
+      >
+        {{ showForm() ? "Hide" : "Show" }} Form
+      </button>
+
+      <h1
+        class="text-xl md:text-3xl font-bold text-teal-500 underline text-center w-full"
+      >
+        Current Asset Description List
+      </h1>
+    </div>
+
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
+      <div class="flex items-end gap-2 flex-col md:flex-row px-2">
+        <div class="bg-teal-50 w-full max-w-lg">
+          <label for="table-search" class="sr-only">Search</label>
+          <div class="relative mt-1">
+            <div
+              class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none"
+            >
+              <app-search></app-search>
+            </div>
+            <input
+              #searchInput
+              type="text"
+              id="table-search"
+              autocomplete="off"
+              class="block ps-10 text-xs text-gray-900 border border-gray-300 rounded bg-gray-50 focus:ring-teal-500 focus:border-teal-500 w-full"
+              placeholder="Search"
+              (input)="onSearchFixedAsset($event)"
+              (keydown)="handleSearchKeyDown($event)"
+            />
+          </div>
+        </div>
+      </div>
+
+      @if (isLoading$ | async) {
+      <p class="text-3xl font-bold text-center p-10 text-teal-600">
+        Loading ...
+      </p>
+      } @else if (hasError$ | async) {
+      <p class="text-3xl font-bold text-center p-10 text-red-600">
+        There was an error loading data.
+      </p>
+      } @else if (filteredFixedAssetList().length === 0) {
+      <p class="text-3xl font-bold text-center p-10 text-orange-600">
+        Data is Empty.
+      </p>
+      } @else {
+      <table class="w-full text-sm text-left rtl:text-right text-gray-800 mt-2">
+        <thead class="text-sm text-gray-100 uppercase bg-gray-800">
+          <tr>
+            <th scope="col" class="p-1">assetName</th>
+            <th scope="col" class="p-1">assetType</th>
+            <th scope="col" class="p-1">purInvNO</th>
+            <th scope="col" class="px-1 py-3">purDate</th>
+            <th scope="col" class="px-1 py-3">purPrice</th>
+            <th scope="col" class="p-1">depCalDate</th>
+            <th scope="col" class="p-1">depre</th>
+            <th scope="col" class="p-1">depValue</th>
+            <th scope="col" class="p-1">wdv</th>
+            <th scope="col" class="p-1">location</th>
+            <th scope="col" class="p-1">warrEndDate</th>
+            <th scope="col" class="p-1">fileLink</th>
+            <th scope="col" class="px-1 py-3">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of filteredFixedAssetList().slice(0,20); track item?.id ||
+          $index) {
+          <tr
+            id="row-{{ $index }}"
+            class="bg-teal-50 border-b hover:bg-teal-600 hover:text-white cursor-pointer"
+          >
+            <td scope="row" class="p-1">
+              {{ item?.assetName }}
+            </td>
+            <td class="p-1">
+              {{ item?.assetType }}
+            </td>
+            <td class="p-1">
+              {{ item?.purInvNO }}
+            </td>
+            <td class="p-1">
+              {{ item?.purDate }}
+            </td>
+            <td class="p-1">
+              {{ item?.purPrice }}
+            </td>
+            <td class="p-1">
+              {{ item?.depCalDate }}
+            </td>
+            <td class="p-1">
+              {{ item?.depre }}
+            </td>
+            <td class="p-1">
+              {{ item?.depValue }}
+            </td>
+            <td class="p-1">
+              {{ item?.wdv }}
+            </td>
+            <td class="p-1">
+              {{ item?.location }}
+            </td>
+            <td class="p-1">
+              {{ item?.warrEndDate }}
+            </td>
+            <td class="p-1">
+              {{ item?.fileLink }}
+            </td>
+            <td class="flex gap-1">
+              <button
+                class="text-orange-50 bg-orange-400 hover:bg-orange-500 p-1 rounded"
+                (click)="onUpdate(item)"
+              >
+                <app-all-svg icon="pencil" />
+              </button>
+              <button
+                class="text-rose-50 bg-rose-600 hover:bg-rose-700 px-2 py-[1px] rounded"
+                (click)="onDelete(item.id)"
+              >
+                X
+              </button>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+      }
+    </div>
+  </div>
+</section>
+
+@if (success()) {
+<app-toast-success [title]="success()"></app-toast-success>
+}
