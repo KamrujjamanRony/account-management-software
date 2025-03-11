@@ -8,6 +8,7 @@ import { SearchComponent } from "../../../../shared/components/svg/search/search
 import { AccountingReportsService } from '../../../services/accounting-reports.service';
 import { AccountListService } from '../../../services/account-list.service';
 import { DataFetchService } from '../../../../shared/services/useDataFetch';
+import { DataService } from '../../../../shared/services/data.service';
 
 @Component({
   selector: 'app-general-ledger',
@@ -19,6 +20,7 @@ export class GeneralLedgerComponent {
   private accountingReportsService = inject(AccountingReportsService);
   private accountListService = inject(AccountListService);
   private dataFetchService = inject(DataFetchService);
+  private dataService = inject(DataService);
   filteredReports = signal<any[]>([]);
   accountBankCashIdOption = signal<any[]>([]);
   selectedBankCash = signal<any>(null);
@@ -30,7 +32,7 @@ export class GeneralLedgerComponent {
 
   isLoading$: Observable<any> | undefined;
   hasError$: Observable<any> | undefined;
-  marginTop: any = 0;
+  header = signal<any>(null);
   readonly searchInput = viewChild.required<ElementRef<HTMLInputElement>>('searchInput');
 
   private searchQuery$ = new BehaviorSubject<string>('');
@@ -39,6 +41,7 @@ export class GeneralLedgerComponent {
     const today = new Date();
     this.fromDate.set(today.toISOString().split('T')[0]);
     this.onLoadFilter();
+    this.dataService.getHeader().subscribe(data => this.header.set(data));
   }
 
   // ngAfterViewInit() {
@@ -102,22 +105,39 @@ export class GeneralLedgerComponent {
     const pageSizeHeight = 297;
     const marginLeft = 10;
     const marginRight = 10;
-    let marginTop = this.marginTop + 10;
+    let marginTop = (this.header()?.marginTop | 0) + 10;
     const marginBottom = 10;
 
     const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'A4' });
 
-    if (this.fromDate() || this.toDate()) {
-      marginTop += 4;
-    }
-
     // Title and Header Section
     const pageWidth = doc.internal.pageSize.width - marginLeft - marginRight;
 
+    // Header Section
+    if (this.header()) {
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(18);
+      doc.text(this.header()?.name, pageWidth / 2 + marginLeft, marginTop, { align: 'center' });
+      marginTop += 5;
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(12);
+      doc.text(this.header()?.address, pageWidth / 2 + marginLeft, marginTop, { align: 'center' });
+      marginTop += 5;
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(12);
+      doc.text(`Contact: ${this.header()?.contact}`, pageWidth / 2 + marginLeft, marginTop, { align: 'center' });
+      marginTop += 2;
+      doc.line(0, marginTop, 560, marginTop);
+      marginTop += 7;
+    }
+
+    // Title Section
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(14);
     doc.text(`General Transaction Report`, pageWidth / 2 + marginLeft, marginTop, { align: 'center' });
-    marginTop += 8;
+    marginTop += 5;
 
     // Sub-header for doctor name and dates
     doc.setFontSize(10);
@@ -126,7 +146,6 @@ export class GeneralLedgerComponent {
       const dateRange = `From: ${this.transform(this.fromDate())} to: ${this.toDate() ? this.transform(this.toDate()) : this.transform(this.fromDate())
         }`;
       doc.text(dateRange, pageWidth / 2 + marginLeft, marginTop, { align: 'center' });
-      marginTop += 4;
     }
 
     // Prepare Table Data
@@ -134,26 +153,26 @@ export class GeneralLedgerComponent {
       this.transform(data?.voucherDate) || '',
       data?.voucherNo || '',
       data?.headName || '',
-      data?.remarks || '',
       data?.debitAmount || '',
       data?.creditAmount || '',
       data?.balance || 0,
+      data?.remarks || '',
     ]);
 
     // Render Table
     (doc as any).autoTable({
-      head: [['VoucherDate', 'VoucherNo', 'HeadName', 'Remarks', 'DebitAmount', "CreditAmount", "Balance"]],
+      head: [['VoucherDate', 'VoucherNo', 'HeadName', 'DebitAmount', "CreditAmount", "Balance", 'Remarks']],
       body: dataRows,
       foot: [
         [
-          '', '', '', '',
+          '', '', '',
           this.totalDebit().toFixed(0),
           this.totalCredit().toFixed(0),
-          ''
+          '', ''
         ],
       ],
       theme: 'grid',
-      startY: marginTop + 5,
+      startY: marginTop + 2,
       styles: {
         textColor: 0,
         cellPadding: 2,

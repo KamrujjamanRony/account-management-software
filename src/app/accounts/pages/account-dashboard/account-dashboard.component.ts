@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { ApexChartComponent } from '../../components/apex-chart/apex-chart.component';
 import { AccountingReportsService } from '../../services/accounting-reports.service';
 import { DataFetchService } from '../../../shared/services/useDataFetch';
+import { DataService } from '../../../shared/services/data.service';
 
 @Component({
   selector: 'app-account-dashboard',
@@ -15,6 +16,7 @@ import { DataFetchService } from '../../../shared/services/useDataFetch';
 export class AccountDashboardComponent {
   private accountingReportsService = inject(AccountingReportsService);
   private dataFetchService = inject(DataFetchService);
+  private dataService = inject(DataService);
   filteredReports = signal<any>({
     "totalBalanceResult": [],
     "totalCurrentBalanceResult": [],
@@ -22,6 +24,7 @@ export class AccountDashboardComponent {
     "monthwiseIncomeExpenceResult": [],
   });
   fromDate = signal<any>(null);
+  header = signal<any>(null);
   totalMonth = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
   isLoading$: Observable<any> | undefined;
@@ -32,6 +35,7 @@ export class AccountDashboardComponent {
     const today = new Date();
     this.fromDate.set(today.toISOString().split('T')[0]);
     this.onLoadReport();
+    this.dataService.getHeader().subscribe(data => this.header.set(data));
   }
 
   onLoadReport() {

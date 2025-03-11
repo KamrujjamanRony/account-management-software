@@ -12,6 +12,7 @@ import { VendorService } from '../../../services/vendor.service';
 import { VoucherService } from '../../../services/voucher.service';
 import { AccountingReportsService } from '../../../services/accounting-reports.service';
 import { DataFetchService } from '../../../../shared/services/useDataFetch';
+import { DataService } from '../../../../shared/services/data.service';
 
 @Component({
   selector: 'app-journal-voucher',
@@ -26,7 +27,7 @@ export class JournalVoucherComponent {
   private voucherService = inject(VoucherService);
   private accountingReportsService = inject(AccountingReportsService);
   dataFetchService = inject(DataFetchService);
-  filteredVoucherList = signal<any[]>([]);
+  private dataService = inject(DataService);
   highlightedTr: number = -1;
   success = signal<any>("");
   selectedVoucher: any;
@@ -34,10 +35,9 @@ export class JournalVoucherComponent {
   selectedVoucherDetailsIndex: any;
   transactionTypeOption = [
     { id: "BalanceSheet", text: "Balance-Sheet" },
-    // { id: "Receipt", text: "Receipt" },
-    // { id: "Payment", text: "Payment" },
     { id: "Contra", text: "Contra" },
   ];
+  filteredVoucherList = signal<any[]>([]);
   accountBankCashIdOption = signal<any[]>([]);
   vendorIdOption = signal<any[]>([]);
   headIdOption = signal<any[]>([]);
@@ -56,7 +56,7 @@ export class JournalVoucherComponent {
   totalDebitAmount: number = 0;
   totalCreditAmount: number = 0;
   selectedValue: any = "";
-  marginTop: any = 0;
+  header = signal<any>(null);
 
   isLoading$: Observable<any> | undefined;
   hasError$: Observable<any> | undefined;
@@ -77,10 +77,11 @@ export class JournalVoucherComponent {
     this.onLoadVoucher();
     this.accountListService.getAccountList({ "allbyheadId": 1 }).subscribe(data => this.allOption.set(data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() }))));
     setTimeout(() => this.focusFirstInput(), 10);
+    this.dataService.getHeader().subscribe(data => this.header.set(data));
   }
 
   ngAfterViewInit() {
-    this.onLoadDropdown();
+    this.onLoadJournal();
   }
 
   onLoadVoucher() {
@@ -101,72 +102,6 @@ export class JournalVoucherComponent {
     this.hasError$ = hasError$;
   }
 
-  onLoadDropdown() {
-    if (this.transactionType() === "Payment") {
-      this.onLoadExpense();
-    } else if (this.transactionType() === "Receipt") {
-      this.onLoadReceipt();
-    } else if (this.transactionType() === "BalanceSheet") {
-      this.onLoadJournal();
-    }
-  }
-
-  onLoadExpense() {
-    this.accountListService.getAccountList({
-      "allbyheadId": 1,
-      "search": null,
-      "coaMap": [],
-      "accountGroup": ["Expenses"]
-    }).subscribe(data => {
-      const accountGroupId = data.find((a: any) => a.accountGroup === "Expenses")?.id;
-      const accountListReq = {
-        "headId": null,
-        "allbyheadId": 1,
-        "search": null,
-        "coaMap": ["Cash", "Bank"],
-        "accountGroup": []
-      }
-      const headIdReq = {
-        "headId": accountGroupId,
-        "allbyheadId": accountGroupId,
-        "search": null,
-        "coaMap": [],
-        "accountGroup": []
-      }
-      this.accountListService.getAccountList(accountListReq).subscribe(data => this.accountBankCashIdOption.set(data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() }))));
-      this.accountListService.getAccountList(headIdReq).subscribe(data => this.headIdOption.set(data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() }))));
-      this.vendorService.getVendor('').subscribe(data => this.vendorIdOption.set(data.map((c: any) => ({ id: c.id, text: c.name.toLowerCase() }))));
-    });
-  }
-
-  onLoadReceipt() {
-    this.accountListService.getAccountList({
-      "allbyheadId": 1,
-      "search": null,
-      "coaMap": [],
-      "accountGroup": ["Income"]
-    }).subscribe(data => {
-      const accountGroupId = data.find((a: any) => a.accountGroup === "Income")?.id;
-      const accountListReq = {
-        "headId": null,
-        "allbyheadId": 1,
-        "search": null,
-        "coaMap": ["Cash", "Bank"],
-        "accountGroup": []
-      }
-      const headIdReq = {
-        "headId": accountGroupId,
-        "allbyheadId": accountGroupId,
-        "search": null,
-        "coaMap": [],
-        "accountGroup": []
-      }
-      this.accountListService.getAccountList(accountListReq).subscribe(data => this.accountBankCashIdOption.set(data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() }))));
-      this.accountListService.getAccountList(headIdReq).subscribe(data => this.headIdOption.set(data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() }))));
-      this.vendorService.getVendor('').subscribe(data => this.vendorIdOption.set(data.map((c: any) => ({ id: c.id, text: c.name.toLowerCase() }))));
-    });
-  }
-
   onLoadJournal() {
     this.accountListService.getAccountList({
       "allbyheadId": 1,
@@ -181,7 +116,7 @@ export class JournalVoucherComponent {
   onTransactionTypeChange() {
     this.transactionType.set(this.form.value.transactionType)
     this.onLoadVoucher();
-    this.onLoadDropdown();
+    this.onLoadJournal();
   }
 
   // Form Field ----------------------------------------------------------------
@@ -712,30 +647,44 @@ export class JournalVoucherComponent {
     const pageSizeHeight = 297;
     const marginLeft = 10;
     const marginRight = 10;
-    let marginTop = this.marginTop + 10;
+    let marginTop = (this.header()?.marginTop | 0) + 10;
     const marginBottom = 10;
 
     const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'A4' });
 
-    if (this.fromDate() || this.toDate()) {
-      marginTop += 4;
-    }
-
-    // Title and Header Section
+    // Header Section
     const pageWidth = doc.internal.pageSize.width - marginLeft - marginRight;
 
+    if (this.header()) {
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(18);
+      doc.text(this.header()?.name, pageWidth / 2 + marginLeft, marginTop, { align: 'center' });
+      marginTop += 5;
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(12);
+      doc.text(this.header()?.address, pageWidth / 2 + marginLeft, marginTop, { align: 'center' });
+      marginTop += 5;
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(12);
+      doc.text(`Contact: ${this.header()?.contact}`, pageWidth / 2 + marginLeft, marginTop, { align: 'center' });
+      marginTop += 2;
+      doc.line(0, marginTop, 560, marginTop);
+      marginTop += 7;
+    }
+
+    // Title Section
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(14);
     doc.text(`${this.transactionType()} Reports`, pageWidth / 2 + marginLeft, marginTop, { align: 'center' });
     marginTop += 5;
 
     doc.setFontSize(10);
-
     if (this.fromDate()) {
       const dateRange = `From: ${this.transform(this.fromDate())} to: ${this.toDate() ? this.transform(this.toDate()) : this.transform(this.fromDate())
         }`;
       doc.text(dateRange, pageWidth / 2 + marginLeft, marginTop, { align: 'center' });
-      marginTop += 4;
     }
 
     // Prepare Table Data
@@ -762,7 +711,7 @@ export class JournalVoucherComponent {
         ],
       ],
       theme: 'grid',
-      startY: marginTop + 5,
+      startY: marginTop + 2,
       styles: {
         textColor: 0,
         cellPadding: 2,

@@ -8,6 +8,7 @@ import 'jspdf-autotable';
 import { Selector2Component } from '../../../components/selector2/selector2.component';
 import { AccountListService } from '../../../services/account-list.service';
 import { VoucherService } from '../../../services/voucher.service';
+import { DataService } from '../../../../shared/services/data.service';
 
 @Component({
   selector: 'app-transactions',
@@ -19,6 +20,7 @@ export class TransactionsComponent {
   private accountListService = inject(AccountListService);
   private voucherService = inject(VoucherService);
   private dataFetchService = inject(DataFetchService);
+  private dataService = inject(DataService);
   filteredVoucherList = signal<any[]>([]);
   fromDate = signal<any>(null);
   toDate = signal<any>(null);
@@ -37,12 +39,13 @@ export class TransactionsComponent {
 
   isLoading$: Observable<any> | undefined;
   hasError$: Observable<any> | undefined;
-  marginTop: any = 0;
+  header = signal<any>(null);
 
   ngOnInit() {
     const today = new Date();
     this.fromDate.set(today.toISOString().split('T')[0]);
     this.onLoadVoucher();
+    this.dataService.getHeader().subscribe(data => this.header.set(data));
   }
 
   ngAfterViewInit() {
@@ -130,7 +133,7 @@ export class TransactionsComponent {
     const pageSizeHeight = 297;
     const marginLeft = 10;
     const marginRight = 10;
-    let marginTop = this.marginTop + 10;
+    let marginTop = (this.header()?.marginTop | 0) + 10;
     const marginBottom = 10;
 
     const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'A4' });
@@ -139,17 +142,35 @@ export class TransactionsComponent {
     if (this.chartOfAccountId()) {
       marginTop += 5;
     }
-    if (this.fromDate() || this.toDate()) {
-      marginTop += 4;
-    }
 
     // Title and Header Section
     const pageWidth = doc.internal.pageSize.width - marginLeft - marginRight;
 
+    // Header Section
+    if (this.header()) {
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(18);
+      doc.text(this.header()?.name, pageWidth / 2 + marginLeft, marginTop, { align: 'center' });
+      marginTop += 5;
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(12);
+      doc.text(this.header()?.address, pageWidth / 2 + marginLeft, marginTop, { align: 'center' });
+      marginTop += 5;
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(12);
+      doc.text(`Contact: ${this.header()?.contact}`, pageWidth / 2 + marginLeft, marginTop, { align: 'center' });
+      marginTop += 2;
+      doc.line(0, marginTop, 560, marginTop);
+      marginTop += 7;
+    }
+
+    // Title Section
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(14);
     doc.text(`${this.transactionType()} Reports`, pageWidth / 2 + marginLeft, marginTop, { align: 'center' });
-    marginTop += 8;
+    marginTop += 5;
 
     // Sub-header for doctor name and dates
     doc.setFontSize(10);
@@ -161,7 +182,6 @@ export class TransactionsComponent {
       const dateRange = `From: ${this.transform(this.fromDate())} to: ${this.toDate() ? this.transform(this.toDate()) : this.transform(this.fromDate())
         }`;
       doc.text(dateRange, pageWidth / 2 + marginLeft, marginTop, { align: 'center' });
-      marginTop += 4;
     }
 
     // Prepare Table Data
@@ -193,7 +213,7 @@ export class TransactionsComponent {
         ],
       ],
       theme: 'grid',
-      startY: marginTop + 5,
+      startY: marginTop + 2,
       styles: {
         textColor: 0,
         cellPadding: 2,
