@@ -1,0 +1,263 @@
+<section class="flex flex-col lg:flex-row gap-5">
+  <div class="w-full md:max-w-xl border mb-10">
+    <h1
+      class="text-xl md:text-3xl font-bold text-teal-500 underline text-center mb-5"
+    >
+      Menu Form
+    </h1>
+    <form
+      [formGroup]="form"
+      (ngSubmit)="onSubmit($event)"
+      class="min-w-[400px] mx-auto px-2"
+    >
+      <!-- menuName -->
+      <Field label="menu Name">
+        <input
+          #inputRef
+          type="text"
+          [formControl]="getControl('menuName')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          [class.invalid]="
+            (getControl('menuName').invalid &&
+              getControl('menuName').touched) ||
+            isSubmitted
+          "
+          placeholder=""
+          (keydown.enter)="handleEnterKey($event, 0)"
+          required
+        />
+      </Field>
+      <!-- moduleName -->
+      <Field label="module Name">
+        <input
+          #inputRef
+          type="text"
+          [formControl]="getControl('moduleName')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          placeholder=""
+          (keydown.enter)="handleEnterKey($event, 1)"
+        />
+      </Field>
+      <!-- parentMenuId -->
+      <Field label="parent Menu">
+        <select
+          #inputRef
+          name="parentMenuId"
+          [formControl]="getControl('parentMenuId')"
+          placeholder=""
+          (keydown.enter)="handleEnterKey($event, 2)"
+          class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+        >
+          <option value="" class="capitalize">Select Option</option>
+          @for(option of menuOptions(); track $index){
+          <option [value]="option?.key" class="capitalize">
+            {{ option?.value }}
+          </option>
+          }
+        </select>
+      </Field>
+      <!-- url -->
+      <Field label="url">
+        <input
+          #inputRef
+          type="text"
+          [formControl]="getControl('url')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          placeholder=""
+          (keydown.enter)="handleEnterKey($event, 3)"
+        />
+      </Field>
+      <!-- icon -->
+      <Field label="icon">
+        <input
+          #inputRef
+          type="text"
+          [formControl]="getControl('icon')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          placeholder=""
+          (keydown.enter)="handleEnterKey($event, 4)"
+        />
+      </Field>
+      <!-- permissionsKey -->
+      <div class="mb-5 relative">
+        <label class="block text-xs font-medium text-gray-900 absolute"
+          >Permissions</label
+        >
+        <p-multiselect
+          #inputRef
+          [options]="options"
+          [formControl]="getControl('permissionsKey')"
+          optionLabel=""
+          placeholder="Select Options"
+          [maxSelectedLabels]="3"
+          styleClass="block !py-2.5 !px-0 !w-full !text-sm !text-gray-900 !bg-transparent !border-0 !border-b-2 !border-gray-300 !appearance-none !focus:outline-none !focus:ring-0 !focus:border-teal-600 !peer !rounded-none"
+          (keydown.enter)="handleEnterKey($event, 5)"
+        >
+        </p-multiselect>
+      </div>
+
+      <!-- isActive -->
+
+      <div class="flex flex-wrap mb-5">
+        <div class="flex items-center me-4">
+          <input
+            id="active-radio"
+            type="radio"
+            [formControl]="getControl('isActive')"
+            [value]="true"
+            name="isActive"
+            class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+          />
+          <label
+            for="active-radio"
+            class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+            >Activate</label
+          >
+        </div>
+        <div class="flex items-center me-4">
+          <input
+            id="deactivate-radio"
+            type="radio"
+            [formControl]="getControl('isActive')"
+            [value]="false"
+            name="isActive"
+            class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 focus:ring-red-500 dark:focus:ring-red-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+          />
+          <label
+            for="deactivate-radio"
+            class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+            >Deactivate</label
+          >
+        </div>
+      </div>
+
+      <div class="flex gap-2">
+        <!-- Save -->
+        <input
+          #inputRef
+          type="submit"
+          [value]="selectedMenu ? 'Update' : 'Save'"
+          class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 shadow-lg shadow-teal-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
+          (keydown.enter)="handleEnterKey($event, 3)"
+        />
+
+        <button
+          (click)="formReset($event)"
+          class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-red-300 shadow-lg shadow-red-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10"
+        >
+          Clear
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="w-full border mb-10 px-3 max-h-[98vh] overflow-scroll">
+    <h1
+      class="text-xl md:text-3xl font-bold text-teal-500 underline text-center"
+    >
+      Menu List
+    </h1>
+
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
+      <div class="flex items-end gap-2 flex-col md:flex-row px-2">
+        <div class="bg-teal-50 w-full max-w-lg">
+          <label for="table-search" class="sr-only">Search</label>
+          <div class="relative mt-1">
+            <div
+              class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none"
+            >
+              <app-search></app-search>
+            </div>
+            <input
+              #searchInput
+              type="text"
+              id="table-search"
+              autocomplete="off"
+              class="block ps-10 text-xs text-gray-900 border border-gray-300 rounded bg-gray-50 focus:ring-teal-500 focus:border-teal-500 w-full"
+              placeholder="Search"
+              (input)="onSearchMenu($event)"
+              (keydown)="handleSearchKeyDown($event)"
+            />
+          </div>
+        </div>
+      </div>
+
+      @if (isLoading$ | async) {
+      <p class="text-3xl font-bold text-center p-10 text-teal-600">
+        Loading ...
+      </p>
+      } @else if (hasError$ | async) {
+      <p class="text-3xl font-bold text-center p-10 text-red-600">
+        There was an error loading data.
+      </p>
+      } @else if (filteredMenuList().length === 0) {
+      <p class="text-3xl font-bold text-center p-10 text-orange-600">
+        Data is Empty.
+      </p>
+      } @else {
+      <table class="w-full text-sm text-left rtl:text-right text-gray-800 mt-2">
+        <thead class="text-sm text-gray-100 uppercase bg-gray-800">
+          <tr>
+            <th scope="col" class="p-1">menu</th>
+            <th scope="col" class="p-1">module</th>
+            <th scope="col" class="p-1">parent Menu</th>
+            <th scope="col" class="p-1">url</th>
+            <th scope="col" class="p-1">icon</th>
+            <th scope="col" class="p-1">isActive</th>
+            <th scope="col" class="p-1">permissions</th>
+            <th scope="col" class="px-1 py-3">Edit</th>
+            <th scope="col" class="px-1 py-3">Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of filteredMenuList().slice(0,20); track item?.id ||
+          $index) {
+          <tr
+            id="row-{{ $index }}"
+            class="bg-teal-50 border-b hover:bg-teal-600 hover:text-white cursor-pointer"
+          >
+            <td scope="row" class="p-1">
+              {{ item?.menuName }}
+            </td>
+            <td class="p-1">
+              {{ item?.moduleName }}
+            </td>
+            <td class="p-1">
+              {{ getParentMenuName(item?.parentMenuId) }}
+            </td>
+            <td class="p-1">
+              {{ item?.url }}
+            </td>
+            <td class="p-1">
+              {{ item?.icon }}
+            </td>
+            <td class="p-1">
+              {{ item?.isActive }}
+            </td>
+            <td class="p-1">
+              {{ item?.permissionsKey }}
+            </td>
+            <td>
+              <button
+                class="text-yellow-400 hover:bg-teal-50 px-1 rounded"
+                (click)="onUpdate(item)"
+              >
+                Edit
+              </button>
+            </td>
+            <td>
+              <button
+                class="text-rose-400 hover:bg-teal-50 px-1 rounded"
+                (click)="onDelete(item.id)"
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+      }
+    </div>
+  </div>
+</section>

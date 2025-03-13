@@ -3,6 +3,7 @@ import { MainComponent } from './layouts/main/main.component';
 import { AccountComponent } from './layouts/account/account.component';
 import { HrLayoutComponent } from './layouts/hr-layout/hr-layout.component';
 import { DoctorFeeLayoutComponent } from './layouts/doctor-fee-layout/doctor-fee-layout.component';
+import { SettingsLayoutComponent } from './layouts/settings-layout/settings-layout.component';
 
 export const routes: Routes = [
   {
@@ -169,10 +170,23 @@ export const routes: Routes = [
         ],
       },
       {
-        path: 'user-access',
-        loadComponent: () =>
-          import('./users/pages/users/users.component').then(m => m.UsersComponent),
-        data: { preload: true },
+        path: 'settings',
+        component: SettingsLayoutComponent,
+        children: [
+          { path: '', redirectTo: 'user', pathMatch: 'full' },
+          {
+            path: 'user',
+            loadComponent: () =>
+              import('./settings/pages/users/users.component').then(m => m.UsersComponent),
+            data: { preload: true },
+          },
+          {
+            path: 'menu',
+            loadComponent: () =>
+              import('./settings/pages/menu-list/menu-list.component').then(m => m.MenuListComponent),
+            data: { preload: true },
+          },
+        ],
       },
     ],
   }
