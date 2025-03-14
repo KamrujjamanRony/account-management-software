@@ -11,16 +11,16 @@
         (ngSubmit)="onSubmit($event)"
         class="min-w-[400px] mx-auto px-2"
       >
-        <!-- username -->
-        <Field label="username">
+        <!-- userName -->
+        <Field label="userName">
           <input
             #inputRef
             type="text"
-            [formControl]="getControl('username')"
+            [formControl]="getControl('userName')"
             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
             [class.invalid]="
-              (getControl('username').invalid &&
-                getControl('username').touched) ||
+              (getControl('userName').invalid &&
+                getControl('userName').touched) ||
               isSubmitted
             "
             placeholder=""
@@ -46,6 +46,40 @@
             required
           />
         </Field>
+
+        <!-- isActive -->
+        <div class="flex flex-wrap mb-5">
+          <div class="flex items-center me-4">
+            <input
+              id="active-radio"
+              type="radio"
+              [formControl]="getControl('isActive')"
+              [value]="true"
+              name="isActive"
+              class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            />
+            <label
+              for="active-radio"
+              class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+              >Activate</label
+            >
+          </div>
+          <div class="flex items-center me-4">
+            <input
+              id="deactivate-radio"
+              type="radio"
+              [formControl]="getControl('isActive')"
+              [value]="false"
+              name="isActive"
+              class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 focus:ring-red-500 dark:focus:ring-red-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            />
+            <label
+              for="deactivate-radio"
+              class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+              >Deactivate</label
+            >
+          </div>
+        </div>
 
         <div class="flex gap-2">
           <!-- Save -->
@@ -116,7 +150,7 @@
         >
           <thead class="text-sm text-gray-100 uppercase bg-gray-800">
             <tr>
-              <th scope="col" class="p-1">username</th>
+              <th scope="col" class="p-1">userName</th>
               <th scope="col" class="p-1">password</th>
               <th scope="col" class="px-1 py-3">Actions</th>
             </tr>
@@ -129,7 +163,7 @@
               class="bg-teal-50 border-b hover:bg-teal-600 hover:text-white cursor-pointer"
             >
               <td scope="row" class="p-1">
-                {{ item?.username }}
+                {{ item?.userName }}
               </td>
               <td class="p-1">
                 {{ item?.password }}

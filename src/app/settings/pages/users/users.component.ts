@@ -9,6 +9,7 @@ import { FieldComponent } from '../../../shared/components/field/field.component
 import { SearchComponent } from '../../../shared/components/svg/search/search.component';
 import { ToastSuccessComponent } from '../../../shared/components/toasts/toast-success/toast-success.component';
 import { UserService } from '../../services/user.service';
+import { MenuService } from '../../services/menu.service';
 
 @Component({
   selector: 'app-users',
@@ -20,6 +21,7 @@ export class UsersComponent {
   fb = inject(NonNullableFormBuilder);
   private userService = inject(UserService);
   private dataFetchService = inject(DataFetchService);
+  private menuService = inject(MenuService);
   private userAccessService = inject(UserAccessService);
   filteredUserList = signal<any[]>([]);
   highlightedTr: number = -1;
@@ -35,14 +37,17 @@ export class UsersComponent {
   isSubmitted = false;
 
   form = this.fb.group({
-    username: ['', [Validators.required]],
+    userName: ['', [Validators.required]],
     password: [''],
+    isActive: [true],
+    menuPermissions: [['']],
   });
 
   ngOnInit(): void {
-    this.userAccessService.getUserAccessTree().subscribe((data) => {
-      this.userAccessTree.set(data);
-    });
+    this.onLoadTreeData("");
+    // this.userAccessService.getUserAccessTree().subscribe((data) => {
+    //   this.userAccessTree.set(data);
+    // });
 
     this.onLoadUsers();
 
@@ -51,6 +56,12 @@ export class UsersComponent {
       const inputs = this.inputRefs();
       inputs[0].nativeElement.focus();
     }, 10);
+  }
+
+  onLoadTreeData(userId: any) {
+    this.menuService.generateTreeData(userId).subscribe((data) => {
+      this.userAccessTree.set(data);
+    });
   }
 
   onLoadUsers() {
@@ -65,7 +76,7 @@ export class UsersComponent {
     ]).pipe(
       map(([data, query]) =>
         data.filter((UserData: any) =>
-          UserData.username?.toLowerCase().includes(query)
+          UserData.userName?.toLowerCase().includes(query)
         )
       )
     ).subscribe(filteredData => this.filteredUserList.set(filteredData));
@@ -127,6 +138,7 @@ export class UsersComponent {
   onSubmit(e: Event) {
     this.isSubmitted = true;
     if (this.form.valid) {
+      this.savePermissions();
       // console.log(this.form.value);
       if (this.selectedUser) {
         this.userService.updateUser(this.selectedUser.id, this.form.value)
@@ -170,18 +182,21 @@ export class UsersComponent {
           });
       }
     } else {
-      alert('Form is invalid! Please Fill Username and Password Field.');
+      alert('Form is invalid! Please Fill userName and Password Field.');
     }
   }
 
   onUpdate(data: any) {
+    this.onLoadTreeData(data.id);
     this.selectedUser = data;
     this.form.patchValue({
-      username: data?.username,
+      userName: data?.userName,
       password: data?.password,
+      isActive: data?.isActive,
+      menuPermissions: data?.menuPermissions,
     });
 
-    // Focus the 'username' input field after patching the value
+    // Focus the 'userName' input field after patching the value
     setTimeout(() => {
       const inputs = this.inputRefs();
       inputs[0].nativeElement.focus();
@@ -208,9 +223,12 @@ export class UsersComponent {
   formReset(e: Event): void {
     e.preventDefault();
     this.form.reset({
-      username: '',
+      userName: '',
       password: '',
+      isActive: true,
+      menuPermissions: [''],
     });
+    this.onLoadTreeData("");
     this.isSubmitted = false;
     this.selectedUser = null;
   }
@@ -220,16 +238,26 @@ export class UsersComponent {
   savePermissions() {
     const selectedNodes = this.getSelectedNodes(this.userAccessTree());
     console.log('Selected Access:', selectedNodes);
+    this.form.patchValue({ menuPermissions: selectedNodes });
   }
 
   private getSelectedNodes(nodes: any[]): any[] {
     return nodes
-      .filter((node) => node.checked || node.children?.some((child: any) => child.checked))
+      .filter((node) => node.isSelected || node.children?.some((child: any) => child.isSelected))
       .map((node) => ({
-        ...node,
+        menuId: node.id,
+        PermissionKey: node.permissionsKey.map((p: any) => p.permission),
         children: node.children ? this.getSelectedNodes(node.children) : undefined,
       }));
   }
+  // private getSelectedNodes(nodes: any[]): any[] {
+  //   return nodes
+  //     .filter((node) => node.isSelected || node.children?.some((child: any) => child.isSelected))
+  //     .map((node) => ({
+  //       ...node,
+  //       children: node.children ? this.getSelectedNodes(node.children) : undefined,
+  //     }));
+  // }
 
   // User Accessibility Code End----------------------------------------------------------------
 

@@ -14,17 +14,34 @@
       <p class="w-5"></p>
       }
 
-      <!-- Checkbox -->
+      <!-- Checkbox for Menu -->
       <input
         type="checkbox"
         class="form-checkbox h-5 w-5 text-teal-500 focus:ring-teal-500"
-        [(ngModel)]="node.checked"
+        [(ngModel)]="node.isSelected"
         (change)="onCheck(node, $event)"
       />
 
-      <!-- Node Name -->
-      <span class="text-gray-800">{{ node.name }}</span>
+      <!-- Node menuName -->
+      <span class="text-gray-800">{{ node.menuName }}</span>
     </div>
+
+    <!-- Permissions -->
+    @if (node.permissionsKey?.length) {
+    <div class="ml-8 space-y-1">
+      @for (permission of node.permissionsKey; track $index) {
+      <label class="flex items-center space-x-2 text-sm">
+        <input
+          type="checkbox"
+          class="form-checkbox h-4 w-4 text-teal-500 focus:ring-teal-500"
+          [(ngModel)]="permission.isSelected"
+          (change)="onPermissionCheck(node)"
+        />
+        <span class="text-gray-600">{{ permission.permission }}</span>
+      </label>
+      }
+    </div>
+    }
 
     <!-- Children List (Collapsible) -->
     @if (!node.collapsed && node.children?.length) {

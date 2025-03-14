@@ -41,6 +41,6 @@ export class MenuService {
   }
 
   generateTreeData(userId: any = ''): Observable<any> {
-    return this.apiCall<any>(`/GenerateTreeData?userId=${userId}`, 'post');
+    return this.apiCall<any>(`/GenerateTreeData?userId=${userId}`, 'get');
   }
 }
