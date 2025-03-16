@@ -45,11 +45,8 @@ export class UsersComponent {
 
   ngOnInit(): void {
     this.onLoadTreeData("");
-    // this.userAccessService.getUserAccessTree().subscribe((data) => {
-    //   this.userAccessTree.set(data);
-    // });
 
-    this.onLoadUsers();
+    // this.onLoadUsers();
 
     // Focus on the search input when the component is initialized
     setTimeout(() => {
@@ -61,6 +58,7 @@ export class UsersComponent {
   onLoadTreeData(userId: any) {
     this.menuService.generateTreeData(userId).subscribe((data) => {
       this.userAccessTree.set(data);
+      // console.log(data)
     });
   }
 
@@ -242,14 +240,29 @@ export class UsersComponent {
   }
 
   private getSelectedNodes(nodes: any[]): any[] {
-    return nodes
-      .filter((node) => node.isSelected || node.children?.some((child: any) => child.isSelected))
-      .map((node) => ({
-        menuId: node.id,
-        PermissionKey: node.permissionsKey.map((p: any) => p.permission),
-        children: node.children ? this.getSelectedNodes(node.children) : undefined,
-      }));
+    return nodes.reduce((acc: any[], node: any) => {
+      const selectedPermissions = node.permissionsKey
+        ?.filter((p: any) => p.isSelected)
+        .map((p: any) => p.permission);
+
+      // Include node only if it has selected permissions
+      if ((node.isSelected || node.children?.some((child: any) => child.isSelected)) && selectedPermissions.length > 0) {
+        acc.push({
+          menuId: node.id,
+          PermissionKey: selectedPermissions,
+        });
+      }
+
+      // Flatten selected children into the same array
+      if (node.children) {
+        acc.push(...this.getSelectedNodes(node.children));
+      }
+
+      return acc;
+    }, []);
   }
+
+
   // private getSelectedNodes(nodes: any[]): any[] {
   //   return nodes
   //     .filter((node) => node.isSelected || node.children?.some((child: any) => child.isSelected))

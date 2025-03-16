@@ -9,6 +9,7 @@
       [formGroup]="form"
       (ngSubmit)="onSubmit($event)"
       class="min-w-[400px] mx-auto px-2"
+      autocomplete="off"
     >
       <!-- personal information -->
       <div>
@@ -23,6 +24,7 @@
             <input
               #inputRef
               type="text"
+              name="fakeName666"
               [formControl]="getControl('eName')"
               class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               [class.invalid]="
@@ -32,6 +34,7 @@
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 0)"
               required
+              autocomplete="off"
             />
           </Field>
           <!-- gender -->
@@ -70,6 +73,10 @@
               type="date"
               [formControl]="getControl('dob')"
               class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              [class.invalid]="
+                (getControl('dob').invalid && getControl('dob').touched) ||
+                isSubmitted
+              "
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 1)"
             />
@@ -100,7 +107,7 @@
           <Field label="mobile number">
             <input
               #inputRef
-              type="number"
+              type="text"
               [formControl]="getControl('moNum')"
               class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               placeholder=""
@@ -111,7 +118,7 @@
           <Field label="emergency contact">
             <input
               #inputRef
-              type="number"
+              type="text"
               [formControl]="getControl('emCont')"
               class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               placeholder=""
@@ -253,6 +260,10 @@
               type="date"
               [formControl]="getControl('jDate')"
               class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              [class.invalid]="
+                (getControl('jDate').invalid && getControl('jDate').touched) ||
+                isSubmitted
+              "
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 2)"
             />
@@ -269,7 +280,7 @@
             />
           </Field>
           <!-- act -->
-          <Field label="act">
+          <!-- <Field label="act">
             <input
               #inputRef
               type="text"
@@ -278,7 +289,7 @@
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 2)"
             />
-          </Field>
+          </Field> -->
           <!-- workingPlace -->
           <Field label="working Place">
             <input
@@ -297,6 +308,11 @@
               type="number"
               [formControl]="getControl('basicSalary')"
               class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              [class.invalid]="
+                (getControl('basicSalary').invalid &&
+                  getControl('basicSalary').touched) ||
+                isSubmitted
+              "
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 2)"
             />
@@ -308,6 +324,11 @@
               type="number"
               [formControl]="getControl('houseRent')"
               class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              [class.invalid]="
+                (getControl('houseRent').invalid &&
+                  getControl('houseRent').touched) ||
+                isSubmitted
+              "
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 2)"
             />
@@ -319,6 +340,11 @@
               type="number"
               [formControl]="getControl('mediAllow')"
               class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              [class.invalid]="
+                (getControl('mediAllow').invalid &&
+                  getControl('mediAllow').touched) ||
+                isSubmitted
+              "
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 2)"
             />
@@ -330,6 +356,11 @@
               type="number"
               [formControl]="getControl('convey')"
               class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              [class.invalid]="
+                (getControl('convey').invalid &&
+                  getControl('convey').touched) ||
+                isSubmitted
+              "
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 2)"
             />
@@ -341,6 +372,27 @@
               type="number"
               [formControl]="getControl('otherAllow')"
               class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              [class.invalid]="
+                (getControl('otherAllow').invalid &&
+                  getControl('otherAllow').touched) ||
+                isSubmitted
+              "
+              placeholder=""
+              (keydown.enter)="handleEnterKey($event, 2)"
+            />
+          </Field>
+          <!-- totalSalary -->
+          <Field label="total Salary">
+            <input
+              #inputRef
+              type="number"
+              [formControl]="getControl('totalSalary')"
+              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              [class.invalid]="
+                (getControl('totalSalary').invalid &&
+                  getControl('totalSalary').touched) ||
+                isSubmitted
+              "
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 2)"
             />
@@ -460,15 +512,30 @@
       <table class="w-full text-sm text-left rtl:text-right text-gray-800 mt-2">
         <thead class="text-sm text-gray-100 uppercase bg-gray-800">
           <tr>
-            <th scope="col" class="p-1">name</th>
-            <th scope="col" class="p-1">address</th>
-            <th scope="col" class="p-1">remarks</th>
+            <th scope="col" class="p-1">eName</th>
+            <th scope="col" class="p-1">gender</th>
+            <!-- <th scope="col" class="p-1">religion</th> -->
+            <th scope="col" class="p-1">dob</th>
+            <!-- <th scope="col" class="p-1">addr</th> -->
+            <!-- <th scope="col" class="p-1">nid</th> -->
+            <th scope="col" class="p-1">moNum</th>
+            <th scope="col" class="p-1">emCont</th>
+            <th scope="col" class="p-1">reEmCon</th>
+            <th scope="col" class="p-1">email</th>
+            <!-- <th scope="col" class="p-1">pic</th> -->
+            <th scope="col" class="p-1">eduQua</th>
+            <!-- <th scope="col" class="p-1">expe</th>
+            <th scope="col" class="p-1">skill</th>
+            <th scope="col" class="p-1">ref</th> -->
+            <th scope="col" class="p-1">dep</th>
+            <th scope="col" class="p-1">design</th>
+            <th scope="col" class="p-1">jDate</th>
+            <th scope="col" class="p-1">type</th>
+            <!-- <th scope="col" class="p-1">act</th> -->
+            <!-- <th scope="col" class="p-1">workingPlace</th> -->
+            <th scope="col" class="p-1">postBy</th>
             <th scope="col" class="px-1 py-3">Edit</th>
             <th scope="col" class="px-1 py-3">Delete</th>
-            <!-- <th scope="col" class="p-1">Address</th>
-                  <th scope="col" class="p-1">fee</th> -->
-            <!-- <th scope="col" class="p-1">mpo id</th> -->
-            <!-- <th scope="col" class="p-1">is chamber Employee</th> -->
           </tr>
         </thead>
         <tbody>
@@ -479,13 +546,70 @@
             class="bg-teal-50 border-b hover:bg-teal-600 hover:text-white cursor-pointer"
           >
             <td scope="row" class="p-1">
-              {{ item?.name }}
+              {{ item?.eName }}
             </td>
             <td class="p-1">
-              {{ item?.address }}
+              {{ item?.gender }}
+            </td>
+            <!-- <td class="p-1">
+              {{ item?.religion }}
+            </td> -->
+            <td class="p-1">
+              {{ transform(item?.dob) }}
+            </td>
+            <!-- <td class="p-1">
+              {{ item?.addr }}
+            </td> -->
+            <!-- <td class="p-1">
+              {{ item?.nid }}
+            </td> -->
+            <td class="p-1">
+              {{ item?.moNum }}
             </td>
             <td class="p-1">
-              {{ item?.remarks }}
+              {{ item?.emCont }}
+            </td>
+            <td class="p-1">
+              {{ item?.reEmCon }}
+            </td>
+            <td class="p-1">
+              {{ item?.email }}
+            </td>
+            <!-- <td class="p-1">
+              {{ item?.pic }}
+            </td> -->
+            <td class="p-1">
+              {{ item?.eduQua }}
+            </td>
+            <!-- <td class="p-1">
+              {{ item?.expe }}
+            </td>
+            <td class="p-1">
+              {{ item?.skill }}
+            </td>
+            <td class="p-1">
+              {{ item?.ref }}
+            </td> -->
+            <td class="p-1">
+              {{ item?.dep }}
+            </td>
+            <td class="p-1">
+              {{ item?.design }}
+            </td>
+            <td class="p-1">
+              {{ transform(item?.jDate) }}
+            </td>
+            <td class="p-1">
+              {{ item?.type }}
+            </td>
+            <!-- <td class="p-1">
+              {{ item?.act }}
+            </td> -->
+            <!-- <td class="p-1">
+              {{ item?.workingPlace }}
+            </td> -->
+            <td class="p-1">
+              {{ item?.postBy }}
             </td>
             <td>
               <button
@@ -498,7 +622,7 @@
             <td>
               <button
                 class="text-rose-400 hover:bg-teal-50 px-1 rounded"
-                (click)="onDelete(item.id)"
+                (click)="onDelete(item.eId)"
               >
                 Delete
               </button>

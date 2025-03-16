@@ -24,7 +24,13 @@ export class EmployeeService {
   }
 
   getEmployee(query: string): Observable<any> {
-    return this.apiCall<any>(`/SearchEmployee?Search=${query}`, 'post');
+    return this.apiCall<any>(`/SearchEmployee`, 'post', {
+      "search": query
+    });
+  }
+
+  getEmployeeById(id: any): Observable<any> {
+    return this.apiCall<any>(`/GetById/${id}`, 'post', {});
   }
 
   updateEmployee(id: string | number, updateEmployeeRequest: any): Observable<any> {
@@ -32,6 +38,6 @@ export class EmployeeService {
   }
 
   deleteEmployee(id: string | number): Observable<any> {
-    return this.apiCall<any>(`/DeleteEmployee?id=${id}`, 'delete');
+    return this.apiCall<any>(`/Delete?id=${id}`, 'post');
   }
 }

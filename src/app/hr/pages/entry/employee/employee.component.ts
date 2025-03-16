@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Component, ElementRef, inject, signal, viewChild, viewChildren } from '@angular/core';
 import { FormControl, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
@@ -45,7 +45,7 @@ export class EmployeeComponent {
     eName: ['', [Validators.required]],
     gender: [''],
     religion: [''],
-    dob: [''],
+    dob: ['', [Validators.required]],
     addr: [''],
     nid: [''],
     moNum: [''],
@@ -61,15 +61,16 @@ export class EmployeeComponent {
     dep: [''],
     oeId: [''],
     design: [''],
-    jDate: [''],
+    jDate: ['', [Validators.required]],
     type: [''],
-    act: [''],
+    act: [true],
     workingPlace: [''],
-    basicSalary: [''],
-    houseRent: [''],
-    mediAllow: [''],
-    convey: [''],
-    otherAllow: [''],
+    basicSalary: ['', [Validators.required]],
+    houseRent: ['', [Validators.required]],
+    mediAllow: ['', [Validators.required]],
+    convey: ['', [Validators.required]],
+    otherAllow: ['', [Validators.required]],
+    totalSalary: ['', [Validators.required]],
     fileLink: [''],
     postBy: [''],
     others1: [''],
@@ -99,9 +100,9 @@ export class EmployeeComponent {
     ]).pipe(
       map(([data, query]) =>
         data.filter((employeeData: any) =>
-          employeeData.name?.toLowerCase().includes(query) ||
-          employeeData.address?.toLowerCase().includes(query) ||
-          employeeData.remarks?.toLowerCase().includes(query)
+          employeeData.eName?.toLowerCase().includes(query) ||
+          employeeData.email?.toLowerCase().includes(query) ||
+          employeeData.nid?.toLowerCase().includes(query)
         )
       )
     ).subscribe(filteredData => this.filteredEmployeeList.set(filteredData.reverse()));
@@ -165,12 +166,12 @@ export class EmployeeComponent {
     if (this.form.valid) {
       // console.log(this.form.value);
       if (this.selectedEmployee) {
-        this.employeeService.updateEmployee(this.selectedEmployee.id, this.form.value)
+        this.employeeService.updateEmployee(this.selectedEmployee.eId, this.form.value)
           .subscribe({
             next: (response) => {
               if (response !== null && response !== undefined) {
                 this.success.set("Employee successfully updated!");
-                const rest = this.filteredEmployeeList().filter(d => d.id !== response.id);
+                const rest = this.filteredEmployeeList().filter(d => d.eId !== response.eId);
                 this.filteredEmployeeList.set([response, ...rest]);
                 this.isSubmitted = false;
                 this.selectedEmployee = null;
@@ -239,6 +240,7 @@ export class EmployeeComponent {
       houseRent: data?.houseRent,
       mediAllow: data?.mediAllow,
       convey: data?.convey,
+      totalSalary: data?.totalSalary,
       otherAllow: data?.otherAllow,
       fileLink: data?.fileLink,
       others1: data?.others1,
@@ -256,9 +258,9 @@ export class EmployeeComponent {
   onDelete(id: any) {
     if (confirm("Are you sure you want to delete?")) {
       this.employeeService.deleteEmployee(id).subscribe(data => {
-        if (data.id) {
+        if (data.eId) {
           this.success.set("Employee deleted successfully!");
-          this.filteredEmployeeList.set(this.filteredEmployeeList().filter(d => d.id !== id));
+          this.filteredEmployeeList.set(this.filteredEmployeeList().filter(d => d.eId !== id));
           setTimeout(() => {
             this.success.set("");
           }, 1000);
@@ -293,12 +295,13 @@ export class EmployeeComponent {
       design: '',
       jDate: '',
       type: '',
-      act: '',
+      act: true,
       workingPlace: '',
       basicSalary: '',
       houseRent: '',
       mediAllow: '',
       convey: '',
+      totalSalary: '',
       otherAllow: '',
       fileLink: '',
       others1: '',
@@ -307,6 +310,11 @@ export class EmployeeComponent {
     });
     this.isSubmitted = false;
     this.selectedEmployee = null;
+  }
+  transform(value: any, args: any = 'dd/MM/yyyy'): any {
+    if (!value) return null;
+    const datePipe = new DatePipe('en-US');
+    return datePipe.transform(value, args);
   }
 
 }
