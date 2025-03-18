@@ -47,6 +47,25 @@
           />
         </Field>
 
+        <!-- eId -->
+        <Field label="employee">
+          <select
+            #inputRef
+            name="eId"
+            [formControl]="getControl('eId')"
+            placeholder=""
+            (keydown.enter)="handleEnterKey($event, 2)"
+            class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+          >
+            <option value="" class="capitalize">Select Option</option>
+            @for(option of employeeOption(); track $index){
+            <option [value]="option?.value" class="capitalize">
+              {{ option?.label }}
+            </option>
+            }
+          </select>
+        </Field>
+
         <!-- isActive -->
         <div class="flex flex-wrap mb-5">
           <div class="flex items-center me-4">
@@ -150,7 +169,8 @@
         >
           <thead class="text-sm text-gray-100 uppercase bg-gray-800">
             <tr>
-              <th scope="col" class="p-1">userName</th>
+              <th scope="col" class="p-1">user Name</th>
+              <th scope="col" class="p-1">Employee Name</th>
               <th scope="col" class="p-1">password</th>
               <th scope="col" class="px-1 py-3">Actions</th>
             </tr>
@@ -164,6 +184,9 @@
             >
               <td scope="row" class="p-1">
                 {{ item?.userName }}
+              </td>
+              <td scope="row" class="p-1">
+                {{ onDisplayEmployee(item?.eId) }}
               </td>
               <td class="p-1">
                 {{ item?.password }}
@@ -197,7 +220,3 @@
     <app-user-access-tree [nodes]="userAccessTree()"></app-user-access-tree>
   </div>
 </section>
-
-@if (success()) {
-<app-toast-success [title]="success()"></app-toast-success>
-}

@@ -57,14 +57,21 @@
           </Field>
           <!-- religion -->
           <Field label="religion">
-            <input
+            <select
               #inputRef
-              type="text"
+              name="religion"
               [formControl]="getControl('religion')"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               placeholder=""
-              (keydown.enter)="handleEnterKey($event, 1)"
-            />
+              (keydown.enter)="handleEnterKey($event, 2)"
+              class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+            >
+              <option value="" class="capitalize">Select Option</option>
+              @for(option of religionOption(); track $index){
+              <option [value]="option?.value" class="capitalize">
+                {{ option?.label }}
+              </option>
+              }
+            </select>
           </Field>
           <!-- dob -->
           <Field label="date of birth">
@@ -148,7 +155,7 @@
             />
           </Field>
           <!-- pic -->
-          <Field label="picture">
+          <!-- <Field label="picture">
             <input
               #inputRef
               type="text"
@@ -157,7 +164,7 @@
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 2)"
             />
-          </Field>
+          </Field> -->
           <!-- eduQua -->
           <Field label="education qualification">
             <select
@@ -233,14 +240,21 @@
           </Field>
           <!-- dep -->
           <Field label="Department">
-            <input
+            <select
               #inputRef
-              type="text"
+              name="dep"
               [formControl]="getControl('dep')"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 2)"
-            />
+              class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+            >
+              <option value="" class="capitalize">Select Option</option>
+              @for(option of departmentOption(); track $index){
+              <option [value]="option?.value" class="capitalize">
+                {{ option?.label }}
+              </option>
+              }
+            </select>
           </Field>
           <!-- design -->
           <Field label="Designation">
@@ -270,14 +284,21 @@
           </Field>
           <!-- type -->
           <Field label="Employment Type">
-            <input
+            <select
               #inputRef
-              type="text"
+              name="type"
               [formControl]="getControl('type')"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 2)"
-            />
+              class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+            >
+              <option value="" class="capitalize">Select Option</option>
+              @for(option of employeeTypeOption(); track $index){
+              <option [value]="option?.value" class="capitalize">
+                {{ option?.label }}
+              </option>
+              }
+            </select>
           </Field>
           <!-- act -->
           <!-- <Field label="act">

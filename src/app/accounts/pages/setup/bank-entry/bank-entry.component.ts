@@ -1,26 +1,26 @@
 import { Component, ElementRef, inject, signal, viewChildren, viewChild } from '@angular/core';
 import { FormControl, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
-import { ToastSuccessComponent } from '../../../../shared/components/toasts/toast-success/toast-success.component';
 import { FieldComponent } from '../../../../shared/components/field/field.component';
 import { SearchComponent } from '../../../../shared/components/svg/search/search.component';
 import { CommonModule } from '@angular/common';
 import { BankService } from '../../../services/bank.service';
 import { DataFetchService } from '../../../../shared/services/useDataFetch';
+import { ToastService } from '../../../../shared/components/primeng/toast/toast.service';
 
 @Component({
   selector: 'app-bank-entry',
-  imports: [CommonModule, ToastSuccessComponent, FieldComponent, SearchComponent, ReactiveFormsModule],
+  imports: [CommonModule, FieldComponent, SearchComponent, ReactiveFormsModule],
   templateUrl: './bank-entry.component.html',
   styleUrl: './bank-entry.component.css'
 })
 export class BankEntryComponent {
   fb = inject(NonNullableFormBuilder);
   private bankService = inject(BankService);
-  dataFetchService = inject(DataFetchService);
+  private dataFetchService = inject(DataFetchService);
+  private toastService = inject(ToastService);
   filteredBankList = signal<any[]>([]);
   highlightedTr: number = -1;
-  success = signal<any>("");
   selectedBank: any;
 
   private searchQuery$ = new BehaviorSubject<string>('');
@@ -128,20 +128,18 @@ export class BankEntryComponent {
           .subscribe({
             next: (response) => {
               if (response !== null && response !== undefined) {
-                this.success.set("Bank successfully updated!");
+                this.toastService.showMessage('success', 'Successful', "Bank successfully updated!");
                 const rest = this.filteredBankList().filter(d => d.id !== response.id);
                 this.filteredBankList.set([response, ...rest]);
                 this.isSubmitted = false;
                 this.selectedBank = null;
                 this.formReset(e);
-                setTimeout(() => {
-                  this.success.set("");
-                }, 1000);
               }
 
             },
             error: (error) => {
               console.error('Error register:', error);
+              this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message}`);
             }
           });
       } else {
@@ -149,23 +147,21 @@ export class BankEntryComponent {
           .subscribe({
             next: (response) => {
               if (response !== null && response !== undefined) {
-                this.success.set("Bank successfully added!");
+                this.toastService.showMessage('success', 'Successful', "Bank successfully added!");
                 this.filteredBankList.set([response, ...this.filteredBankList()])
                 this.isSubmitted = false;
                 this.formReset(e);
-                setTimeout(() => {
-                  this.success.set("");
-                }, 1000);
               }
 
             },
             error: (error) => {
               console.error('Error register:', error);
+              this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message}`);
             }
           });
       }
     } else {
-      alert('Form is invalid! Please Fill Name Field.');
+      this.toastService.showMessage('warn', 'Warning', 'Form is invalid! Please Fill All Requirement Field.');
     }
   }
 
@@ -188,14 +184,11 @@ export class BankEntryComponent {
     if (confirm("Are you sure you want to delete?")) {
       this.bankService.deleteBank(id).subscribe(data => {
         if (data.id) {
-          this.success.set("Bank deleted successfully!");
+          this.toastService.showMessage('success', 'Successful', "Bank deleted successfully!");
           this.filteredBankList.set(this.filteredBankList().filter(d => d.id !== id));
-          setTimeout(() => {
-            this.success.set("");
-          }, 1000);
         } else {
           console.error('Error deleting Bank:', data);
-          alert('Error deleting Bank: ' + data.message)
+          this.toastService.showMessage('error', 'Error', `Error deleting Bank: ${data.message}`);
         }
       });
     }

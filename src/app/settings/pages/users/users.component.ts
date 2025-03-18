@@ -1,19 +1,19 @@
 import { Component, ElementRef, inject, signal, viewChildren, viewChild } from '@angular/core';
 import { FormControl, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { UserAccessService } from '../../services/user-access.service';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { DataFetchService } from '../../../shared/services/useDataFetch';
 import { CommonModule } from '@angular/common';
 import { UserAccessTreeComponent } from '../../components/user-access-tree/user-access-tree.component';
 import { FieldComponent } from '../../../shared/components/field/field.component';
 import { SearchComponent } from '../../../shared/components/svg/search/search.component';
-import { ToastSuccessComponent } from '../../../shared/components/toasts/toast-success/toast-success.component';
 import { UserService } from '../../services/user.service';
 import { MenuService } from '../../services/menu.service';
+import { EmployeeService } from '../../../hr/services/employee.service';
+import { ToastService } from '../../../shared/components/primeng/toast/toast.service';
 
 @Component({
   selector: 'app-users',
-  imports: [ReactiveFormsModule, UserAccessTreeComponent, FieldComponent, SearchComponent, CommonModule, ToastSuccessComponent],
+  imports: [ReactiveFormsModule, UserAccessTreeComponent, FieldComponent, SearchComponent, CommonModule],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css'
 })
@@ -22,10 +22,11 @@ export class UsersComponent {
   private userService = inject(UserService);
   private dataFetchService = inject(DataFetchService);
   private menuService = inject(MenuService);
-  private userAccessService = inject(UserAccessService);
+  private employeeService = inject(EmployeeService);
+  private toastService = inject(ToastService);
   filteredUserList = signal<any[]>([]);
+  employeeOption = signal<any[]>([]);
   highlightedTr: number = -1;
-  success = signal<any>("");
   selectedUser: any;
 
   private searchQuery$ = new BehaviorSubject<string>('');
@@ -39,6 +40,7 @@ export class UsersComponent {
   form = this.fb.group({
     userName: ['', [Validators.required]],
     password: [''],
+    eId: [''],
     isActive: [true],
     menuPermissions: [['']],
   });
@@ -46,7 +48,9 @@ export class UsersComponent {
   ngOnInit(): void {
     this.onLoadTreeData("");
 
-    // this.onLoadUsers();
+    this.onLoadUsers();
+
+    this.onLoadEmployee("");
 
     // Focus on the search input when the component is initialized
     setTimeout(() => {
@@ -55,10 +59,21 @@ export class UsersComponent {
     }, 10);
   }
 
+  onLoadEmployee(eId: any) {
+    this.employeeService.getEmployee(eId).subscribe((data) => {
+      this.employeeOption.set(data.map((item: any) => {
+        return { value: item.eId, label: item.eName }
+      }))
+    });
+  }
+
+  onDisplayEmployee(eId: any) {
+    return eId ? this.employeeOption().find(item => item?.value === eId)?.label : '';
+  }
+
   onLoadTreeData(userId: any) {
     this.menuService.generateTreeData(userId).subscribe((data) => {
       this.userAccessTree.set(data);
-      // console.log(data)
     });
   }
 
@@ -137,26 +152,22 @@ export class UsersComponent {
     this.isSubmitted = true;
     if (this.form.valid) {
       this.savePermissions();
-      // console.log(this.form.value);
       if (this.selectedUser) {
         this.userService.updateUser(this.selectedUser.id, this.form.value)
           .subscribe({
             next: (response) => {
               if (response !== null && response !== undefined) {
-                this.success.set("User successfully updated!");
-                const rest = this.filteredUserList().filter(d => d.id !== response.id);
-                this.filteredUserList.set([response, ...rest]);
+                this.toastService.showMessage('success', 'Successful', 'User successfully updated!');
+                this.onLoadUsers();
                 this.isSubmitted = false;
                 this.selectedUser = null;
                 this.formReset(e);
-                setTimeout(() => {
-                  this.success.set("");
-                }, 1000);
               }
 
             },
             error: (error) => {
               console.error('Error register:', error);
+              this.toastService.showMessage('error', 'Error', 'User not updated!');
             }
           });
       } else {
@@ -164,23 +175,21 @@ export class UsersComponent {
           .subscribe({
             next: (response) => {
               if (response !== null && response !== undefined) {
-                this.success.set("User successfully added!");
-                this.filteredUserList.set([response, ...this.filteredUserList()])
+                this.toastService.showMessage('success', 'Successful', 'User successfully added!');
+                this.onLoadUsers();
                 this.isSubmitted = false;
                 this.formReset(e);
-                setTimeout(() => {
-                  this.success.set("");
-                }, 1000);
               }
 
             },
             error: (error) => {
-              console.error('Error register:', error);
+              console.error('Error add user:', error);
+              this.toastService.showMessage('error', 'Error', 'User not added!');
             }
           });
       }
     } else {
-      alert('Form is invalid! Please Fill userName and Password Field.');
+      this.toastService.showMessage('warn', 'Warning', 'Form is invalid! Please Fill All Recommended Field!');
     }
   }
 
@@ -190,9 +199,12 @@ export class UsersComponent {
     this.form.patchValue({
       userName: data?.userName,
       password: data?.password,
+      eId: data?.eId,
       isActive: data?.isActive,
       menuPermissions: data?.menuPermissions,
     });
+
+    console.log(data)
 
     // Focus the 'userName' input field after patching the value
     setTimeout(() => {
@@ -205,14 +217,11 @@ export class UsersComponent {
     if (confirm("Are you sure you want to delete?")) {
       this.userService.deleteUser(id).subscribe(data => {
         if (data.id) {
-          this.success.set("User deleted successfully!");
+          this.toastService.showMessage('success', 'Successful', 'User deleted successfully!');
           this.filteredUserList.set(this.filteredUserList().filter(d => d.id !== id));
-          setTimeout(() => {
-            this.success.set("");
-          }, 1000);
         } else {
           console.error('Error deleting User:', data);
-          alert('Error deleting User: ' + data.message)
+          this.toastService.showMessage('error', 'Error Deleting', data.message);
         }
       });
     }
@@ -223,6 +232,7 @@ export class UsersComponent {
     this.form.reset({
       userName: '',
       password: '',
+      eId: '',
       isActive: true,
       menuPermissions: [''],
     });

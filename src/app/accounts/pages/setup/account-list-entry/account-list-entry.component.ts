@@ -1,17 +1,17 @@
 import { Component, ElementRef, inject, signal, viewChildren, viewChild } from '@angular/core';
 import { FormControl, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
-import { ToastSuccessComponent } from "../../../../shared/components/toasts/toast-success/toast-success.component";
 import { SearchComponent } from "../../../../shared/components/svg/search/search.component";
 import { CommonModule } from '@angular/common';
 import { FieldComponent } from "../../../../shared/components/field/field.component";
 import { BankService } from '../../../services/bank.service';
 import { AccountListService } from '../../../services/account-list.service';
 import { DataFetchService } from '../../../../shared/services/useDataFetch';
+import { ToastService } from '../../../../shared/components/primeng/toast/toast.service';
 
 @Component({
   selector: 'app-account-list-entry',
-  imports: [ToastSuccessComponent, SearchComponent, CommonModule, ReactiveFormsModule, FieldComponent],
+  imports: [SearchComponent, CommonModule, ReactiveFormsModule, FieldComponent],
   templateUrl: './account-list-entry.component.html',
   styleUrl: './account-list-entry.component.css'
 })
@@ -19,11 +19,11 @@ export class AccountListEntryComponent {
   fb = inject(NonNullableFormBuilder);
   private bankService = inject(BankService);
   private accountListService = inject(AccountListService);
-  dataFetchService = inject(DataFetchService);
+  private dataFetchService = inject(DataFetchService);
+  private toastService = inject(ToastService);
   filteredAccountList = signal<any[]>([]);
   show = signal<boolean>(false);
   highlightedTr: number = -1;
-  success = signal<any>("");
   selectedAccount = signal<any>(null);
   isGrid = signal<boolean>(false);
 
@@ -172,20 +172,18 @@ export class AccountListEntryComponent {
           .subscribe({
             next: (response) => {
               if (response !== null && response !== undefined) {
-                this.success.set("ChartofAccount successfully updated!");
+                this.toastService.showMessage('success', 'Successful', "ChartofAccount successfully updated!");
                 const rest = this.filteredAccountList().filter(d => d.id !== response.id);
                 this.filteredAccountList.set([response, ...rest]);
                 this.isSubmitted = false;
                 this.selectedAccount.set(null);
                 this.formReset(e);
-                setTimeout(() => {
-                  this.success.set("");
-                }, 1000);
               }
 
             },
             error: (error) => {
               console.error('Error register:', error);
+              this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message}`);
             }
           });
       } else {
@@ -194,24 +192,22 @@ export class AccountListEntryComponent {
             next: (response) => {
               // console.log(response)
               if (response !== null && response !== undefined) {
-                this.success.set("Account successfully added!");
+                this.toastService.showMessage('success', 'Successful', "ChartofAccount successfully added!");
                 this.filteredAccountList.set([response, ...this.filteredAccountList()])
                 this.isSubmitted = false;
                 this.formReset(e);
                 this.onLoadAccountTree()
-                setTimeout(() => {
-                  this.success.set("");
-                }, 1000);
               }
 
             },
             error: (error) => {
               console.error('Error Adding Account:', error);
+              this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message}`);
             }
           });
       }
     } else {
-      alert('Form is invalid! Please Fill ControlHeadId, AccountGroup and SubHead Field.');
+      this.toastService.showMessage('warn', 'Warning', 'Form is invalid! Please Fill All Requirement Field.');
     }
   }
 
@@ -242,15 +238,12 @@ export class AccountListEntryComponent {
     if (confirm("Are you sure you want to delete?")) {
       this.accountListService.deleteAccountList(id).subscribe(data => {
         if (data.id) {
-          this.success.set("ChartOfAccount deleted successfully!");
+          this.toastService.showMessage('success', 'Successful', 'ChartOfAccount deleted successfully!');
           this.filteredAccountList.set(this.filteredAccountList().filter(d => d.id !== id));
           this.onLoadAccountTree();
-          setTimeout(() => {
-            this.success.set("");
-          }, 1000);
         } else {
           console.error('Error deleting ChartOfAccount:', data);
-          alert('Error deleting ChartOfAccount: ' + data.message)
+          this.toastService.showMessage('error', 'Error', `Error deleting ChartOfAccount:  ${data.message}`);
         }
       });
     }

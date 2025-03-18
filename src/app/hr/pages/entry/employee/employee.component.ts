@@ -7,6 +7,7 @@ import { FieldComponent } from '../../../../shared/components/field/field.compon
 import { SearchComponent } from '../../../../shared/components/svg/search/search.component';
 import { DataFetchService } from '../../../../shared/services/useDataFetch';
 import { EmployeeService } from '../../../services/employee.service';
+import { DataService } from '../../../../shared/services/data.service';
 
 @Component({
   selector: 'app-employee',
@@ -17,19 +18,14 @@ import { EmployeeService } from '../../../services/employee.service';
 export class EmployeeComponent {
   fb = inject(NonNullableFormBuilder);
   private employeeService = inject(EmployeeService);
-  dataFetchService = inject(DataFetchService);
+  private dataService = inject(DataService);
+  private dataFetchService = inject(DataFetchService);
   filteredEmployeeList = signal<any[]>([]);
-  genderOption = signal<any[]>([
-    { value: 'male', label: 'Male' },
-    { value: 'female', label: 'Female' },
-    { value: 'other', label: 'Other' }
-  ]);
-  eduQuaOption = signal<any[]>([
-    { value: 'SSC', label: 'Secondary School Certificate' },
-    { value: 'HSC', label: 'Higher Secondary Certificate' },
-    { value: 'B.Ed.', label: 'Bachelors degrees' },
-    { value: 'M.Ed.', label: 'Masters degrees' },
-  ]);
+  genderOption = signal<any[]>([]);
+  eduQuaOption = signal<any[]>([]);
+  religionOption = signal<any[]>([]);
+  employeeTypeOption = signal<any[]>([]);
+  departmentOption = signal<any[]>([]);
   highlightedTr: number = -1;
   success = signal<any>("");
   selectedEmployee: any;
@@ -80,12 +76,23 @@ export class EmployeeComponent {
 
   ngOnInit() {
     this.onLoadEmployee();
+    this.onLoadOptions();
 
     // Focus on the search input when the component is initialized
     setTimeout(() => {
       const inputs = this.inputRefs();
       inputs[0].nativeElement.focus();
     }, 10); // Delay to ensure the DOM is updated
+  };
+
+  onLoadOptions() {
+    this.dataService.getOptions().subscribe((data: any) => {
+      this.genderOption.set(data.genderOption);
+      this.eduQuaOption.set(data.eduQuaOption);
+      this.religionOption.set(data.religionOption);
+      this.employeeTypeOption.set(data.employeeTypeOption);
+      this.departmentOption.set(data.departmentOption);
+    })
   }
 
   onLoadEmployee() {

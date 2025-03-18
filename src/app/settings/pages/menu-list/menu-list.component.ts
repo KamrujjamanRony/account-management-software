@@ -31,7 +31,7 @@ export class MenuListComponent {
   readonly inputRefs = viewChildren<ElementRef>('inputRef');
   readonly searchInput = viewChild.required<ElementRef<HTMLInputElement>>('searchInput');
   isSubmitted = false;
-  options: any[] = ['Navigation', 'View', 'Insert', 'Edit', 'Delete'];
+  options: any[] = ['View', 'Insert', 'Edit', 'Delete'];
 
   form = this.fb.group({
     menuName: ['', [Validators.required]],

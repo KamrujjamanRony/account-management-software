@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, inject, signal, viewChild, viewChildren } from '@angular/core';
-import { ToastSuccessComponent } from '../../../../shared/components/toasts/toast-success/toast-success.component';
 import { FieldComponent } from '../../../../shared/components/field/field.component';
 import { SearchComponent } from '../../../../shared/components/svg/search/search.component';
 import { FormControl, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -9,10 +8,11 @@ import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { FixedAssetService } from '../../../services/fixed-asset.service';
 import { AllSvgComponent } from "../../../../shared/components/svg/all-svg/all-svg.component";
 import { AccountListService } from '../../../services/account-list.service';
+import { ToastService } from '../../../../shared/components/primeng/toast/toast.service';
 
 @Component({
   selector: 'app-fixed-asset-description',
-  imports: [CommonModule, ToastSuccessComponent, FieldComponent, SearchComponent, ReactiveFormsModule, AllSvgComponent],
+  imports: [CommonModule, FieldComponent, SearchComponent, ReactiveFormsModule, AllSvgComponent],
   templateUrl: './fixed-asset-description.component.html',
   styleUrl: './fixed-asset-description.component.css'
 })
@@ -20,11 +20,11 @@ export class FixedAssetDescriptionComponent {
   fb = inject(NonNullableFormBuilder);
   private fixedAssetService = inject(FixedAssetService);
   private accountListService = inject(AccountListService);
+  private toastService = inject(ToastService);
   dataFetchService = inject(DataFetchService);
   filteredFixedAssetList = signal<any[]>([]);
   highlightedTr: number = -1;
   assetTypeOption = signal<any[]>([]);
-  success = signal<any>("");
   showForm = signal<boolean>(true);
   selectedFixedAsset: any;
 
@@ -165,20 +165,18 @@ export class FixedAssetDescriptionComponent {
           .subscribe({
             next: (response) => {
               if (response !== null && response !== undefined) {
-                this.success.set("FixedAsset successfully updated!");
+                this.toastService.showMessage('success', 'Successful', 'FixedAsset successfully updated!');
                 const rest = this.filteredFixedAssetList().filter(d => d.id !== response.id);
                 this.filteredFixedAssetList.set([response, ...rest]);
                 this.isSubmitted = false;
                 this.selectedFixedAsset = null;
                 this.formReset(e);
-                setTimeout(() => {
-                  this.success.set("");
-                }, 1000);
               }
 
             },
             error: (error) => {
-              console.error('Error register:', error);
+              console.error('Error Update:', error);
+              this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message}`);
             }
           });
       } else {
@@ -186,23 +184,21 @@ export class FixedAssetDescriptionComponent {
           .subscribe({
             next: (response) => {
               if (response !== null && response !== undefined) {
-                this.success.set("FixedAsset successfully added!");
+                this.toastService.showMessage('success', 'Successful', 'FixedAsset successfully added!');
                 this.filteredFixedAssetList.set([response, ...this.filteredFixedAssetList()])
                 this.isSubmitted = false;
                 this.formReset(e);
-                setTimeout(() => {
-                  this.success.set("");
-                }, 1000);
               }
 
             },
             error: (error) => {
               console.error('Error register:', error);
+              this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message}`);
             }
           });
       }
     } else {
-      alert('Form is invalid! Please Fill Name Field.');
+      this.toastService.showMessage('warn', 'Warning', 'Form is invalid! Please Fill All Requirement Field.');
     }
   }
 
@@ -235,14 +231,11 @@ export class FixedAssetDescriptionComponent {
     if (confirm("Are you sure you want to delete?")) {
       this.fixedAssetService.deleteFixedAsset(id).subscribe(data => {
         if (data.id) {
-          this.success.set("FixedAsset deleted successfully!");
+          this.toastService.showMessage('success', 'Successful', 'FixedAsset deleted successfully!');
           this.filteredFixedAssetList.set(this.filteredFixedAssetList().filter(d => d.id !== id));
-          setTimeout(() => {
-            this.success.set("");
-          }, 1000);
         } else {
           console.error('Error deleting FixedAsset:', data);
-          alert('Error deleting FixedAsset: ' + data.message)
+          this.toastService.showMessage('error', 'Error', `Error deleting FixedAsset : ${data.message}`);
         }
       });
     }

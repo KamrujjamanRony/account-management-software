@@ -17,4 +17,8 @@ export class DataService {
   getHeader(): Observable<any> {
     return this.http.get<any>(this.jsonUrl).pipe(map(data => data.header));
   }
+  // Fetches the JSON data and extracts the options
+  getOptions(): Observable<any> {
+    return this.http.get<any>(this.jsonUrl).pipe(map(data => data.options));
+  }
 }

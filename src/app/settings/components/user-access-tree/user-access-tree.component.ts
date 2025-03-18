@@ -1,19 +1,40 @@
-import { Component, input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, inject, input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ToastService } from '../../../shared/components/primeng/toast/toast.service';
 
 @Component({
   selector: 'app-user-access-tree',
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './user-access-tree.component.html',
   styleUrl: './user-access-tree.component.css'
 })
 export class UserAccessTreeComponent {
   readonly nodes = input<any[]>([]);
+  private toastService = inject(ToastService);
 
   constructor() { }
 
   ngOnInit(): void {
     this.initializeCollapseState(this.nodes());
+  }
+
+  /** Select all nodes */
+  selectAll() {
+    this.nodes().forEach(node => {
+      node.isSelected = true;
+      this.updateChildren(node, true);
+    });
+    this.toastService.showMessage('success', 'Successful', 'All Access Selected!');
+  }
+
+  /** Deselect all nodes */
+  deselectAll() {
+    this.nodes().forEach(node => {
+      node.isSelected = false;
+      this.updateChildren(node, false);
+    });
+    this.toastService.showMessage('warn', 'Successful', 'All Access deselected!');
   }
 
   /** When a menu is checked, select all children and permissions */

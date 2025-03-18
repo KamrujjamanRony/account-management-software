@@ -1,6 +1,5 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component, ElementRef, inject, signal, viewChildren } from '@angular/core';
-import { ToastSuccessComponent } from '../../../../shared/components/toasts/toast-success/toast-success.component';
 import { FieldComponent } from '../../../../shared/components/field/field.component';
 import { FormControl, FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AllSvgComponent } from '../../../../shared/components/svg/all-svg/all-svg.component';
@@ -11,10 +10,11 @@ import { AccountListService } from '../../../services/account-list.service';
 import { VendorService } from '../../../services/vendor.service';
 import { VoucherService } from '../../../services/voucher.service';
 import { AccountingReportsService } from '../../../services/accounting-reports.service';
+import { ToastService } from '../../../../shared/components/primeng/toast/toast.service';
 
 @Component({
   selector: 'app-receive-voucher',
-  imports: [CommonModule, ToastSuccessComponent, FieldComponent, ReactiveFormsModule, AllSvgComponent, FormsModule, SelectorComponent],
+  imports: [CommonModule, FieldComponent, ReactiveFormsModule, AllSvgComponent, FormsModule, SelectorComponent],
   templateUrl: './receive-voucher.component.html',
   styleUrl: './receive-voucher.component.css'
 })
@@ -24,10 +24,10 @@ export class ReceiveVoucherComponent {
   private vendorService = inject(VendorService);
   private voucherService = inject(VoucherService);
   private accountingReportsService = inject(AccountingReportsService);
+  private toastService = inject(ToastService);
   dataFetchService = inject(DataFetchService);
   filteredVoucherList = signal<any[]>([]);
   highlightedTr: number = -1;
-  success = signal<any>("");
   selectedVoucher: any;
   selectedVoucherDetails: any;
   selectedVoucherDetailsIndex: any;
@@ -141,13 +141,13 @@ export class ReceiveVoucherComponent {
 
   addData() {
     if (this.selectedVoucher && this.dataArray.length > 0 && !this.selectedVoucherDetails) {
-      alert("You don't add a Voucher details in editing mode!");
+      this.toastService.showMessage('warn', 'Warning', "You don't add a Voucher details in editing mode!");
       return;
     }
     const cashId = this.form.value.accountBankCashId;
     if (this.addVoucherForm.valid && this.addVoucherForm.value.headId && cashId) {
       if (!this.addVoucherForm.value.creditAmount) {
-        alert('Amount Must Be Gater Than 0');
+        this.toastService.showMessage('warn', 'Warning', 'Amount Must Be Gater Than 0');
         return;
       }
       const headId = this.addVoucherForm.value.headId;
@@ -160,7 +160,7 @@ export class ReceiveVoucherComponent {
       }).subscribe(accountData => {
         children = accountData.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() }))
         if (children.length > 0 && !this.addVoucherForm.value.subHeadId) {
-          alert(`Head is Not Valid Form Voucher Details`);
+          this.toastService.showMessage('warn', 'Warning', 'Head is Not Valid Form Voucher Details');
           return;
         }
         const data = this.addVoucherForm.value;
@@ -178,7 +178,7 @@ export class ReceiveVoucherComponent {
       });
 
     } else {
-      alert('Form is invalid! Please Fill Bank/Cash and Head Field.');
+      this.toastService.showMessage('warn', 'Warning', 'Form is invalid! Please Fill All Requirement Field.');
     }
   }
 
@@ -262,7 +262,7 @@ export class ReceiveVoucherComponent {
           .subscribe({
             next: (response) => {
               if (response !== null && response !== undefined) {
-                this.success.set("Voucher successfully updated!");
+                this.toastService.showMessage('success', 'Successful', "Voucher successfully updated!");
                 const rest = this.filteredVoucherList().filter(d => d.id !== response.id);
                 const updatedData = response.voucherDetailDto.splice(-1);
                 this.filteredVoucherList.set([...rest, response]);
@@ -270,14 +270,12 @@ export class ReceiveVoucherComponent {
                 this.selectedVoucher = null;
                 this.resetForm(e);
                 this.isSubmitting.set(false);
-                setTimeout(() => {
-                  this.success.set("");
-                }, 1000);
               }
 
             },
             error: (error) => {
               console.error('Error update:', error);
+              this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message}`);
               this.isSubmitting.set(false);
             }
           });
@@ -300,31 +298,29 @@ export class ReceiveVoucherComponent {
             next: (response: any) => {
               // console.log(response)
               if (response !== null && response !== undefined) {
-                this.success.set("Voucher successfully added!");
+                this.toastService.showMessage('success', 'Successful', "Voucher successfully added!");
                 this.dataArray = [];
                 const updatedData = response.voucherDetailDto.splice(-1);
                 this.filteredVoucherList.set([...this.filteredVoucherList(), response])
                 this.isSubmitted = false;
                 this.resetForm(e);
                 this.isSubmitting.set(false);
-                setTimeout(() => {
-                  this.success.set("");
-                }, 1000);
               }
 
             },
             error: (error) => {
               if (error.error.message) {
-                alert(`${error.error.status} : ${error.error.message}`);
+                this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message}`);
                 this.isSubmitting.set(false);
               }
               console.error('Error add:', error);
+              this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message}`);
               this.isSubmitting.set(false);
             }
           });
       }
     } else {
-      alert('Form is invalid! Please Fill All Required Field.');
+      this.toastService.showMessage('warn', 'Warning', 'Form is invalid! Please Fill All Requirement Field.');
     }
   }
 
@@ -332,14 +328,11 @@ export class ReceiveVoucherComponent {
     if (confirm("Are you sure you want to delete?")) {
       this.voucherService.deleteVoucher(id).subscribe(data => {
         if (data.id) {
-          this.success.set("Voucher deleted successfully!");
+          this.toastService.showMessage('success', 'Successful', "Voucher deleted successfully!");
           this.filteredVoucherList.set(this.filteredVoucherList().filter(d => d.id !== id));
-          setTimeout(() => {
-            this.success.set("");
-          }, 1000);
         } else {
           console.error('Error deleting Voucher:', data);
-          alert('Error deleting Voucher: ' + data.message)
+          this.toastService.showMessage('error', 'Error', `Error deleting Voucher : ${data.message}`);
         }
       });
     }

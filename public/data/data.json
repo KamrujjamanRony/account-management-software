@@ -5,5 +5,35 @@
     "address": "Mawna, Dhaka, Bangladesh",
     "contact": "017777777777",
     "marginTop": 0
+  },
+  "options": {
+    "religionOption": [
+      { "value": "Islam", "label": "Islam" },
+      { "value": "Christianity", "label": "Christianity" },
+      { "value": "Hinduism", "label": "Hinduism" },
+      { "value": "Buddhism", "label": "Buddhism" },
+      { "value": "Others", "label": "Others" }
+    ],
+    "employeeTypeOption": [
+      { "value": "Full-Time", "label": "Full-Time" },
+      { "value": "Part-Time", "label": "Part-Time" },
+      { "value": "Intern", "label": "Intern" }
+    ],
+    "departmentOption": [
+      { "value": "departmentA", "label": "departmentA" },
+      { "value": "departmentB", "label": "departmentB" },
+      { "value": "departmentC", "label": "departmentC" }
+    ],
+    "genderOption": [
+      { "value": "male", "label": "Male" },
+      { "value": "female", "label": "Female" },
+      { "value": "other", "label": "Other" }
+    ],
+    "eduQuaOption": [
+      { "value": "SSC", "label": "Secondary School Certificate" },
+      { "value": "HSC", "label": "Higher Secondary Certificate" },
+      { "value": "B.Ed.", "label": "Bachelors degrees" },
+      { "value": "M.Ed.", "label": "Masters degrees" }
+    ]
   }
 }

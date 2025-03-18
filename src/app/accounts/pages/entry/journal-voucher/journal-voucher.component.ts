@@ -1,6 +1,5 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component, ElementRef, inject, signal, viewChildren } from '@angular/core';
-import { ToastSuccessComponent } from '../../../../shared/components/toasts/toast-success/toast-success.component';
 import { FieldComponent } from '../../../../shared/components/field/field.component';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AllSvgComponent } from '../../../../shared/components/svg/all-svg/all-svg.component';
@@ -13,10 +12,11 @@ import { VoucherService } from '../../../services/voucher.service';
 import { AccountingReportsService } from '../../../services/accounting-reports.service';
 import { DataFetchService } from '../../../../shared/services/useDataFetch';
 import { DataService } from '../../../../shared/services/data.service';
+import { ToastService } from '../../../../shared/components/primeng/toast/toast.service';
 
 @Component({
   selector: 'app-journal-voucher',
-  imports: [CommonModule, ToastSuccessComponent, FieldComponent, ReactiveFormsModule, AllSvgComponent, FormsModule],
+  imports: [CommonModule, FieldComponent, ReactiveFormsModule, AllSvgComponent, FormsModule],
   templateUrl: './journal-voucher.component.html',
   styleUrl: './journal-voucher.component.css'
 })
@@ -26,10 +26,10 @@ export class JournalVoucherComponent {
   private vendorService = inject(VendorService);
   private voucherService = inject(VoucherService);
   private accountingReportsService = inject(AccountingReportsService);
-  dataFetchService = inject(DataFetchService);
+  private dataFetchService = inject(DataFetchService);
   private dataService = inject(DataService);
+  private toastService = inject(ToastService);
   highlightedTr: number = -1;
-  success = signal<any>("");
   selectedVoucher: any;
   selectedVoucherDetails: any;
   selectedVoucherDetailsIndex: any;
@@ -159,11 +159,11 @@ export class JournalVoucherComponent {
 
   addData() {
     if (this.selectedVoucher && this.dataArray.length > 0 && !this.selectedVoucherDetails) {
-      alert("You don't add a Voucher details in editing mode!");
+      this.toastService.showMessage('warn', 'Warning', "You don't add a Voucher details in editing mode!");
       return;
     }
     if (this.debitVoucherForm.value.headId == this.creditVoucherForm.value.headId) {
-      alert("Debit Voucher Head and Credit Voucher Head must be unique!");
+      this.toastService.showMessage('warn', 'Warning', "Debit Voucher Head and Credit Voucher Head must be unique!");
       return;
     }
     const findDebitVoucherHead = this.dataArray.find(v => v.headId == this.debitVoucherForm.value.headId);
@@ -171,7 +171,7 @@ export class JournalVoucherComponent {
     console.log(findDebitVoucherHead, findCreditVoucherHead);
     console.log(this.debitVoucherForm.value.subHeadId, this.creditVoucherForm.value.subHeadId);
     if ((findDebitVoucherHead && !this.debitVoucherForm.value.subHeadId) || (findCreditVoucherHead && !this.creditVoucherForm.value.subHeadId)) {
-      alert("This Voucher Head Already Added in Voucher Details!");
+      this.toastService.showMessage('warn', 'Warning', "This Voucher Head Already Added in Voucher Details!");
       return;
     }
     const accountGroup = this.transactionType() === "BalanceSheet" ? ["Current Asset", "NonCurrent/Fixed Asset", "Current Liability", "NonCurrent Liability", "Equity"] : [this.transactionType()];
@@ -185,7 +185,7 @@ export class JournalVoucherComponent {
         }).subscribe(accountData => {
           children = accountData.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() }))
           if (children.length > 0 && !this.debitVoucherForm.value.subHeadId) {
-            alert(`Head is Not Valid Form Voucher Details`);
+            this.toastService.showMessage('warn', 'Warning', 'Head is Not Valid Form Voucher Details');
             return;
           }
           const data = this.debitVoucherForm.value;
@@ -201,7 +201,7 @@ export class JournalVoucherComponent {
           this.totalDebitAmount = this.dataArray.reduce((prev, data) => prev + (data.debitAmount || 0), 0);
         });
       } else {
-        alert('Debit Amount Must Be Gater Than 0');
+        this.toastService.showMessage('warn', 'Warning', 'Debit Amount Must Be Gater Than 0');
       }
     }
     if (this.creditVoucherForm.valid && this.creditVoucherForm.value.headId) {
@@ -214,7 +214,7 @@ export class JournalVoucherComponent {
         }).subscribe(accountData => {
           children = accountData.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() }))
           if (children.length > 0 && !this.creditVoucherForm.value.subHeadId) {
-            alert(`Head is Not Valid Form Voucher Details`);
+            this.toastService.showMessage('warn', 'Warning', 'Head is Not Valid Form Voucher Details');
             return;
           }
           const data = this.creditVoucherForm.value;
@@ -230,13 +230,13 @@ export class JournalVoucherComponent {
           this.totalCreditAmount = this.dataArray.reduce((prev, data) => prev + (data.creditAmount || 0), 0);
         });
       } else {
-        alert('Credit Amount Must Be Gater Than 0');
+        this.toastService.showMessage('warn', 'Warning', 'Credit Amount Must Be Gater Than 0');
       }
 
 
     }
     else {
-      alert('Form is invalid! Please Fill and Head Field.');
+      this.toastService.showMessage('warn', 'Warning', 'Form is invalid! Please Fill All Requirement Field.');
     }
     this.form.get('transactionType')?.disable();
   }
@@ -285,7 +285,7 @@ export class JournalVoucherComponent {
 
   updateData() {
     if (this.selectedVoucher && this.dataArray.length > 0 && !this.selectedVoucherDetails) {
-      alert("You don't add a Voucher details in editing mode!");
+      this.toastService.showMessage('warn', 'Warning', "You don't add a Voucher details in editing mode!");
       return;
     }
     const accountGroup = this.transactionType() === "BalanceSheet" ? ["Current Asset", "NonCurrent/Fixed Asset", "Current Liability", "NonCurrent Liability", "Equity"] : [this.transactionType()]
@@ -299,7 +299,7 @@ export class JournalVoucherComponent {
         }).subscribe(accountData => {
           children = accountData.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() }))
           if (children.length > 0 && !this.debitVoucherForm.value.subHeadId) {
-            alert(`Head is Not Valid Form Voucher Details`);
+            this.toastService.showMessage('warn', 'Warning', 'Head is Not Valid Form Voucher Details');
             return;
           }
           const data = this.debitVoucherForm.value;
@@ -315,7 +315,7 @@ export class JournalVoucherComponent {
           this.totalDebitAmount = this.dataArray.reduce((prev, data) => prev + (data.debitAmount || 0), 0);
         });
       } else {
-        alert('Debit Amount Must Be Gater Than 0');
+        this.toastService.showMessage('warn', 'Warning', 'Debit Amount Must Be Gater Than 0');
       }
 
 
@@ -330,7 +330,7 @@ export class JournalVoucherComponent {
         }).subscribe(accountData => {
           children = accountData.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() }))
           if (children.length > 0 && !this.creditVoucherForm.value.subHeadId) {
-            alert(`Head is Not Valid Form Voucher Details`);
+            this.toastService.showMessage('warn', 'Warning', 'Head is Not Valid Form Voucher Details');
             return;
           }
           const data = this.creditVoucherForm.value;
@@ -346,13 +346,13 @@ export class JournalVoucherComponent {
           this.totalCreditAmount = this.dataArray.reduce((prev, data) => prev + (data.creditAmount || 0), 0);
         });
       } else {
-        alert('Credit Amount Must Be Gater Than 0');
+        this.toastService.showMessage('warn', 'Warning', 'Credit Amount Must Be Gater Than 0');
       }
 
 
     }
     else {
-      alert('Form is invalid! Please Fill and Head Field.');
+      this.toastService.showMessage('warn', 'Warning', 'Form is invalid! Please Fill All Requirement Field.');
     }
     this.form.get('transactionType')?.disable();
   }
@@ -366,7 +366,7 @@ export class JournalVoucherComponent {
   onSubmit(e: Event) {
     // NOTE: This method applies only when totalCreditAmount !== totalDebitAmount
     if (this.totalCreditAmount !== this.totalDebitAmount) {
-      alert('Debit and Credit Amount Must be Equal!');
+      this.toastService.showMessage('warn', 'Warning', 'Debit and Credit Amount Must be Equal!');
       return;
     }
     // TODO: This method
@@ -384,21 +384,19 @@ export class JournalVoucherComponent {
           .subscribe({
             next: (response) => {
               if (response !== null && response !== undefined) {
-                this.success.set("Voucher successfully updated!");
+                this.toastService.showMessage('success', 'Successful', '"Voucher successfully updated!');
                 const rest = this.filteredVoucherList().filter(d => d.id !== response.id);
                 this.filteredVoucherList.set([...rest, response]);
                 this.isSubmitted = false;
                 this.selectedVoucher = null;
                 this.resetForm(e);
                 this.isSubmitting.set(false);
-                setTimeout(() => {
-                  this.success.set("");
-                }, 1000);
               }
 
             },
             error: (error) => {
               console.error('Error update:', error);
+              this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message}`);
               this.isSubmitting.set(false);
             }
           });
@@ -422,21 +420,18 @@ export class JournalVoucherComponent {
             next: (response) => {
               console.log(response)
               if (response !== null && response !== undefined) {
-                this.success.set("Voucher successfully added!");
+                this.toastService.showMessage('success', 'Successful', 'Voucher successfully added!');
                 this.dataArray = [];
                 this.filteredVoucherList.set([...this.filteredVoucherList(), response])
                 this.isSubmitted = false;
                 this.resetForm(e);
                 this.isSubmitting.set(false);
-                setTimeout(() => {
-                  this.success.set("");
-                }, 1000);
               }
 
             },
             error: (error) => {
               if (error.error.message) {
-                alert(`${error.error.status} : ${error.error.message}`);
+                this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message}`);
                 this.isSubmitting.set(false);
               }
               console.error('Error add:', error);
@@ -445,7 +440,7 @@ export class JournalVoucherComponent {
           });
       }
     } else {
-      alert('Form is invalid! Please Fill All Required Field.');
+      this.toastService.showMessage('warn', 'Warning', 'Form is invalid! Please Fill All Requirement Field.');
     }
   }
 
@@ -453,14 +448,11 @@ export class JournalVoucherComponent {
     if (confirm("Are you sure you want to delete?")) {
       this.voucherService.deleteVoucher(id).subscribe(data => {
         if (data.id) {
-          this.success.set("Voucher deleted successfully!");
+          this.toastService.showMessage('success', 'Successful', 'Voucher deleted successfully!');
           this.filteredVoucherList.set(this.filteredVoucherList().filter(d => d.id !== id));
-          setTimeout(() => {
-            this.success.set("");
-          }, 1000);
         } else {
           console.error('Error deleting Voucher:', data);
-          alert('Error deleting Voucher: ' + data.message)
+          this.toastService.showMessage('error', 'Error', `Error deleting Voucher : ${data.message}`);
         }
       });
     }

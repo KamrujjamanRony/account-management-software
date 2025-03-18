@@ -1,26 +1,26 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, inject, signal, viewChildren, viewChild } from '@angular/core';
-import { ToastSuccessComponent } from '../../../../shared/components/toasts/toast-success/toast-success.component';
 import { FieldComponent } from '../../../../shared/components/field/field.component';
 import { SearchComponent } from '../../../../shared/components/svg/search/search.component';
 import { FormControl, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { VendorService } from '../../../services/vendor.service';
 import { DataFetchService } from '../../../../shared/services/useDataFetch';
+import { ToastService } from '../../../../shared/components/primeng/toast/toast.service';
 
 @Component({
   selector: 'app-vendor-entry',
-  imports: [CommonModule, ToastSuccessComponent, FieldComponent, SearchComponent, ReactiveFormsModule],
+  imports: [CommonModule, FieldComponent, SearchComponent, ReactiveFormsModule],
   templateUrl: './vendor-entry.component.html',
   styleUrl: './vendor-entry.component.css'
 })
 export class VendorEntryComponent {
   fb = inject(NonNullableFormBuilder);
   private vendorService = inject(VendorService);
-  dataFetchService = inject(DataFetchService);
+  private dataFetchService = inject(DataFetchService);
+  private toastService = inject(ToastService);
   filteredVendorList = signal<any[]>([]);
   highlightedTr: number = -1;
-  success = signal<any>("");
   selectedVendor: any;
 
   private searchQuery$ = new BehaviorSubject<string>('');
@@ -130,20 +130,18 @@ export class VendorEntryComponent {
           .subscribe({
             next: (response) => {
               if (response !== null && response !== undefined) {
-                this.success.set("Vendor successfully updated!");
+                this.toastService.showMessage('success', 'Successful', "Vendor successfully updated!");
                 const rest = this.filteredVendorList().filter(d => d.id !== response.id);
                 this.filteredVendorList.set([response, ...rest]);
                 this.isSubmitted = false;
                 this.selectedVendor = null;
                 this.formReset(e);
-                setTimeout(() => {
-                  this.success.set("");
-                }, 1000);
               }
 
             },
             error: (error) => {
               console.error('Error register:', error);
+              this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message}`);
             }
           });
       } else {
@@ -151,23 +149,21 @@ export class VendorEntryComponent {
           .subscribe({
             next: (response) => {
               if (response !== null && response !== undefined) {
-                this.success.set("Vendor successfully added!");
+                this.toastService.showMessage('success', 'Successful', "Vendor successfully added!");
                 this.filteredVendorList.set([response, ...this.filteredVendorList()])
                 this.isSubmitted = false;
                 this.formReset(e);
-                setTimeout(() => {
-                  this.success.set("");
-                }, 1000);
               }
 
             },
             error: (error) => {
               console.error('Error register:', error);
+              this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message}`);
             }
           });
       }
     } else {
-      alert('Form is invalid! Please Fill Name Field.');
+      this.toastService.showMessage('warn', 'Warning', 'Form is invalid! Please Fill All Requirement Field.');
     }
   }
 
@@ -191,14 +187,11 @@ export class VendorEntryComponent {
     if (confirm("Are you sure you want to delete?")) {
       this.vendorService.deleteVendor(id).subscribe(data => {
         if (data.id) {
-          this.success.set("Vendor deleted successfully!");
+          this.toastService.showMessage('success', 'Successful', "Vendor deleted successfully!");
           this.filteredVendorList.set(this.filteredVendorList().filter(d => d.id !== id));
-          setTimeout(() => {
-            this.success.set("");
-          }, 1000);
         } else {
           console.error('Error deleting Vendor:', data);
-          alert('Error deleting Vendor: ' + data.message)
+          this.toastService.showMessage('error', 'Error', `Error deleting Vendor: ${data.message}`);
         }
       });
     }
