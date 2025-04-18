@@ -176,7 +176,7 @@ export class FixedAssetDescriptionComponent {
             },
             error: (error) => {
               console.error('Error Update:', error);
-              this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message}`);
+              this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message || error.error.title}`);
             }
           });
       } else {
@@ -193,7 +193,7 @@ export class FixedAssetDescriptionComponent {
             },
             error: (error) => {
               console.error('Error register:', error);
-              this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message}`);
+              this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message || error.error.title}`);
             }
           });
       }

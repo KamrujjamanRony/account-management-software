@@ -4,11 +4,12 @@ import { AccountComponent } from './layouts/account/account.component';
 import { HrLayoutComponent } from './layouts/hr-layout/hr-layout.component';
 import { DoctorFeeLayoutComponent } from './layouts/doctor-fee-layout/doctor-fee-layout.component';
 import { SettingsLayoutComponent } from './layouts/settings-layout/settings-layout.component';
+import { authGuard } from './settings/services/auth.guard';
 
 export const routes: Routes = [
   {
     path: '',
-    component: MainComponent,
+    component: MainComponent, canActivate: [authGuard],
     children: [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       {
@@ -189,5 +190,10 @@ export const routes: Routes = [
         ],
       },
     ],
-  }
+  },
+  {
+    path: 'login',
+    loadComponent: () => import('./settings/pages/login/login.component').then(m => m.LoginComponent),
+    data: { preload: true },
+  },
 ];

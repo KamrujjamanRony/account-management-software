@@ -273,8 +273,8 @@ export class ExpenseVoucherComponent {
             },
             error: (error) => {
               this.isSubmitting.set(false);
-              if (error.error.message) {
-                this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message}`);
+              if (error.error.message || error.error.title) {
+                this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message || error.error.title}`);
               }
               console.error('Error add:', error);
             }

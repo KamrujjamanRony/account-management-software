@@ -40,7 +40,7 @@ export class UsersComponent {
   form = this.fb.group({
     userName: ['', [Validators.required]],
     password: [''],
-    eId: [''],
+    eId: null,
     isActive: [true],
     menuPermissions: [['']],
   });
@@ -167,7 +167,9 @@ export class UsersComponent {
             },
             error: (error) => {
               console.error('Error register:', error);
-              this.toastService.showMessage('error', 'Error', 'User not updated!');
+              if (error.error.message || error.error.title) {
+                this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message || error.error.title}`);
+              }
             }
           });
       } else {
@@ -184,7 +186,9 @@ export class UsersComponent {
             },
             error: (error) => {
               console.error('Error add user:', error);
-              this.toastService.showMessage('error', 'Error', 'User not added!');
+              if (error.error.message || error.error.title) {
+                this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message || error.error.title}`);
+              }
             }
           });
       }
@@ -232,7 +236,7 @@ export class UsersComponent {
     this.form.reset({
       userName: '',
       password: '',
-      eId: '',
+      eId: null,
       isActive: true,
       menuPermissions: [''],
     });
@@ -251,15 +255,18 @@ export class UsersComponent {
 
   private getSelectedNodes(nodes: any[]): any[] {
     return nodes.reduce((acc: any[], node: any) => {
-      const selectedPermissions = node.permissionsKey
-        ?.filter((p: any) => p.isSelected)
-        .map((p: any) => p.permission);
+      // Recursively update the isSelected property of parent nodes
+      this.updateParentSelection(node);
 
-      // Include node only if it has selected permissions
-      if ((node.isSelected || node.children?.some((child: any) => child.isSelected)) && selectedPermissions.length > 0) {
+      // Include node if it is selected or has selected children
+      if (node.isSelected || (node.children && node.children.some((child: any) => child.isSelected))) {
+        const selectedPermissions = node.permissionsKey
+          ?.filter((p: any) => p.isSelected)
+          .map((p: any) => p.permission);
+
         acc.push({
           menuId: node.id,
-          PermissionKey: selectedPermissions,
+          PermissionKey: selectedPermissions || [], // Include empty array if no permissions
         });
       }
 
@@ -270,6 +277,27 @@ export class UsersComponent {
 
       return acc;
     }, []);
+  }
+
+  private updateParentSelection(node: any): boolean {
+    // Check if the node has children
+    if (node.children && node.children.length > 0) {
+      // console.log('Processing node:', node.menuName, 'isSelected:', node.isSelected);
+
+      // Recursively update the isSelected property of children
+      const anyChildSelected = node.children.some((child: any) => this.updateParentSelection(child));
+      // console.log('Any child selected for node', node.menuName, ':', anyChildSelected);
+
+      // Update the current node's isSelected property based on its children
+      node.isSelected = anyChildSelected || node.isSelected;
+      // console.log('Updated node', node.menuName, 'isSelected:', node.isSelected);
+
+      return node.isSelected;
+    }
+
+    // If it's a leaf node, return its isSelected status
+    // console.log('Leaf node:', node.menuName, 'isSelected:', node.isSelected);
+    return node.isSelected;
   }
 
 

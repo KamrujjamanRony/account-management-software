@@ -157,7 +157,7 @@ export class MenuListComponent {
             },
             error: (error) => {
               console.error('Error updated Menu:', error);
-              this.toastService.showMessage('error', 'Error', `Error updated Menu: ${error.error.message}`);
+              this.toastService.showMessage('error', 'Error', `Error updated Menu: ${error.error.message || error.error.title}`);
             }
           });
       } else {
@@ -175,7 +175,7 @@ export class MenuListComponent {
             },
             error: (error) => {
               console.error('Error added Menu:', error);
-              this.toastService.showMessage('error', 'Error', `Error added Menu: ${error.error.message}`);
+              this.toastService.showMessage('error', 'Error', `Error added Menu: ${error.error.message || error.error.title}`);
             }
           });
       }

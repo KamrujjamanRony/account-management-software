@@ -275,7 +275,7 @@ export class ReceiveVoucherComponent {
             },
             error: (error) => {
               console.error('Error update:', error);
-              this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message}`);
+              this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message || error.error.title}`);
               this.isSubmitting.set(false);
             }
           });
@@ -309,12 +309,12 @@ export class ReceiveVoucherComponent {
 
             },
             error: (error) => {
-              if (error.error.message) {
-                this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message}`);
+              if (error.error.message || error.error.title) {
+                this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message || error.error.title}`);
                 this.isSubmitting.set(false);
               }
               console.error('Error add:', error);
-              this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message}`);
+              this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message || error.error.title}`);
               this.isSubmitting.set(false);
             }
           });

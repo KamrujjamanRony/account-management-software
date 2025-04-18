@@ -16,12 +16,6 @@ import { DataFetchService } from '../../../shared/services/useDataFetch';
   styleUrl: './registration.component.css'
 })
 export class RegistrationComponent {
-  onPatientSearchChange($event: Event) {
-    throw new Error('Method not implemented.');
-  }
-  handlePatientKeyDown($event: KeyboardEvent) {
-    throw new Error('Method not implemented.');
-  }
   fb = inject(NonNullableFormBuilder);
   private patientService = inject(PatientService);
   dataFetchService = inject(DataFetchService);

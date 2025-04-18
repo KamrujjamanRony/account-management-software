@@ -183,7 +183,7 @@ export class AccountListEntryComponent {
             },
             error: (error) => {
               console.error('Error register:', error);
-              this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message}`);
+              this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message || error.error.title}`);
             }
           });
       } else {
@@ -202,7 +202,7 @@ export class AccountListEntryComponent {
             },
             error: (error) => {
               console.error('Error Adding Account:', error);
-              this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message}`);
+              this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message || error.error.title}`);
             }
           });
       }

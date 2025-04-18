@@ -111,23 +111,24 @@ export class GeneralLedgerComponent {
     const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'A4' });
 
     // Title and Header Section
-    const pageWidth = doc.internal.pageSize.width - marginLeft - marginRight;
+    // Get the exact center of the page (considering margins)
+    const centerX = doc.internal.pageSize.getWidth() / 2;
 
     // Header Section
     if (this.header()) {
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(18);
-      doc.text(this.header()?.name, pageWidth / 2 + marginLeft, marginTop, { align: 'center' });
+      doc.text(this.header()?.name, centerX, marginTop, { align: 'center' });
       marginTop += 5;
 
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(12);
-      doc.text(this.header()?.address, pageWidth / 2 + marginLeft, marginTop, { align: 'center' });
+      doc.text(this.header()?.address, centerX, marginTop, { align: 'center' });
       marginTop += 5;
 
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(12);
-      doc.text(`Contact: ${this.header()?.contact}`, pageWidth / 2 + marginLeft, marginTop, { align: 'center' });
+      doc.text(`Contact: ${this.header()?.contact}`, centerX, marginTop, { align: 'center' });
       marginTop += 2;
       doc.line(0, marginTop, 560, marginTop);
       marginTop += 7;
@@ -136,7 +137,7 @@ export class GeneralLedgerComponent {
     // Title Section
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(14);
-    doc.text(`General Transaction Report`, pageWidth / 2 + marginLeft, marginTop, { align: 'center' });
+    doc.text(`General Transaction Report`, centerX, marginTop, { align: 'center' });
     marginTop += 5;
 
     // Sub-header for doctor name and dates
@@ -145,7 +146,7 @@ export class GeneralLedgerComponent {
     if (this.fromDate()) {
       const dateRange = `From: ${this.transform(this.fromDate())} to: ${this.toDate() ? this.transform(this.toDate()) : this.transform(this.fromDate())
         }`;
-      doc.text(dateRange, pageWidth / 2 + marginLeft, marginTop, { align: 'center' });
+      doc.text(dateRange, centerX, marginTop, { align: 'center' });
     }
 
     // Prepare Table Data
@@ -205,18 +206,36 @@ export class GeneralLedgerComponent {
       },
     });
 
+    // // Option 1: save
+    // const fileName = `Transaction_Report_${this.transform(this.fromDate())}` +
+    //   (this.toDate() ? `_to_${this.transform(this.toDate())}` : '') + '.pdf';
+    // doc.save(fileName);
+
+    // Option 2: open
+    const pdfOutput = doc.output('blob');
+    window.open(URL.createObjectURL(pdfOutput));
 
 
-    // const finalY = (doc as any).lastAutoTable.finalY + 5;
-    // doc.setFontSize(10);
-    // doc.text(
-    //   `Total Collection (${totalAmount} - ${totalDiscount}) = ${totalAmount - totalDiscount} Tk`,
-    //   105,
-    //   finalY,
-    //   { align: 'center' }
-    // );
+    // // Option 3: open
+    // const pdfDataUri = doc.output('datauristring');
+    // const newWindow = window.open();
+    // if (newWindow) {
+    //   newWindow.document.write(`<iframe width='100%' height='100%' src='${pdfDataUri}'></iframe>`);
+    // } else {
+    //   console.error('Failed to open a new window.');
+    // }
 
-    doc.output('dataurlnewwindow');
+    // // Option 4: open
+    //   var string = doc.output('datauristring');
+    //   var iframe = "<iframe width='100%' height='100%' src='" + string + "'></iframe>"
+    //   var x = window.open();
+    //   if (x) {
+    //     x.document.open();
+    //     x.document.write(iframe);
+    //     x.document.close();
+    //   } else {
+    //     console.error('Failed to open a new window.');
+    //   }
   }
 
 }
