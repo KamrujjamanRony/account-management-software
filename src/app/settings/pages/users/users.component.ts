@@ -61,6 +61,7 @@ export class UsersComponent {
 
   onLoadEmployee(eId: any) {
     this.employeeService.getEmployee(eId).subscribe((data) => {
+      console.log(data)
       this.employeeOption.set(data.map((item: any) => {
         return { value: item.eId, label: item.eName }
       }))

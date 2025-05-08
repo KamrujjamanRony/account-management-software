@@ -1,8 +1,8 @@
 <div class="w-full font-medium">
   <div
     (click)="toggleDropdown()"
-    class="py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize flex justify-between cursor-pointer"
-    [ngClass]="{ 'text-gray-700': !selected() }"
+    class="py-2.5 px-2 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize flex justify-between cursor-pointer"
+    [ngClass]="{ 'text-gray-950': !selected() }"
   >
     <span>
       {{
@@ -26,15 +26,15 @@
         type="text"
         [(ngModel)]="inputValue"
         placeholder="Search"
-        class="placeholder:text-gray-700 text-xs rounded-md px-2 pl-8 outline-none w-full my-1"
+        class="placeholder:text-gray-950 text-xs rounded-md px-2 pl-8 outline-none w-full my-1"
       />
     </div>
 
     <li
       *ngFor="let option of options()"
-      class="p-2 text-sm hover:bg-teal-600 hover:text-white cursor-pointer"
+      class="p-2 text-sm hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
       [ngClass]="{
-        'bg-sky-600 text-white': option.id === selected()?.id,
+        'bg-sky-600 text-gray-50': option.id === selected()?.id,
         block: option.text.toLowerCase().startsWith(inputValue.toLowerCase()),
         hidden: !option.text.toLowerCase().startsWith(inputValue.toLowerCase())
       }"

@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
   imports: [],
   template: `
   <svg
-              class="w-4 h-4 text-gray-500"
+              class="w-4 h-4 text-gray-950"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

@@ -26,7 +26,7 @@
               type="text"
               name="fakeName666"
               [formControl]="getControl('eName')"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               [class.invalid]="
                 (getControl('eName').invalid && getControl('eName').touched) ||
                 isSubmitted
@@ -45,7 +45,7 @@
               [formControl]="getControl('gender')"
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 2)"
-              class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+              class="block py-2.5 px-2 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
             >
               <option value="" class="capitalize">Select Option</option>
               @for(option of genderOption(); track $index){
@@ -63,7 +63,7 @@
               [formControl]="getControl('religion')"
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 2)"
-              class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+              class="block py-2.5 px-2 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
             >
               <option value="" class="capitalize">Select Option</option>
               @for(option of religionOption(); track $index){
@@ -79,7 +79,7 @@
               #inputRef
               type="date"
               [formControl]="getControl('dob')"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               [class.invalid]="
                 (getControl('dob').invalid && getControl('dob').touched) ||
                 isSubmitted
@@ -94,7 +94,7 @@
               #inputRef
               type="text"
               [formControl]="getControl('addr')"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 2)"
             />
@@ -105,7 +105,7 @@
               #inputRef
               type="text"
               [formControl]="getControl('nid')"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 2)"
             />
@@ -116,7 +116,7 @@
               #inputRef
               type="text"
               [formControl]="getControl('moNum')"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 2)"
             />
@@ -127,7 +127,7 @@
               #inputRef
               type="text"
               [formControl]="getControl('emCont')"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 2)"
             />
@@ -138,7 +138,7 @@
               #inputRef
               type="text"
               [formControl]="getControl('reEmCon')"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 2)"
             />
@@ -149,7 +149,7 @@
               #inputRef
               type="email"
               [formControl]="getControl('email')"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 2)"
             />
@@ -160,7 +160,7 @@
               #inputRef
               type="text"
               [formControl]="getControl('pic')"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 2)"
             />
@@ -173,7 +173,7 @@
               [formControl]="getControl('eduQua')"
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 2)"
-              class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+              class="block py-2.5 px-2 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
             >
               <option value="" class="capitalize">Select Option</option>
               @for(option of eduQuaOption(); track $index){
@@ -189,7 +189,7 @@
               #inputRef
               type="text"
               [formControl]="getControl('deEduQua')"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 2)"
             />
@@ -200,7 +200,7 @@
               #inputRef
               type="text"
               [formControl]="getControl('expe')"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 2)"
             />
@@ -211,7 +211,7 @@
               #inputRef
               type="text"
               [formControl]="getControl('skill')"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 2)"
             />
@@ -233,7 +233,7 @@
               #inputRef
               type="text"
               [formControl]="getControl('ref')"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 2)"
             />
@@ -246,7 +246,7 @@
               [formControl]="getControl('dep')"
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 2)"
-              class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+              class="block py-2.5 px-2 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
             >
               <option value="" class="capitalize">Select Option</option>
               @for(option of departmentOption(); track $index){
@@ -262,7 +262,7 @@
               #inputRef
               type="text"
               [formControl]="getControl('design')"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 2)"
             />
@@ -273,7 +273,7 @@
               #inputRef
               type="date"
               [formControl]="getControl('jDate')"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               [class.invalid]="
                 (getControl('jDate').invalid && getControl('jDate').touched) ||
                 isSubmitted
@@ -290,7 +290,7 @@
               [formControl]="getControl('type')"
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 2)"
-              class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+              class="block py-2.5 px-2 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
             >
               <option value="" class="capitalize">Select Option</option>
               @for(option of employeeTypeOption(); track $index){
@@ -306,7 +306,7 @@
               #inputRef
               type="text"
               [formControl]="getControl('act')"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 2)"
             />
@@ -317,7 +317,7 @@
               #inputRef
               type="text"
               [formControl]="getControl('workingPlace')"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 2)"
             />
@@ -328,7 +328,7 @@
               #inputRef
               type="number"
               [formControl]="getControl('basicSalary')"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               [class.invalid]="
                 (getControl('basicSalary').invalid &&
                   getControl('basicSalary').touched) ||
@@ -344,7 +344,7 @@
               #inputRef
               type="number"
               [formControl]="getControl('houseRent')"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               [class.invalid]="
                 (getControl('houseRent').invalid &&
                   getControl('houseRent').touched) ||
@@ -360,7 +360,7 @@
               #inputRef
               type="number"
               [formControl]="getControl('mediAllow')"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               [class.invalid]="
                 (getControl('mediAllow').invalid &&
                   getControl('mediAllow').touched) ||
@@ -376,7 +376,7 @@
               #inputRef
               type="number"
               [formControl]="getControl('convey')"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               [class.invalid]="
                 (getControl('convey').invalid &&
                   getControl('convey').touched) ||
@@ -392,7 +392,7 @@
               #inputRef
               type="number"
               [formControl]="getControl('otherAllow')"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               [class.invalid]="
                 (getControl('otherAllow').invalid &&
                   getControl('otherAllow').touched) ||
@@ -408,7 +408,7 @@
               #inputRef
               type="number"
               [formControl]="getControl('totalSalary')"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               [class.invalid]="
                 (getControl('totalSalary').invalid &&
                   getControl('totalSalary').touched) ||
@@ -424,7 +424,7 @@
               #inputRef
               type="text"
               [formControl]="getControl('fileLink')"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 2)"
             />
@@ -435,7 +435,7 @@
               #inputRef
               type="text"
               [formControl]="getControl('others1')"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 2)"
             />
@@ -446,7 +446,7 @@
               #inputRef
               type="text"
               [formControl]="getControl('others2')"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 2)"
             />
@@ -457,7 +457,7 @@
               #inputRef
               type="text"
               [formControl]="getControl('others3')"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 2)"
             />
@@ -472,13 +472,13 @@
           #inputRef
           type="submit"
           [value]="selectedEmployee ? 'Update' : 'Save'"
-          class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 shadow-lg shadow-teal-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
+          class="text-gray-50 bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 shadow-lg shadow-teal-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
           (keydown.enter)="handleEnterKey($event, 3)"
         />
 
         <button
           (click)="formReset($event)"
-          class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-red-300 shadow-lg shadow-red-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10"
+          class="text-gray-50 bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-red-300 shadow-lg shadow-red-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10"
         >
           Clear
         </button>
@@ -508,7 +508,7 @@
               type="text"
               id="table-search"
               autocomplete="off"
-              class="block ps-10 text-xs text-gray-900 border border-gray-300 rounded bg-gray-50 focus:ring-teal-500 focus:border-teal-500 w-full"
+              class="block ps-10 text-xs text-gray-950 border border-gray-300 rounded bg-gray-50 focus:ring-teal-500 focus:border-teal-500 w-full"
               placeholder="Search"
               (input)="onSearchEmployee($event)"
               (keydown)="handleSearchKeyDown($event)"
@@ -530,8 +530,8 @@
         Data is Empty.
       </p>
       } @else {
-      <table class="w-full text-sm text-left rtl:text-right text-gray-800 mt-2">
-        <thead class="text-sm text-gray-100 uppercase bg-gray-800">
+      <table class="w-full text-sm text-left rtl:text-right text-gray-950 mt-2">
+        <thead class="text-sm text-gray-50 uppercase bg-gray-800">
           <tr>
             <th scope="col" class="p-1">eName</th>
             <th scope="col" class="p-1">gender</th>
@@ -564,7 +564,7 @@
           $index) {
           <tr
             id="row-{{ $index }}"
-            class="bg-teal-50 border-b hover:bg-teal-600 hover:text-white cursor-pointer"
+            class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
           >
             <td scope="row" class="p-1">
               {{ item?.eName }}

@@ -89,7 +89,6 @@ export class MenuListComponent {
 
   getParentMenuName(menuId: any): string {
     const parentMenu = this.menuOptions().find(m => m.key === menuId);
-    console.log(parentMenu)
     return parentMenu?.value ?? '';
   }
 

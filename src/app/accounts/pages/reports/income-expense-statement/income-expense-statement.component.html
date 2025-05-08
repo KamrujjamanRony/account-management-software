@@ -3,7 +3,7 @@
     <select
       id="transactionType"
       [(ngModel)]="transactionType"
-      class="border border-gray-500 text-gray-600 rounded-md px-5 py-2"
+      class="border border-gray-500 text-gray-950 rounded-md px-5 py-2"
     >
       @for (item of transactionTypeOptions(); track $index) {
       <option [value]="item">
@@ -16,17 +16,17 @@
       id="fromDate"
       [(ngModel)]="fromDate"
       (change)="onLoadReport()"
-      class="border border-gray-500 text-gray-600 rounded-md px-5 py-2"
+      class="border border-gray-500 text-gray-950 rounded-md px-5 py-2"
     />
     <input
       type="date"
       id="toDate"
       [(ngModel)]="toDate"
       (change)="onLoadReport()"
-      class="border border-gray-500 text-gray-600 rounded-md px-5 py-2"
+      class="border border-gray-500 text-gray-950 rounded-md px-5 py-2"
     />
     <button
-      class="relative inline-flex items-center justify-center p-0.5 me-2 overflow-hidden text-sm font-medium text-teal-600 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white focus:ring-4 focus:outline-none focus:ring-green-200"
+      class="relative inline-flex items-center justify-center p-0.5 me-2 overflow-hidden text-sm font-medium text-teal-600 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-gray-50 focus:ring-4 focus:outline-none focus:ring-green-200"
       (click)="generatePDF()"
     >
       <span
@@ -57,8 +57,8 @@
     </p>
     } @else {
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
-      <table class="w-full text-sm text-left rtl:text-right text-gray-800 mt-2">
-        <thead class="text-sm text-gray-100 uppercase bg-teal-800">
+      <table class="w-full text-sm text-left rtl:text-right text-gray-950 mt-2">
+        <thead class="text-sm text-gray-50 uppercase bg-teal-800">
           <tr>
             <th scope="col" class="p-1">Head</th>
             <th scope="col" class="p-1">Amount</th>
@@ -68,7 +68,7 @@
           @for (item of incomeReports(); track $index) {
           <tr
             id="row-{{ $index }}"
-            class="bg-teal-50 border-b hover:bg-teal-600 hover:text-white cursor-pointer"
+            class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
           >
             <td class="p-1 capitalize">
               {{ item?.subHead }}
@@ -79,7 +79,7 @@
           </tr>
           }
           <tr
-            class="bg-teal-50 border-b hover:bg-teal-600 hover:text-white cursor-pointer"
+            class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
           >
             <td class="p-1 capitalize">Total:</td>
             <td class="p-1">
@@ -111,8 +111,8 @@
     </p>
     } @else {
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
-      <table class="w-full text-sm text-left rtl:text-right text-gray-800 mt-2">
-        <thead class="text-sm text-gray-100 uppercase bg-teal-800">
+      <table class="w-full text-sm text-left rtl:text-right text-gray-950 mt-2">
+        <thead class="text-sm text-gray-50 uppercase bg-teal-800">
           <tr>
             <th scope="col" class="p-1">Head</th>
             <th scope="col" class="p-1">Amount</th>
@@ -122,7 +122,7 @@
           @for (item of expenseReports(); track $index) {
           <tr
             id="row-{{ $index }}"
-            class="bg-teal-50 border-b hover:bg-teal-600 hover:text-white cursor-pointer"
+            class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
           >
             <td class="p-1 capitalize">
               {{ item?.subHead }}
@@ -133,7 +133,7 @@
           </tr>
           }
           <tr
-            class="bg-teal-50 border-b hover:bg-teal-600 hover:text-white cursor-pointer"
+            class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
           >
             <td class="p-1 capitalize">Total:</td>
             <td class="p-1">
@@ -169,9 +169,9 @@
       } @else {
       <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
         <table
-          class="w-full text-sm text-left rtl:text-right text-gray-800 mt-2"
+          class="w-full text-sm text-left rtl:text-right text-gray-950 mt-2"
         >
-          <thead class="text-sm text-gray-100 uppercase bg-teal-800">
+          <thead class="text-sm text-gray-50 uppercase bg-teal-800">
             <tr>
               <th scope="col" class="p-1">Head</th>
               <th scope="col" class="p-1">Amount</th>
@@ -181,7 +181,7 @@
             @for (item of incomeReports(); track $index) {
             <tr
               id="row-{{ $index }}"
-              class="bg-teal-50 border-b hover:bg-teal-600 hover:text-white cursor-pointer"
+              class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
             >
               <td class="p-1 capitalize">
                 {{ item?.subHead }}
@@ -192,7 +192,7 @@
             </tr>
             }
             <tr
-              class="bg-teal-50 border-b hover:bg-teal-600 hover:text-white cursor-pointer"
+              class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
             >
               <td class="p-1 capitalize">Total:</td>
               <td class="p-1">
@@ -227,9 +227,9 @@
       } @else {
       <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
         <table
-          class="w-full text-sm text-left rtl:text-right text-gray-800 mt-2"
+          class="w-full text-sm text-left rtl:text-right text-gray-950 mt-2"
         >
-          <thead class="text-sm text-gray-100 uppercase bg-teal-800">
+          <thead class="text-sm text-gray-50 uppercase bg-teal-800">
             <tr>
               <th scope="col" class="p-1">Head</th>
               <th scope="col" class="p-1">Amount</th>
@@ -239,7 +239,7 @@
             @for (item of expenseReports(); track $index) {
             <tr
               id="row-{{ $index }}"
-              class="bg-teal-50 border-b hover:bg-teal-600 hover:text-white cursor-pointer"
+              class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
             >
               <td class="p-1 capitalize">
                 {{ item?.subHead }}
@@ -250,7 +250,7 @@
             </tr>
             }
             <tr
-              class="bg-teal-50 border-b hover:bg-teal-600 hover:text-white cursor-pointer"
+              class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
             >
               <td class="p-1 capitalize">Total:</td>
               <td class="p-1">
@@ -258,7 +258,7 @@
               </td>
             </tr>
             <!-- <tr
-                    class="bg-teal-50 border-b hover:bg-teal-600 hover:text-white cursor-pointer"
+                    class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
                   >
                     <td class="p-1 capitalize">Total:</td>
                     <td class="p-1 capitalize"></td>

@@ -6,7 +6,7 @@
         <!-- Collapse Button -->
         @if (node.children?.length) {
         <button
-          class="text-gray-600 hover:text-black focus:outline-none"
+          class="text-gray-950 hover:text-gray-950 focus:outline-none"
           (click)="toggleCollapse(node)"
         >
           {{ node.collapsed ? "▶" : "▼" }}
@@ -24,7 +24,7 @@
         />
 
         <!-- Node menuName -->
-        <span class="text-gray-800">{{ node.menuName }}</span>
+        <span class="text-gray-950">{{ node.menuName }}</span>
       </div>
 
       <!-- Permissions -->
@@ -38,7 +38,7 @@
             [(ngModel)]="permission.isSelected"
             (change)="onPermissionCheck(node)"
           />
-          <span class="text-gray-600">{{ permission.permission }}</span>
+          <span class="text-gray-950">{{ permission.permission }}</span>
         </label>
         }
       </div>
@@ -57,13 +57,13 @@
   @if(nodes()[0]?.id == 1){
   <div class="flex space-x-2 my-2">
     <button
-      class="px-3 py-1 bg-teal-500 text-white rounded"
+      class="px-3 py-1 bg-teal-500 text-gray-50 rounded"
       (click)="selectAll()"
     >
       Select All
     </button>
     <button
-      class="px-3 py-1 bg-red-500 text-white rounded"
+      class="px-3 py-1 bg-red-500 text-gray-50 rounded"
       (click)="deselectAll()"
     >
       Deselect All

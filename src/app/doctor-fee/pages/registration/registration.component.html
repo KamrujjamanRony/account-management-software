@@ -18,7 +18,7 @@
             type="text"
             maxlength="11"
             [formControl]="getControl('contactNo')"
-            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+            class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
             [class.invalid]="
               (getControl('contactNo').invalid &&
                 getControl('contactNo').touched) ||
@@ -37,7 +37,7 @@
             [value]="getControl('regNo').value"
             [formControl]="getControl('regNo')"
             [disabled]="getControl('regNo').disabled"
-            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+            class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
             placeholder=""
           />
         </Field>
@@ -50,7 +50,7 @@
             #inputRef
             type="text"
             [formControl]="getControl('name')"
-            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+            class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
             [class.invalid]="
               (getControl('name').invalid && getControl('name').touched) ||
               isSubmitted
@@ -73,7 +73,7 @@
               isSubmitted
             "
             required
-            class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+            class="block py-2.5 px-2 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
           >
             @for(option of options; track $index){
             <option [value]="option.id" class="capitalize">
@@ -91,7 +91,7 @@
             #inputRef
             type="text"
             [formControl]="getControl('fatherName')"
-            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+            class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
             placeholder=""
             (keydown.enter)="handleEnterKey($event, 3)"
           />
@@ -102,7 +102,7 @@
             #inputRef
             type="text"
             [formControl]="getControl('motherName')"
-            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+            class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
             placeholder=""
             (keydown.enter)="handleEnterKey($event, 4)"
           />
@@ -116,7 +116,7 @@
             #inputRef
             type="text"
             [formControl]="getControl('nid')"
-            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+            class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
             placeholder=""
             (keydown.enter)="handleEnterKey($event, 5)"
           />
@@ -127,7 +127,7 @@
             #inputRef
             type="date"
             [formControl]="getControl('dob')"
-            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+            class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
             [class.invalid]="
               (getControl('dob').invalid && getControl('dob').touched) ||
               isSubmitted
@@ -143,7 +143,7 @@
         <input
           type="text"
           [formControl]="getControl('address')"
-          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
           [class.invalid]="
             (getControl('address').invalid && getControl('address').touched) ||
             isSubmitted
@@ -160,7 +160,7 @@
           #inputRef
           type="text"
           [formControl]="getControl('remarks')"
-          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
           placeholder=""
           (keydown.enter)="handleEnterKey($event, 8)"
         />
@@ -173,12 +173,12 @@
           #inputRef
           type="submit"
           [value]="selectedPatient ? 'Update' : 'Save'"
-          class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 shadow-lg shadow-teal-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
+          class="text-gray-50 bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 shadow-lg shadow-teal-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
           (keydown.enter)="handleEnterKey($event, 9)"
         />
         } @else {
         <button
-          class="text-white bg-gradient-to-r from-rose-400 via-rose-500 to-rose-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-rose-300 shadow-lg shadow-rose-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
+          class="text-gray-50 bg-gradient-to-r from-rose-400 via-rose-500 to-rose-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-rose-300 shadow-lg shadow-rose-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
         >
           Submitting...
         </button>
@@ -186,7 +186,7 @@
 
         <button
           (click)="formReset($event)"
-          class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-red-300 shadow-lg shadow-red-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10"
+          class="text-gray-50 bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-red-300 shadow-lg shadow-red-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10"
         >
           Clear
         </button>
@@ -215,7 +215,7 @@
             type="text"
             id="table-search"
             autocomplete="off"
-            class="block pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-teal-500 focus:border-teal-500"
+            class="block pt-2 ps-10 text-sm text-gray-950 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-teal-500 focus:border-teal-500"
             placeholder="Search"
             (input)="onSearchPatient($event)"
             (keydown)="handleSearchKeyDown($event)"
@@ -236,8 +236,8 @@
         Data is Empty.
       </p>
       } @else {
-      <table class="w-full text-xs text-left rtl:text-right text-gray-500">
-        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+      <table class="w-full text-xs text-left rtl:text-right text-gray-950">
+        <thead class="text-xs text-gray-950 uppercase bg-gray-50">
           <tr>
             <th scope="col" class="px-1 py-3">Reg. No.</th>
             <th scope="col" class="px-1 py-3">name</th>
@@ -260,7 +260,7 @@
           $index) {
           <tr
             id="row-{{ $index }}"
-            class="bg-teal-50 border-b dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+            class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
           >
             <th scope="row" class="p-1 font-medium whitespace-nowrap">
               {{ item?.regNo }}

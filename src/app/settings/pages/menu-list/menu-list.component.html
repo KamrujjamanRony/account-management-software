@@ -16,7 +16,7 @@
           #inputRef
           type="text"
           [formControl]="getControl('menuName')"
-          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
           [class.invalid]="
             (getControl('menuName').invalid &&
               getControl('menuName').touched) ||
@@ -33,7 +33,7 @@
           #inputRef
           type="text"
           [formControl]="getControl('moduleName')"
-          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
           placeholder=""
           (keydown.enter)="handleEnterKey($event, 1)"
         />
@@ -46,7 +46,7 @@
           [formControl]="getControl('parentMenuId')"
           placeholder=""
           (keydown.enter)="handleEnterKey($event, 2)"
-          class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+          class="block py-2.5 px-2 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
         >
           <option value="" class="capitalize">Select Option</option>
           @for(option of menuOptions(); track $index){
@@ -62,7 +62,7 @@
           #inputRef
           type="text"
           [formControl]="getControl('url')"
-          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
           placeholder=""
           (keydown.enter)="handleEnterKey($event, 3)"
         />
@@ -73,14 +73,14 @@
           #inputRef
           type="text"
           [formControl]="getControl('icon')"
-          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
           placeholder=""
           (keydown.enter)="handleEnterKey($event, 4)"
         />
       </Field>
       <!-- permissionsKey -->
       <div class="mb-5 relative">
-        <label class="block text-xs font-medium text-gray-900 absolute"
+        <label class="block text-xs font-medium text-gray-950 absolute"
           >Permissions</label
         >
         <p-multiselect
@@ -90,7 +90,7 @@
           optionLabel=""
           placeholder="Select Options"
           [maxSelectedLabels]="3"
-          styleClass="block !py-2.5 !px-0 !w-full !text-sm !text-gray-900 !bg-transparent !border-0 !border-b-2 !border-gray-300 !appearance-none !focus:outline-none !focus:ring-0 !focus:border-teal-600 !peer !rounded-none"
+          styleClass="block !py-2.5 !px-0 !w-full !text-sm !text-gray-950 !bg-transparent !border-0 !border-b-2 !border-gray-300 !appearance-none !focus:outline-none !focus:ring-0 !focus:border-teal-600 !peer !rounded-none"
           (keydown.enter)="handleEnterKey($event, 5)"
         >
         </p-multiselect>
@@ -105,11 +105,11 @@
             [formControl]="getControl('isActive')"
             [value]="true"
             name="isActive"
-            class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2"
+            class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 focus:ring-green-500 focus:ring-2"
           />
           <label
             for="active-radio"
-            class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+            class="ms-2 text-sm font-medium text-gray-950"
             >Activate</label
           >
         </div>
@@ -120,11 +120,11 @@
             [formControl]="getControl('isActive')"
             [value]="false"
             name="isActive"
-            class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 focus:ring-red-500 dark:focus:ring-red-600 dark:ring-offset-gray-800 focus:ring-2"
+            class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 focus:ring-red-500 focus:ring-2"
           />
           <label
             for="deactivate-radio"
-            class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+            class="ms-2 text-sm font-medium text-gray-950"
             >Deactivate</label
           >
         </div>
@@ -136,13 +136,13 @@
           #inputRef
           type="submit"
           [value]="selectedMenu ? 'Update' : 'Save'"
-          class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 shadow-lg shadow-teal-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
+          class="text-gray-50 bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 shadow-lg shadow-teal-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
           (keydown.enter)="handleEnterKey($event, 3)"
         />
 
         <button
           (click)="formReset($event)"
-          class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-red-300 shadow-lg shadow-red-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10"
+          class="text-gray-50 bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-red-300 shadow-lg shadow-red-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10"
         >
           Clear
         </button>
@@ -172,7 +172,7 @@
               type="text"
               id="table-search"
               autocomplete="off"
-              class="block ps-10 text-xs text-gray-900 border border-gray-300 rounded bg-gray-50 focus:ring-teal-500 focus:border-teal-500 w-full"
+              class="block ps-10 text-xs text-gray-950 border border-gray-300 rounded bg-gray-50 focus:ring-teal-500 focus:border-teal-500 w-full"
               placeholder="Search"
               (input)="onSearchMenu($event)"
               (keydown)="handleSearchKeyDown($event)"
@@ -194,8 +194,8 @@
         Data is Empty.
       </p>
       } @else {
-      <table class="w-full text-sm text-left rtl:text-right text-gray-800 mt-2">
-        <thead class="text-sm text-gray-100 uppercase bg-gray-800">
+      <table class="w-full text-sm text-left rtl:text-right text-gray-950 mt-2">
+        <thead class="text-sm text-gray-50 uppercase bg-gray-800">
           <tr>
             <th scope="col" class="p-1">menu</th>
             <th scope="col" class="p-1">module</th>
@@ -213,7 +213,7 @@
           $index) {
           <tr
             id="row-{{ $index }}"
-            class="bg-teal-50 border-b hover:bg-teal-600 hover:text-white cursor-pointer"
+            class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
           >
             <td scope="row" class="p-1">
               {{ item?.menuName }}

@@ -1,8 +1,8 @@
 <div class="w-full relative max-w-md min-w-96">
   <div
     (click)="toggleDropdown()"
-    class="border border-gray-500 text-gray-600 rounded-md px-5 py-2 flex justify-between cursor-pointer"
-    [ngClass]="{ 'text-gray-700': !selected() }"
+    class="border border-gray-500 text-gray-950 rounded-md px-5 py-2 flex justify-between cursor-pointer"
+    [ngClass]="{ 'text-gray-950': !selected() }"
   >
     <span>
       {{
@@ -29,14 +29,14 @@
         type="text"
         [(ngModel)]="inputValue"
         placeholder="Search"
-        class="placeholder:text-gray-700 text-xs rounded-md px-2 pl-8 outline-none w-full my-1"
+        class="placeholder:text-gray-950 text-xs rounded-md px-2 pl-8 outline-none w-full my-1"
       />
     </div>
     <li
       *ngFor="let option of options"
-      class="p-2 text-sm hover:bg-teal-600 hover:text-white cursor-pointer w-full"
+      class="p-2 text-sm hover:bg-teal-600 hover:text-gray-50 cursor-pointer w-full"
       [ngClass]="{
-        'bg-sky-600 text-white': option.id === selected()?.id,
+        'bg-sky-600 text-gray-50': option.id === selected()?.id,
         block: option.text.toLowerCase().startsWith(inputValue.toLowerCase()),
         hidden: !option.text.toLowerCase().startsWith(inputValue.toLowerCase())
       }"

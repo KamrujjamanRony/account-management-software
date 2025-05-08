@@ -20,7 +20,7 @@
             [formControl]="getControl('patientRegId')"
             [disabled]="selectedPatient"
             required
-            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+            class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
             [class.invalid]="
               (getControl('patientRegId').invalid &&
                 getControl('patientRegId').touched) ||
@@ -34,7 +34,7 @@
           @if (getControl('patientRegId').value) {
           <button
             (click)="onClearPatient($event)"
-            class="px-1 bg-red-300 rounded-sm text-white absolute top-2 right-0"
+            class="px-1 bg-red-300 rounded-sm text-gray-50 absolute top-2 right-0"
           >
             X
           </button>
@@ -56,7 +56,7 @@
               *ngFor="let option of patientOptions; let i = index"
               (click)="onSelectPatient(option)"
               [class.highlighted]="i === highlightedIndexPatient"
-              class="py-2 px-3 hover:text-white hover:bg-teal-600 cursor-pointer"
+              class="py-2 px-3 hover:text-gray-50 hover:bg-teal-600 cursor-pointer"
             >
               {{ option?.name }}
             </li>
@@ -72,7 +72,7 @@
           [formControl]="getControl('patientType')"
           placeholder=""
           (keydown.enter)="handleEnterKey($event, 1)"
-          class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          class="block py-2.5 px-2 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
         >
           @for(option of options; track $index){
           <option [value]="option" class="capitalize">
@@ -91,7 +91,7 @@
             [value]="displayDoctor(getControl('doctorId').value)"
             [formControl]="getControl('doctorId')"
             [disabled]="selectedDoctor"
-            class="block py-2.5 px-0 w-full text-xs text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+            class="block py-2.5 px-0 w-full text-xs text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
             [class.invalid]="
               (getControl('doctorId').invalid &&
                 getControl('doctorId').touched) ||
@@ -107,7 +107,7 @@
           @if (getControl('doctorId').value) {
           <button
             (click)="onClearDoctor($event)"
-            class="px-1 bg-red-300 rounded-sm text-white absolute top-2 right-0"
+            class="px-1 bg-red-300 rounded-sm text-gray-50 absolute top-2 right-0"
           >
             X
           </button>
@@ -129,7 +129,7 @@
               *ngFor="let option of doctorOptions; let i = index"
               (click)="selectDoctor(option)"
               [class.highlighted]="i === highlightedIndexDoctor"
-              class="py-2 px-3 hover:text-white hover:bg-teal-600 cursor-pointer"
+              class="py-2 px-3 hover:text-gray-50 hover:bg-teal-600 cursor-pointer"
             >
               {{ option?.name }}
             </li>
@@ -143,7 +143,7 @@
           #inputRef
           type="text"
           [formControl]="getControl('amount')"
-          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
           placeholder=""
           (keydown.enter)="handleEnterKey($event, 3)"
         />
@@ -155,7 +155,7 @@
           #inputRef
           type="text"
           [formControl]="getControl('discount')"
-          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
           placeholder=""
           (keydown.enter)="handleEnterKey($event, 4)"
         />
@@ -167,7 +167,7 @@
           #inputRef
           type="date"
           [formControl]="getControl('nextFlowDate')"
-          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
           placeholder=""
           (keydown.enter)="handleEnterKey($event, 5)"
         />
@@ -179,7 +179,7 @@
           #inputRef
           type="text"
           [formControl]="getControl('postBy')"
-          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
           placeholder=""
           (keydown.enter)="handleEnterKey($event, 6)"
         />
@@ -191,7 +191,7 @@
           #inputRef
           type="text"
           [formControl]="getControl('remarks')"
-          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
           placeholder=""
           (keydown.enter)="handleEnterKey($event, 7)"
         />
@@ -204,12 +204,12 @@
           #inputRef
           type="submit"
           [value]="selected ? 'Update' : 'Save And Print'"
-          class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 shadow-lg shadow-teal-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
+          class="text-gray-50 bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 shadow-lg shadow-teal-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
           (keydown.enter)="handleEnterKey($event, 8)"
         />
         } @else {
         <button
-          class="text-white bg-gradient-to-r from-rose-400 via-rose-500 to-rose-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-rose-300 shadow-lg shadow-rose-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
+          class="text-gray-50 bg-gradient-to-r from-rose-400 via-rose-500 to-rose-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-rose-300 shadow-lg shadow-rose-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
         >
           Submitting...
         </button>
@@ -217,7 +217,7 @@
 
         <button
           (click)="formReset($event)"
-          class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-red-300 shadow-lg shadow-red-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10"
+          class="text-gray-50 bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-red-300 shadow-lg shadow-red-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10"
         >
           Clear
         </button>
@@ -247,7 +247,7 @@
               type="text"
               id="table-search"
               autocomplete="off"
-              class="block ps-10 text-xs text-gray-900 border border-gray-300 rounded bg-gray-50 focus:ring-teal-500 focus:border-teal-500"
+              class="block ps-10 text-xs text-gray-950 border border-gray-300 rounded bg-gray-50 focus:ring-teal-500 focus:border-teal-500"
               placeholder="Search"
               (input)="onSearchDoctorFee($event)"
               (keydown)="handleSearchKeyDown($event)"
@@ -256,7 +256,7 @@
         </div>
 
         <div class="w-[140px]">
-          <label for="fromDate" class="block text-sm font-medium text-gray-900"
+          <label for="fromDate" class="block text-sm font-medium text-gray-950"
             >From Date</label
           >
           <div class="relative">
@@ -265,13 +265,13 @@
               [(ngModel)]="fromDate"
               (change)="onFilterData()"
               type="date"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              class="bg-gray-50 border border-gray-300 text-gray-950 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5"
             />
           </div>
         </div>
 
         <div class="w-[140px]">
-          <label for="toDate" class="block text-sm font-medium text-gray-900"
+          <label for="toDate" class="block text-sm font-medium text-gray-950"
             >To Date</label
           >
           <div class="relative">
@@ -280,7 +280,7 @@
               [(ngModel)]="toDate"
               (change)="onFilterData()"
               type="date"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              class="bg-gray-50 border border-gray-300 text-gray-950 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5"
             />
           </div>
         </div>
@@ -288,7 +288,7 @@
         <div class="w-[140px]">
           <label
             for="nextFollowDate"
-            class="block text-sm font-medium text-gray-900"
+            class="block text-sm font-medium text-gray-950"
             >Next Follow Date</label
           >
           <div class="relative">
@@ -297,7 +297,7 @@
               [(ngModel)]="nextFollowDate"
               (change)="onFilterData()"
               type="date"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              class="bg-gray-50 border border-gray-300 text-gray-950 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5"
             />
           </div>
         </div>
@@ -305,7 +305,7 @@
         <button
           type="button"
           (click)="handleClearFilter()"
-          class="text-white bg-gradient-to-r from-rose-400 via-rose-500 to-rose-600 hover:bg-gradient-to-br focus:ring-2 focus:outline-none focus:ring-rose-300 shadow-lg shadow-rose-500/50 font-medium rounded text-sm px-2 text-center h-10"
+          class="text-gray-50 bg-gradient-to-r from-rose-400 via-rose-500 to-rose-600 hover:bg-gradient-to-br focus:ring-2 focus:outline-none focus:ring-rose-300 shadow-lg shadow-rose-500/50 font-medium rounded text-sm px-2 text-center h-10"
         >
           Clear Filters
         </button>
@@ -324,8 +324,8 @@
         Data is Empty.
       </p>
       } @else {
-      <table class="w-full text-xs text-left rtl:text-right text-gray-500">
-        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+      <table class="w-full text-xs text-left rtl:text-right text-gray-950">
+        <thead class="text-xs text-gray-950 uppercase bg-gray-50">
           <tr>
             <th scope="col" class="px-1 py-3">sl</th>
             <th scope="col" class="px-1 py-3">Reg</th>
@@ -345,9 +345,9 @@
           $index) {
           <tr
             id="row-{{ $index }}"
-            class="bg-teal-50 border-b dark:border-gray-700 hover:bg-teal-600 hover:text-white dark:hover:bg-gray-600 cursor-pointer"
+            class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
             [ngClass]="{
-              '!bg-teal-600 text-white': $index === highlightedTr
+              '!bg-teal-600 text-gray-50': $index === highlightedTr
             }"
           >
             <td class="p-1">
@@ -435,7 +435,7 @@
       <input
         type="date"
         [formControl]="getControl('nextFlowDate')"
-        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+        class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
         [class.invalid]="
           getControl('nextFlowDate').invalid &&
           getControl('nextFlowDate').touched
@@ -448,7 +448,7 @@
       <input
         type="text"
         [formControl]="getControl('remarks')"
-        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+        class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
         placeholder=""
       />
     </Field>
@@ -457,7 +457,7 @@
       #inputRef
       type="submit"
       [value]="selected ? 'Update' : 'Save And Print'"
-      class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 shadow-lg shadow-teal-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
+      class="text-gray-50 bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 shadow-lg shadow-teal-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
       (keydown.enter)="handleEnterKey($event, 7)"
     />
   </form>
