@@ -143,7 +143,7 @@ export class AccountDashboardComponent {
     // Title Section
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(14);
-    doc.text(`General Transaction Report`, centerX, marginTop, { align: 'center' });
+    doc.text(`Profit Loss Report`, centerX, marginTop, { align: 'center' });
 
     marginTop += 5;
 
@@ -151,7 +151,7 @@ export class AccountDashboardComponent {
     doc.setFontSize(10);
 
     if (this.fromDate()) {
-      const dateRange = `Date: ${this.transform(this.fromDate())}`;
+      const dateRange = `Year: ${this.fromDate().split("-")[0]}`;
       doc.text(dateRange, centerX, marginTop, { align: 'center' });
     }
 
