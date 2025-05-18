@@ -77,9 +77,6 @@ export class IncomeExpenseStatementComponent {
     const marginBottom = 10;
 
     const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'A4' });
-
-    // Title and Header Section
-    // Get the exact center of the page (considering margins)
     const centerX = doc.internal.pageSize.getWidth() / 2;
 
     // Header Section
@@ -108,13 +105,12 @@ export class IncomeExpenseStatementComponent {
     doc.text(`${this.transactionType() === 'All' ? 'Income & Expense' : this.transactionType()} Statements`, centerX, marginTop, { align: 'center' });
     marginTop += 5;
 
-    // Sub-header for doctor name and dates
+    // Date Range
     doc.setFontSize(10);
-
     if (this.fromDate()) {
-      const dateRange = `From: ${this.transform(this.fromDate())} to: ${this.toDate() ? this.transform(this.toDate()) : this.transform(this.fromDate())
-        }`;
+      const dateRange = `From: ${this.transform(this.fromDate())} to: ${this.toDate() ? this.transform(this.toDate()) : this.transform(this.fromDate())}`;
       doc.text(dateRange, centerX, marginTop, { align: 'center' });
+      marginTop += 5;
     }
 
     // Prepare Table Data
@@ -127,112 +123,94 @@ export class IncomeExpenseStatementComponent {
       data?.debitAmount || 0,
     ]);
 
-    if (this.transactionType() === "All" || this.transactionType() === "Income") {
+    // Common table styles
+    const tableStyles = {
+      textColor: 0,
+      cellPadding: 2,
+      lineColor: 0,
+      fontSize: 8,
+      valign: 'middle',
+      halign: 'center',
+    };
+
+    const headStyles = {
+      fillColor: [102, 255, 102],
+      textColor: 0,
+      lineWidth: 0.2,
+      lineColor: 0,
+      fontStyle: 'bold',
+    };
+
+    const footStyles = {
+      fillColor: [102, 255, 255],
+      textColor: 0,
+      lineWidth: 0.2,
+      lineColor: 0,
+      fontStyle: 'bold',
+    };
+
+    // Income Section
+    if (this.transactionType() !== "Expense") {
       if (this.transactionType() === "All") {
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(12);
-        doc.text(
-          `Income`,
-          105,
-          marginTop += 4,
-          { align: 'center' }
-        );
+        doc.text(`Income`, centerX, marginTop + 4, { align: 'center' });
+        marginTop += 5; // Add space after heading
+      } else {
+        marginTop += 4; // Add space for the heading
       }
 
-      // Render Income Table
       (doc as any).autoTable({
         head: [['Head', "Amount"]],
         body: incomeDataRows,
-        foot: [
-          [
-            'Total:',
-            this.totalCredit().toFixed(0)
-          ],
-        ],
+        foot: [['Total:', this.totalCredit().toFixed(0)]],
         theme: 'grid',
-        startY: marginTop + 2,
-        styles: {
-          textColor: 0,
-          cellPadding: 2,
-          lineColor: 0,
-          fontSize: 8,
-          valign: 'middle',
-          halign: 'center',
+        startY: marginTop,
+        styles: tableStyles,
+        headStyles: headStyles,
+        footStyles: footStyles,
+        margin: { left: marginLeft, right: marginRight },
+        columnStyles: {
+          0: { cellWidth: 'auto' }, // Head column
+          1: { cellWidth: 30 }      // Amount column
         },
-        headStyles: {
-          fillColor: [102, 255, 102],
-          textColor: 0,
-          lineWidth: 0.2,
-          lineColor: 0,
-          fontStyle: 'bold',
-        },
-        footStyles: {
-          fillColor: [102, 255, 255],
-          textColor: 0,
-          lineWidth: 0.2,
-          lineColor: 0,
-          fontStyle: 'bold',
-        },
-        margin: { top: marginTop, left: marginLeft, right: marginRight },
         didDrawPage: (data: any) => {
-          // Add Footer with Margin Bottom
           doc.setFontSize(8);
           doc.text(``, pageSizeWidth - marginRight - 10, pageSizeHeight - marginBottom, {
             align: 'right',
           });
         },
       });
+
+      marginTop = (doc as any).lastAutoTable.finalY + 5;
     }
 
-    if (this.transactionType() === "All" || this.transactionType() === "Expense") {
-      marginTop = (this.transactionType() === "Expense" ? marginTop - 7 : (doc as any).lastAutoTable.finalY) + 5;
+    // Expense Section
+    if (this.transactionType() !== "Income") {
       if (this.transactionType() === "All") {
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(12);
-        doc.text(
-          `Expense`,
-          105,
-          marginTop,
-          { align: 'center' }
-        );
+        doc.text(`Expense`, centerX, marginTop, { align: 'center' });
+        marginTop += 2; // Add space after heading
+      } else {
+        marginTop += 4; // Add space for the heading
       }
-      // Render Expense Table
+
       (doc as any).autoTable({
         head: [['Head', 'Amount']],
         body: expenseDataRows,
-        foot: [
-          [
-            'Total:',
-            this.totalDebit().toFixed(0)
-          ],
-        ],
+        foot: [['Total:', this.totalDebit().toFixed(0)]],
         theme: 'grid',
-        startY: marginTop + 2,
-        styles: {
-          textColor: 0,
-          cellPadding: 2,
-          lineColor: 0,
-          fontSize: 8,
-          valign: 'middle',
-          halign: 'center',
+        startY: marginTop,
+        styles: tableStyles,
+        headStyles: headStyles,
+        footStyles: footStyles,
+        margin: { left: marginLeft, right: marginRight },
+        columnStyles: {
+          0: { cellWidth: 'auto' }, // Head column
+          1: { cellWidth: 30 }      // Amount column
         },
-        headStyles: {
-          fillColor: [102, 255, 102],
-          textColor: 0,
-          lineWidth: 0.2,
-          lineColor: 0,
-          fontStyle: 'bold',
-        },
-        footStyles: {
-          fillColor: [102, 255, 255],
-          textColor: 0,
-          lineWidth: 0.2,
-          lineColor: 0,
-          fontStyle: 'bold',
-        },
-        margin: { top: marginTop, left: marginLeft, right: marginRight },
         didDrawPage: (data: any) => {
-          // Add Footer with Margin Bottom
           doc.setFontSize(8);
           doc.text(``, pageSizeWidth - marginRight - 10, pageSizeHeight - marginBottom, {
             align: 'right',
@@ -240,56 +218,23 @@ export class IncomeExpenseStatementComponent {
         },
       });
 
-
-
-      if (this.transactionType() === "All") {
-        const finalY = (doc as any).lastAutoTable.finalY + 5;
-        doc.setFontSize(10);
-        doc.text(
-          `Total Balance (${this.totalCredit()} - ${this.totalDebit()}) = ${this.totalCredit() - this.totalDebit()} Tk`,
-          105,
-          finalY,
-          { align: 'center' }
-        );
-      }
+      marginTop = (doc as any).lastAutoTable.finalY + 5;
     }
 
+    // Total Balance for All
+    if (this.transactionType() === "All") {
+      doc.setFontSize(10);
+      doc.text(
+        `Total Balance (${this.totalCredit()} - ${this.totalDebit()}) = ${this.totalCredit() - this.totalDebit()} Tk`,
+        centerX,
+        marginTop,
+        { align: 'center' }
+      );
+    }
 
-
-
-
-
-
-    // // Option 1: save
-    // const fileName = `Transaction_Report_${this.transform(this.fromDate())}` +
-    //   (this.toDate() ? `_to_${this.transform(this.toDate())}` : '') + '.pdf';
-    // doc.save(fileName);
-
-    // Option 2: open
+    // Output PDF
     const pdfOutput = doc.output('blob');
     window.open(URL.createObjectURL(pdfOutput));
-
-
-    // // Option 3: open
-    // const pdfDataUri = doc.output('datauristring');
-    // const newWindow = window.open();
-    // if (newWindow) {
-    //   newWindow.document.write(`<iframe width='100%' height='100%' src='${pdfDataUri}'></iframe>`);
-    // } else {
-    //   console.error('Failed to open a new window.');
-    // }
-
-    // // Option 4: open
-    //   var string = doc.output('datauristring');
-    //   var iframe = "<iframe width='100%' height='100%' src='" + string + "'></iframe>"
-    //   var x = window.open();
-    //   if (x) {
-    //     x.document.open();
-    //     x.document.write(iframe);
-    //     x.document.close();
-    //   } else {
-    //     console.error('Failed to open a new window.');
-    //   }
   }
 
 }

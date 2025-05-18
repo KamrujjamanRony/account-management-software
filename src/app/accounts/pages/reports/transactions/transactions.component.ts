@@ -189,28 +189,23 @@ export class TransactionsComponent {
     const dataRows = this.filteredVoucherList().map((data: any) => [
       this.transform(data?.voucherDate),
       data?.headName || '',
-      data?.subHeadName || '',
       this.transactionType() == "Payment"
         ? data?.debitAmount?.toFixed(0) || 0
         : data?.creditAmount?.toFixed(0) || 0,
-      data?.particular || '',
       data?.remarks || '',
     ]);
 
-    // const totalAmount = this.filteredVoucherList().reduce((sum: number, data: any) => sum + (data.amount || 0), 0);
-    // const totalDiscount = this.filteredVoucherList().reduce((sum: number, data: any) => sum + (data.discount || 0), 0);
-
     // Render Table
     (doc as any).autoTable({
-      head: [['VoucherDate', 'HeadName', 'SubHeadName', `${this.transactionType() == "Payment" ? "DebitAmount" : "CreditAmount"}`, "Particular", 'Remarks']],
+      head: [['VoucherDate', 'HeadName', `${this.transactionType() == "Payment" ? "DebitAmount" : "CreditAmount"}`, 'Remarks']],
       body: dataRows,
       foot: [
         [
-          '', 'Total:', '',
+          '', 'Total:',
           this.transactionType() == "Payment"
             ? this.totalDebit().toFixed(2)
             : this.totalCredit().toFixed(2),
-          '', ''
+          ''
         ],
       ],
       theme: 'grid',
@@ -258,38 +253,8 @@ export class TransactionsComponent {
     //   { align: 'center' }
     // );
 
-
-
-    // // Option 1: save
-    // const fileName = `Transaction_Report_${this.transform(this.fromDate())}` +
-    //   (this.toDate() ? `_to_${this.transform(this.toDate())}` : '') + '.pdf';
-    // doc.save(fileName);
-
-    // Option 2: open
     const pdfOutput = doc.output('blob');
     window.open(URL.createObjectURL(pdfOutput));
-
-
-    // // Option 3: open
-    // const pdfDataUri = doc.output('datauristring');
-    // const newWindow = window.open();
-    // if (newWindow) {
-    //   newWindow.document.write(`<iframe width='100%' height='100%' src='${pdfDataUri}'></iframe>`);
-    // } else {
-    //   console.error('Failed to open a new window.');
-    // }
-
-    // // Option 4: open
-    //   var string = doc.output('datauristring');
-    //   var iframe = "<iframe width='100%' height='100%' src='" + string + "'></iframe>"
-    //   var x = window.open();
-    //   if (x) {
-    //     x.document.open();
-    //     x.document.write(iframe);
-    //     x.document.close();
-    //   } else {
-    //     console.error('Failed to open a new window.');
-    //   }
   }
 
 }

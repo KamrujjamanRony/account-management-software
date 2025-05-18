@@ -160,13 +160,13 @@ export class GeneralLedgerComponent {
       data?.remarks || '',
     ]);
 
-    // Render Table
+    // Render Table with custom column widths
     (doc as any).autoTable({
       head: [['VoucherDate', 'VoucherNo', 'HeadName', 'DebitAmount', "CreditAmount", "Balance", 'Remarks']],
       body: dataRows,
       foot: [
         [
-          '', '', '',
+          '', '', 'Total:',
           this.totalDebit().toFixed(0),
           this.totalCredit().toFixed(0),
           '', ''
@@ -197,6 +197,15 @@ export class GeneralLedgerComponent {
         fontStyle: 'bold',
       },
       margin: { top: marginTop, left: marginLeft, right: marginRight },
+      columnStyles: {
+        0: { cellWidth: 20 }, // VoucherDate
+        1: { cellWidth: 20 }, // VoucherNo
+        2: { cellWidth: 40 }, // HeadName
+        3: { cellWidth: 20 }, // DebitAmount
+        4: { cellWidth: 20 }, // CreditAmount
+        5: { cellWidth: 20 }, // Balance
+        6: { cellWidth: 30 }  // Remarks
+      },
       didDrawPage: (data: any) => {
         // Add Footer with Margin Bottom
         doc.setFontSize(8);

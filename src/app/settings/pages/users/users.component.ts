@@ -249,7 +249,8 @@ export class UsersComponent {
   // User Accessibility Code Start----------------------------------------------------------------
 
   savePermissions() {
-    const selectedNodes = this.getSelectedNodes(this.userAccessTree());
+    // const selectedNodes = this.getSelectedNodes(this.userAccessTree());
+    const selectedNodes = this.userAccessTree();
     console.log('Selected Access:', selectedNodes);
     this.form.patchValue({ menuPermissions: selectedNodes });
   }

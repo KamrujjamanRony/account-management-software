@@ -36,7 +36,7 @@ export class MenuListComponent {
   form = this.fb.group({
     menuName: ['', [Validators.required]],
     moduleName: [''],
-    parentMenuId: [''],
+    parentMenuId: [null],
     url: [''],
     isActive: [true],
     icon: [''],
@@ -140,7 +140,7 @@ export class MenuListComponent {
     if (this.form.valid) {
       // console.log(this.form.value);
       if (this.selectedMenu) {
-        this.menuService.updateMenu(this.selectedMenu.id, this.form.value)
+        this.menuService.updateMenu(this.selectedMenu.id, { ...this.form.value, parentMenuId: this.form.value.parentMenuId || null, permissionsKey: this.form.value.permissionsKey || [] })
           .subscribe({
             next: (response) => {
               if (response !== null && response !== undefined) {
@@ -160,7 +160,7 @@ export class MenuListComponent {
             }
           });
       } else {
-        this.menuService.addMenu(this.form.value)
+        this.menuService.addMenu({ ...this.form.value, parentMenuId: this.form.value.parentMenuId || null, permissionsKey: this.form.value.permissionsKey || [] })
           .subscribe({
             next: (response) => {
               if (response !== null && response !== undefined) {
@@ -221,7 +221,7 @@ export class MenuListComponent {
     this.form.reset({
       menuName: '',
       moduleName: '',
-      parentMenuId: '',
+      parentMenuId: null,
       url: '',
       isActive: true,
       icon: '',

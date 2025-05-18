@@ -142,7 +142,6 @@ export class TrialBalanceComponent {
     const allDate = currentAssetData.concat(nonCurrentAssetData, currentLiabilityData, nonCurrentLiabilityData, incomeData, expenseData);
     const dataRows = allDate?.map((data: any) => [
       data?.subHead,
-      data?.subSubHead || '',
       data?.debitAmount || '',
       data?.creditAmount || '',
       data?.balance || '',
@@ -153,11 +152,11 @@ export class TrialBalanceComponent {
 
     // Render Table
     (doc as any).autoTable({
-      head: [['Head', 'SubHead', 'DebitAmount', "CreditAmount", "Balance"]],
+      head: [['Head', 'DebitAmount', "CreditAmount", "Balance"]],
       body: dataRows,
       foot: [
         [
-          'Total:', '',
+          'Total:',
           this.totalDebit().toFixed(0),
           this.totalCredit().toFixed(0),
           ''
