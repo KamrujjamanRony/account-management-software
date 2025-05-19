@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import { AccountingReportsService } from '../../../services/accounting-reports.service';
 import { DataFetchService } from '../../../../shared/services/useDataFetch';
 import { DataService } from '../../../../shared/services/data.service';
@@ -129,24 +129,24 @@ export class IncomeExpenseStatementComponent {
       cellPadding: 2,
       lineColor: 0,
       fontSize: 8,
-      valign: 'middle',
-      halign: 'center',
+      valign: 'middle' as const,
+      halign: 'center' as const,
     };
 
     const headStyles = {
-      fillColor: [102, 255, 102],
+      fillColor: [102, 255, 102] as [number, number, number],
       textColor: 0,
       lineWidth: 0.2,
       lineColor: 0,
-      fontStyle: 'bold',
+      fontStyle: 'bold' as const,
     };
 
     const footStyles = {
-      fillColor: [102, 255, 255],
+      fillColor: [102, 255, 255] as [number, number, number],
       textColor: 0,
       lineWidth: 0.2,
       lineColor: 0,
-      fontStyle: 'bold',
+      fontStyle: 'bold' as const,
     };
 
     // Income Section
@@ -160,7 +160,7 @@ export class IncomeExpenseStatementComponent {
         marginTop += 4; // Add space for the heading
       }
 
-      (doc as any).autoTable({
+      autoTable(doc, {
         head: [['Head', "Amount"]],
         body: incomeDataRows,
         foot: [['Total:', this.totalCredit().toFixed(0)]],
@@ -196,7 +196,7 @@ export class IncomeExpenseStatementComponent {
         marginTop += 4; // Add space for the heading
       }
 
-      (doc as any).autoTable({
+      autoTable(doc, {
         head: [['Head', 'Amount']],
         body: expenseDataRows,
         foot: [['Total:', this.totalDebit().toFixed(0)]],

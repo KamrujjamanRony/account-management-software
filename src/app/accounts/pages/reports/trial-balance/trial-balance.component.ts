@@ -3,7 +3,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import { AccountingReportsService } from '../../../services/accounting-reports.service';
 import { DataFetchService } from '../../../../shared/services/useDataFetch';
 import { DataService } from '../../../../shared/services/data.service';
@@ -151,7 +151,7 @@ export class TrialBalanceComponent {
     // const totalDiscount = this.filteredVoucherList().reduce((sum: number, data: any) => sum + (data.discount || 0), 0);
 
     // Render Table
-    (doc as any).autoTable({
+    autoTable(doc, {
       head: [['Head', 'DebitAmount', "CreditAmount", "Balance"]],
       body: dataRows,
       foot: [

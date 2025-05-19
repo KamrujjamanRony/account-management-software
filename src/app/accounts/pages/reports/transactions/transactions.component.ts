@@ -4,7 +4,7 @@ import { DataFetchService } from '../../../../shared/services/useDataFetch';
 import { Observable } from 'rxjs';
 import { CommonModule, DatePipe } from '@angular/common';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import { Selector2Component } from '../../../components/selector2/selector2.component';
 import { AccountListService } from '../../../services/account-list.service';
 import { VoucherService } from '../../../services/voucher.service';
@@ -196,7 +196,7 @@ export class TransactionsComponent {
     ]);
 
     // Render Table
-    (doc as any).autoTable({
+    autoTable(doc, {
       head: [['VoucherDate', 'HeadName', `${this.transactionType() == "Payment" ? "DebitAmount" : "CreditAmount"}`, 'Remarks']],
       body: dataRows,
       foot: [

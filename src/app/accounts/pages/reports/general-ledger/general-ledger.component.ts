@@ -3,7 +3,7 @@ import { Component, ElementRef, inject, signal, viewChild } from '@angular/core'
 import { FormsModule } from '@angular/forms';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import { SearchComponent } from "../../../../shared/components/svg/search/search.component";
 import { AccountingReportsService } from '../../../services/accounting-reports.service';
 import { AccountListService } from '../../../services/account-list.service';
@@ -161,7 +161,7 @@ export class GeneralLedgerComponent {
     ]);
 
     // Render Table with custom column widths
-    (doc as any).autoTable({
+    autoTable(doc, {
       head: [['VoucherDate', 'VoucherNo', 'HeadName', 'DebitAmount', "CreditAmount", "Balance", 'Remarks']],
       body: dataRows,
       foot: [

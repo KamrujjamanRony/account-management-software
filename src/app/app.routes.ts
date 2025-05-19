@@ -9,7 +9,7 @@ import { authGuard } from './settings/services/auth.guard';
 export const routes: Routes = [
   {
     path: '',
-    component: MainComponent, canActivate: [authGuard],
+    component: MainComponent,         // , canActivate: [authGuard]
     children: [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       {

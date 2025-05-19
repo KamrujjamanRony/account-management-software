@@ -5,7 +5,7 @@ import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators 
 import { AllSvgComponent } from '../../../../shared/components/svg/all-svg/all-svg.component';
 import { Observable } from 'rxjs';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import { AccountListService } from '../../../services/account-list.service';
 import { VendorService } from '../../../services/vendor.service';
 import { VoucherService } from '../../../services/voucher.service';
@@ -693,7 +693,7 @@ export class JournalVoucherComponent {
     // const totalDiscount = this.filteredVoucherList().reduce((sum: number, data: any) => sum + (data.discount || 0), 0);
 
     // Render Table
-    (doc as any).autoTable({
+    autoTable(doc, {
       head: [['VoucherDate', 'VoucherNo', "Amount", "Particular", 'Remarks']],
       body: dataRows,
       foot: [

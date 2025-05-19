@@ -7,7 +7,9 @@ import { AccountingReportsService } from '../../services/accounting-reports.serv
 import { DataFetchService } from '../../../shared/services/useDataFetch';
 import { DataService } from '../../../shared/services/data.service';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
+
+// autoTable(doc, {
 
 @Component({
   selector: 'app-account-dashboard',
@@ -164,7 +166,7 @@ export class AccountDashboardComponent {
     ]);
 
     // Render Table
-    (doc as any).autoTable({
+    autoTable(doc, {
       head: [['Month', 'Receipt', 'Payment', 'Balance']],
       body: dataRows,
       foot: [
