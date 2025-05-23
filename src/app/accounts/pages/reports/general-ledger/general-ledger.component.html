@@ -1,3 +1,4 @@
+@if (isView()) {
 <div class="w-full border mb-10 px-3 max-h-[98vh] overflow-scroll">
   <h1 class="text-xl md:text-3xl font-bold text-teal-500 underline text-center">
     General Transaction
@@ -139,3 +140,8 @@
   </div>
   }
 </div>
+} @else {
+<p class="text-3xl font-bold text-center p-10 text-red-600">
+  You don't have permission to view this page.
+</p>
+}

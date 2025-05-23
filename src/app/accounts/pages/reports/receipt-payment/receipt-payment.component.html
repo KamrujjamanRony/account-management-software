@@ -1,214 +1,238 @@
-<h1 class="text-5xl text-center capitalize font-bold">receipt payment</h1>
+@if (isView()) {
+<section>
+  <h1 class="text-5xl text-center capitalize font-bold">receipt payment</h1>
 
-<div class="flex gap-2">
-  <!-- Opening Balance Table  -->
-  <div class="w-full border mb-10 px-3 max-h-[49vh] overflow-scroll mt-5">
-    <h1
-      class="text-xl md:text-3xl font-bold text-teal-500 underline text-center"
-    >
-      Opening Balance
-    </h1>
+  <div class="flex gap-2">
+    <!-- Opening Balance Table  -->
+    <div class="w-full border mb-10 px-3 max-h-[49vh] overflow-scroll mt-5">
+      <h1
+        class="text-xl md:text-3xl font-bold text-teal-500 underline text-center"
+      >
+        Opening Balance
+      </h1>
 
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
-      <table class="w-full text-sm text-left rtl:text-right text-gray-950 mt-2">
-        <thead class="text-sm text-gray-50 capitalize bg-teal-800">
-          <tr>
-            <th scope="col" class="p-1">account code</th>
-            <th scope="col" class="p-1">subHead</th>
-            <th scope="col" class="p-1">amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (item of openingBalance(); track $index) {
-          <tr
-            id="row-{{ $index }}"
-            class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
-          >
-            <td class="p-1 capitalize">
-              {{ item?.accountCode }}
-            </td>
-            <td class="p-1 capitalize">
-              {{ item?.subHead }}
-            </td>
-            <td class="p-1">
-              {{ item?.amount }}
-            </td>
-          </tr>
-          } @empty {
-          <tr>
-            <td colspan="6" class="text-center text-gray-950">No data found</td>
-          </tr>
-          }
-          <tr
-            id="row-last"
-            class="bg-teal-200 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
-          >
-            <td class="p-1 capitalize">Total</td>
-            <td class="p-1 capitalize"></td>
-            <td class="p-1">
-              {{ totalOpeningBalance() }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
+        <table
+          class="w-full text-sm text-left rtl:text-right text-gray-950 mt-2"
+        >
+          <thead class="text-sm text-gray-50 capitalize bg-teal-800">
+            <tr>
+              <th scope="col" class="p-1">account code</th>
+              <th scope="col" class="p-1">subHead</th>
+              <th scope="col" class="p-1">amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of openingBalance(); track $index) {
+            <tr
+              id="row-{{ $index }}"
+              class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
+            >
+              <td class="p-1 capitalize">
+                {{ item?.accountCode }}
+              </td>
+              <td class="p-1 capitalize">
+                {{ item?.subHead }}
+              </td>
+              <td class="p-1">
+                {{ item?.amount }}
+              </td>
+            </tr>
+            } @empty {
+            <tr>
+              <td colspan="6" class="text-center text-gray-950">
+                No data found
+              </td>
+            </tr>
+            }
+            <tr
+              id="row-last"
+              class="bg-teal-200 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
+            >
+              <td class="p-1 capitalize">Total</td>
+              <td class="p-1 capitalize"></td>
+              <td class="p-1">
+                {{ totalOpeningBalance() }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- receipt Balance Table  -->
+    <div class="w-full border mb-10 px-3 max-h-[49vh] overflow-scroll mt-5">
+      <h1
+        class="text-xl md:text-3xl font-bold text-teal-500 underline text-center"
+      >
+        Receipt Balance
+      </h1>
+
+      <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
+        <table
+          class="w-full text-sm text-left rtl:text-right text-gray-950 mt-2"
+        >
+          <thead class="text-sm text-gray-50 capitalize bg-teal-800">
+            <tr>
+              <th scope="col" class="p-1">account code</th>
+              <th scope="col" class="p-1">subHead</th>
+              <th scope="col" class="p-1">amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of receiptBalance(); track $index) {
+            <tr
+              id="row-{{ $index }}"
+              class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
+            >
+              <td class="p-1 capitalize">
+                {{ item?.accountCode }}
+              </td>
+              <td class="p-1 capitalize">
+                {{ item?.subHead }}
+              </td>
+              <td class="p-1">
+                {{ item?.amount }}
+              </td>
+            </tr>
+            } @empty {
+            <tr>
+              <td colspan="6" class="text-center text-gray-950">
+                No data found
+              </td>
+            </tr>
+            }
+            <tr
+              id="row-last"
+              class="bg-teal-200 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
+            >
+              <td class="p-1 capitalize">Total</td>
+              <td class="p-1 capitalize"></td>
+              <td class="p-1">
+                {{ totalReceiptBalance() }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
-  <!-- receipt Balance Table  -->
-  <div class="w-full border mb-10 px-3 max-h-[49vh] overflow-scroll mt-5">
-    <h1
-      class="text-xl md:text-3xl font-bold text-teal-500 underline text-center"
-    >
-      Receipt Balance
-    </h1>
+  <div class="flex gap-2">
+    <!-- Opening Balance Table  -->
+    <div class="w-full border mb-10 px-3 max-h-[49vh] overflow-scroll mt-5">
+      <h1
+        class="text-xl md:text-3xl font-bold text-teal-500 underline text-center"
+      >
+        Opening Balance
+      </h1>
 
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
-      <table class="w-full text-sm text-left rtl:text-right text-gray-950 mt-2">
-        <thead class="text-sm text-gray-50 capitalize bg-teal-800">
-          <tr>
-            <th scope="col" class="p-1">account code</th>
-            <th scope="col" class="p-1">subHead</th>
-            <th scope="col" class="p-1">amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (item of receiptBalance(); track $index) {
-          <tr
-            id="row-{{ $index }}"
-            class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
-          >
-            <td class="p-1 capitalize">
-              {{ item?.accountCode }}
-            </td>
-            <td class="p-1 capitalize">
-              {{ item?.subHead }}
-            </td>
-            <td class="p-1">
-              {{ item?.amount }}
-            </td>
-          </tr>
-          } @empty {
-          <tr>
-            <td colspan="6" class="text-center text-gray-950">No data found</td>
-          </tr>
-          }
-          <tr
-            id="row-last"
-            class="bg-teal-200 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
-          >
-            <td class="p-1 capitalize">Total</td>
-            <td class="p-1 capitalize"></td>
-            <td class="p-1">
-              {{ totalReceiptBalance() }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
+        <table
+          class="w-full text-sm text-left rtl:text-right text-gray-950 mt-2"
+        >
+          <thead class="text-sm text-gray-50 capitalize bg-teal-800">
+            <tr>
+              <th scope="col" class="p-1">account code</th>
+              <th scope="col" class="p-1">subHead</th>
+              <th scope="col" class="p-1">amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of openingBalance(); track $index) {
+            <tr
+              id="row-{{ $index }}"
+              class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
+            >
+              <td class="p-1 capitalize">
+                {{ item?.accountCode }}
+              </td>
+              <td class="p-1 capitalize">
+                {{ item?.subHead }}
+              </td>
+              <td class="p-1">
+                {{ item?.amount }}
+              </td>
+            </tr>
+            } @empty {
+            <tr>
+              <td colspan="6" class="text-center text-gray-950">
+                No data found
+              </td>
+            </tr>
+            }
+            <tr
+              id="row-last"
+              class="bg-teal-200 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
+            >
+              <td class="p-1 capitalize">Total</td>
+              <td class="p-1 capitalize"></td>
+              <td class="p-1">
+                {{ totalOpeningBalance() }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- receipt Balance Table  -->
+    <div class="w-full border mb-10 px-3 max-h-[49vh] overflow-scroll mt-5">
+      <h1
+        class="text-xl md:text-3xl font-bold text-teal-500 underline text-center"
+      >
+        Receipt Balance
+      </h1>
+
+      <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
+        <table
+          class="w-full text-sm text-left rtl:text-right text-gray-950 mt-2"
+        >
+          <thead class="text-sm text-gray-50 capitalize bg-teal-800">
+            <tr>
+              <th scope="col" class="p-1">account code</th>
+              <th scope="col" class="p-1">subHead</th>
+              <th scope="col" class="p-1">amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of receiptBalance(); track $index) {
+            <tr
+              id="row-{{ $index }}"
+              class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
+            >
+              <td class="p-1 capitalize">
+                {{ item?.accountCode }}
+              </td>
+              <td class="p-1 capitalize">
+                {{ item?.subHead }}
+              </td>
+              <td class="p-1">
+                {{ item?.amount }}
+              </td>
+            </tr>
+            } @empty {
+            <tr>
+              <td colspan="6" class="text-center text-gray-950">
+                No data found
+              </td>
+            </tr>
+            }
+            <tr
+              id="row-last"
+              class="bg-teal-200 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
+            >
+              <td class="p-1 capitalize">Total</td>
+              <td class="p-1 capitalize"></td>
+              <td class="p-1">
+                {{ totalReceiptBalance() }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
-</div>
-<div class="flex gap-2">
-  <!-- Opening Balance Table  -->
-  <div class="w-full border mb-10 px-3 max-h-[49vh] overflow-scroll mt-5">
-    <h1
-      class="text-xl md:text-3xl font-bold text-teal-500 underline text-center"
-    >
-      Opening Balance
-    </h1>
-
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
-      <table class="w-full text-sm text-left rtl:text-right text-gray-950 mt-2">
-        <thead class="text-sm text-gray-50 capitalize bg-teal-800">
-          <tr>
-            <th scope="col" class="p-1">account code</th>
-            <th scope="col" class="p-1">subHead</th>
-            <th scope="col" class="p-1">amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (item of openingBalance(); track $index) {
-          <tr
-            id="row-{{ $index }}"
-            class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
-          >
-            <td class="p-1 capitalize">
-              {{ item?.accountCode }}
-            </td>
-            <td class="p-1 capitalize">
-              {{ item?.subHead }}
-            </td>
-            <td class="p-1">
-              {{ item?.amount }}
-            </td>
-          </tr>
-          } @empty {
-          <tr>
-            <td colspan="6" class="text-center text-gray-950">No data found</td>
-          </tr>
-          }
-          <tr
-            id="row-last"
-            class="bg-teal-200 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
-          >
-            <td class="p-1 capitalize">Total</td>
-            <td class="p-1 capitalize"></td>
-            <td class="p-1">
-              {{ totalOpeningBalance() }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-  <!-- receipt Balance Table  -->
-  <div class="w-full border mb-10 px-3 max-h-[49vh] overflow-scroll mt-5">
-    <h1
-      class="text-xl md:text-3xl font-bold text-teal-500 underline text-center"
-    >
-      Receipt Balance
-    </h1>
-
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
-      <table class="w-full text-sm text-left rtl:text-right text-gray-950 mt-2">
-        <thead class="text-sm text-gray-50 capitalize bg-teal-800">
-          <tr>
-            <th scope="col" class="p-1">account code</th>
-            <th scope="col" class="p-1">subHead</th>
-            <th scope="col" class="p-1">amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (item of receiptBalance(); track $index) {
-          <tr
-            id="row-{{ $index }}"
-            class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
-          >
-            <td class="p-1 capitalize">
-              {{ item?.accountCode }}
-            </td>
-            <td class="p-1 capitalize">
-              {{ item?.subHead }}
-            </td>
-            <td class="p-1">
-              {{ item?.amount }}
-            </td>
-          </tr>
-          } @empty {
-          <tr>
-            <td colspan="6" class="text-center text-gray-950">No data found</td>
-          </tr>
-          }
-          <tr
-            id="row-last"
-            class="bg-teal-200 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
-          >
-            <td class="p-1 capitalize">Total</td>
-            <td class="p-1 capitalize"></td>
-            <td class="p-1">
-              {{ totalReceiptBalance() }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
+</section>
+} @else {
+<p class="text-3xl font-bold text-center p-10 text-red-600">
+  You don't have permission to view this page.
+</p>
+}

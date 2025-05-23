@@ -28,7 +28,11 @@ export class UserService {
   }
 
   updateUser(id: string | number, updateUserRequest: any): Observable<any> {
-    return this.apiCall<any>(`/EditUser/${id}`, 'put', updateUserRequest);
+    const req = {
+      ...updateUserRequest,
+      userId: id
+    }
+    return this.apiCall<any>(`/EditUser/${id}?userId=${id}`, 'put', req);
   }
 
   deleteUser(id: string | number): Observable<any> {

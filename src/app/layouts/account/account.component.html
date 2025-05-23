@@ -1,3 +1,4 @@
+@if (isMenuPermission("Accounts")) {
 <section class="bg-teal-300">
   <!-- <button
     data-drawer-target="sidebar-multi-level-sidebar"
@@ -33,3 +34,16 @@
     </div>
   </div>
 </section>
+} @else {
+<section class="bg-teal-300">
+  <div class="p-2 ml-12">
+    <div
+      class="p-2 border-2 border-teal-700 border-dashed rounded-lg min-h-[98vh] bg-teal-50 flex items-center justify-center"
+    >
+      <h1 class="text-xl md:text-3xl lg:text-5xl text-center text-rose-600">
+        You Don't Have Any Permission For This Page!
+      </h1>
+    </div>
+  </div>
+</section>
+}

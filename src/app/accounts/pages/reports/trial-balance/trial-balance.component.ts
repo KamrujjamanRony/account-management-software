@@ -7,6 +7,7 @@ import autoTable from 'jspdf-autotable';
 import { AccountingReportsService } from '../../../services/accounting-reports.service';
 import { DataFetchService } from '../../../../shared/services/useDataFetch';
 import { DataService } from '../../../../shared/services/data.service';
+import { AuthService } from '../../../../settings/services/auth.service';
 
 @Component({
   selector: 'app-trial-balance',
@@ -18,6 +19,8 @@ export class TrialBalanceComponent {
   private accountingReportsService = inject(AccountingReportsService);
   private dataFetchService = inject(DataFetchService);
   private dataService = inject(DataService);
+  private authService = inject(AuthService);
+  isView = signal<boolean>(false);
   filteredReports = signal<any>({
     "currentAsset": [],
     "nonCurrentAsset": [],
@@ -40,6 +43,7 @@ export class TrialBalanceComponent {
     this.fromDate.set(today.toISOString().split('T')[0]);
     this.onLoadReport();
     this.dataService.getHeader().subscribe(data => this.header.set(data));
+    this.isView.set(this.checkPermission("Trial Balance Reports", "View"));
   }
 
   onLoadReport() {
@@ -76,6 +80,21 @@ export class TrialBalanceComponent {
 
     this.isLoading$ = isLoading$;
     this.hasError$ = hasError$;
+  }
+
+
+  checkPermission(moduleName: string, permission: string) {
+    const modulePermission = this.authService.getUser()?.userMenu?.find((module: any) => module?.menuName?.toLowerCase() === moduleName.toLowerCase());
+    if (modulePermission) {
+      const permissionValue = modulePermission.permissions.find((perm: any) => perm.toLowerCase() === permission.toLowerCase());
+      if (permissionValue) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
 
 

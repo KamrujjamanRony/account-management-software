@@ -8,6 +8,7 @@ import { DataFetchService } from '../../../shared/services/useDataFetch';
 import { DataService } from '../../../shared/services/data.service';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { AuthService } from '../../../settings/services/auth.service';
 
 // autoTable(doc, {
 
@@ -21,6 +22,7 @@ export class AccountDashboardComponent {
   private accountingReportsService = inject(AccountingReportsService);
   private dataFetchService = inject(DataFetchService);
   private dataService = inject(DataService);
+  private authService = inject(AuthService);
   filteredReports = signal<any>({
     "totalBalanceResult": [],
     "totalCurrentBalanceResult": [],
@@ -29,6 +31,7 @@ export class AccountDashboardComponent {
   });
   fromDate = signal<any>(null);
   header = signal<any>(null);
+  isView = signal<boolean>(false);
   totalMonth = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
   isLoading$: Observable<any> | undefined;
@@ -39,6 +42,22 @@ export class AccountDashboardComponent {
     this.fromDate.set(today.toISOString().split('T')[0]);
     this.onLoadReport();
     this.dataService.getHeader().subscribe(data => this.header.set(data));
+    this.isView.set(this.checkPermission("Dashboard", "View"));
+  }
+
+
+  checkPermission(moduleName: string, permission: string) {
+    const modulePermission = this.authService.getUser()?.userMenu?.find((module: any) => module?.menuName?.toLowerCase() === moduleName.toLowerCase());
+    if (modulePermission) {
+      const permissionValue = modulePermission.permissions.find((perm: any) => perm.toLowerCase() === permission.toLowerCase());
+      if (permissionValue) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
 
   onLoadReport() {

@@ -11,6 +11,7 @@
       class="space-y-8 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-12 md:space-y-0"
     >
       <!-- Accounts  -->
+      @if (isMenuPermission("Accounts")) {
       <div
         class="bg-gray-900 cursor-pointer p-2 md:p-5 rounded-md flex flex-col justify-center items-center group"
         [routerLink]="['/accounts']"
@@ -41,7 +42,10 @@
           Accounts
         </h3>
       </div>
+      }
+
       <!-- HR  -->
+      @if (isMenuPermission("HR")) {
       <div
         class="bg-gray-900 cursor-pointer p-2 md:p-5 rounded-md flex flex-col justify-center items-center group"
         [routerLink]="['/hr']"
@@ -69,7 +73,10 @@
           HR
         </h3>
       </div>
+      }
+
       <!-- Lab  -->
+      @if (isMenuPermission("Lab")) {
       <div
         class="bg-gray-900 cursor-pointer p-2 md:p-5 rounded-md flex flex-col justify-center items-center group"
         [routerLink]="['/']"
@@ -135,7 +142,10 @@
           Lab
         </h3>
       </div>
+      }
+
       <!-- Indoor  -->
+      @if (isMenuPermission("Indoor")) {
       <div
         class="bg-gray-900 cursor-pointer p-2 md:p-5 rounded-md flex flex-col justify-center items-center group"
         [routerLink]="['/']"
@@ -205,7 +215,10 @@
           Indoor
         </h3>
       </div>
+      }
+
       <!-- Outdoor  -->
+      @if (isMenuPermission("Outdoor")) {
       <div
         class="bg-gray-900 cursor-pointer p-2 md:p-5 rounded-md flex flex-col justify-center items-center group"
         [routerLink]="['/']"
@@ -281,7 +294,10 @@
           Outdoor
         </h3>
       </div>
+      }
+
       <!-- Emergency  -->
+      @if (isMenuPermission("Emergency")) {
       <div
         class="bg-gray-900 cursor-pointer p-2 md:p-5 rounded-md flex flex-col justify-center items-center group"
         [routerLink]="['/']"
@@ -357,7 +373,10 @@
           Emergency
         </h3>
       </div>
+      }
+
       <!-- Pharmacy  -->
+      @if (isMenuPermission("Pharmacy")) {
       <div
         class="bg-gray-900 cursor-pointer p-2 md:p-5 rounded-md flex flex-col justify-center items-center group"
         [routerLink]="['/']"
@@ -421,7 +440,10 @@
           Pharmacy
         </h3>
       </div>
+      }
+
       <!-- Doctor Appointment  -->
+      @if (isMenuPermission("Doctor Appointment")) {
       <div
         class="bg-gray-900 cursor-pointer p-2 md:p-5 rounded-md flex flex-col justify-center items-center group"
         [routerLink]="['/doctor-fee']"
@@ -457,7 +479,10 @@
           Doctor Appointment
         </h3>
       </div>
+      }
+
       <!-- Settings  -->
+      @if (isMenuPermission("Settings")) {
       <div
         class="bg-gray-900 cursor-pointer p-2 md:p-5 rounded-md flex flex-col justify-center items-center group"
         [routerLink]="['/settings']"
@@ -485,6 +510,7 @@
           Settings
         </h3>
       </div>
+      }
     </div>
   </div>
 </section>

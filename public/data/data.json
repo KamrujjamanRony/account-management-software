@@ -35,5 +35,16 @@
       { "value": "B.Ed.", "label": "Bachelors degrees" },
       { "value": "M.Ed.", "label": "Masters degrees" }
     ]
-  }
+  },
+  "moduleNames": [
+    "Accounts",
+    "HR",
+    "Lab",
+    "Indoor",
+    "Outdoor",
+    "Emergency",
+    "Pharmacy",
+    "Doctor Appointment",
+    "Settings"
+  ]
 }

@@ -11,6 +11,7 @@ import { DataFetchService } from '../../../../shared/services/useDataFetch';
 import { AccountingReportsService } from '../../../services/accounting-reports.service';
 import { SelectorComponent } from '../../../components/selector/selector.component';
 import { ToastService } from '../../../../shared/components/primeng/toast/toast.service';
+import { AuthService } from '../../../../settings/services/auth.service';
 
 @Component({
   selector: 'app-expense-voucher',
@@ -26,6 +27,11 @@ export class ExpenseVoucherComponent {
   private dataFetchService = inject(DataFetchService);
   private accountingReportsService = inject(AccountingReportsService);
   private toastService = inject(ToastService);
+  private authService = inject(AuthService);
+  isView = signal<boolean>(false);
+  isInsert = signal<boolean>(false);
+  isEdit = signal<boolean>(false);
+  isDelete = signal<boolean>(false);
   filteredVoucherList = signal<any[]>([]);
   highlightedTr: number = -1;
   selectedVoucher: any;
@@ -63,6 +69,10 @@ export class ExpenseVoucherComponent {
     this.onLoadVoucher();
     this.accountListService.getAccountList({ "allbyheadId": 1 }).subscribe(data => this.allOption.set(data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() }))));
     setTimeout(() => this.focusFirstInput(), 10);
+    this.isView.set(this.checkPermission("Expense Voucher Entry", "View"));
+    this.isInsert.set(this.checkPermission("Expense Voucher Entry", "Insert"));
+    this.isEdit.set(this.checkPermission("Expense Voucher Entry", "Edit"));
+    this.isDelete.set(this.checkPermission("Expense Voucher Entry", "Delete"));
   }
 
   ngAfterViewInit() {
@@ -106,6 +116,21 @@ export class ExpenseVoucherComponent {
       this.vendorService.getVendor('').subscribe(data => this.vendorIdOption.set(data.map((c: any) => ({ id: c.id, text: c.name.toLowerCase() }))));
       this.accountingReportsService.getCurrentBalanceApi({}).subscribe(data => this.accountBankCashIdOption.set(data.map((c: any) => ({ id: c.headId, text: c.subHead }))));
     });
+  }
+
+
+  checkPermission(moduleName: string, permission: string) {
+    const modulePermission = this.authService.getUser()?.userMenu?.find((module: any) => module?.menuName?.toLowerCase() === moduleName.toLowerCase());
+    if (modulePermission) {
+      const permissionValue = modulePermission.permissions.find((perm: any) => perm.toLowerCase() === permission.toLowerCase());
+      if (permissionValue) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
 
   // Form Field ----------------------------------------------------------------

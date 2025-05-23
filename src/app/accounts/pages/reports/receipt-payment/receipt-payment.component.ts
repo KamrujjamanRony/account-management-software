@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AccountingReportsService } from '../../../services/accounting-reports.service';
 import { DataFetchService } from '../../../../shared/services/useDataFetch';
+import { AuthService } from '../../../../settings/services/auth.service';
 
 @Component({
   selector: 'app-receipt-payment',
@@ -12,6 +13,8 @@ import { DataFetchService } from '../../../../shared/services/useDataFetch';
 export class ReceiptPaymentComponent {
   private accountingReportsService = inject(AccountingReportsService);
   private dataFetchService = inject(DataFetchService);
+  private authService = inject(AuthService);
+  isView = signal<boolean>(false);
   openingBalance = signal<any[]>([]);
   receiptBalance = signal<any[]>([]);
   paymentBalance = signal<any[]>([]);
@@ -31,6 +34,7 @@ export class ReceiptPaymentComponent {
   ngOnInit() {
     const today = new Date();
     this.fromDate.set(today.toISOString().split('T')[0]);
+    this.isView.set(this.checkPermission("Receipt Payment Reports", "View"));
 
     const reqData = {
       "bankCashChartofAccountId": null,
@@ -55,6 +59,21 @@ export class ReceiptPaymentComponent {
       this.totalClosingBalance.set(this.closingBalance()?.reduce((prev: any, data: any) => prev + (data.amount || 0), 0));
       console.log(data)
     });
+  }
+
+
+  checkPermission(moduleName: string, permission: string) {
+    const modulePermission = this.authService.getUser()?.userMenu?.find((module: any) => module?.menuName?.toLowerCase() === moduleName.toLowerCase());
+    if (modulePermission) {
+      const permissionValue = modulePermission.permissions.find((perm: any) => perm.toLowerCase() === permission.toLowerCase());
+      if (permissionValue) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
 
 }

@@ -9,6 +9,7 @@ import { FixedAssetService } from '../../../services/fixed-asset.service';
 import { AllSvgComponent } from "../../../../shared/components/svg/all-svg/all-svg.component";
 import { AccountListService } from '../../../services/account-list.service';
 import { ToastService } from '../../../../shared/components/primeng/toast/toast.service';
+import { AuthService } from '../../../../settings/services/auth.service';
 
 @Component({
   selector: 'app-fixed-asset-description',
@@ -21,7 +22,12 @@ export class FixedAssetDescriptionComponent {
   private fixedAssetService = inject(FixedAssetService);
   private accountListService = inject(AccountListService);
   private toastService = inject(ToastService);
-  dataFetchService = inject(DataFetchService);
+  private dataFetchService = inject(DataFetchService);
+  private authService = inject(AuthService);
+  isView = signal<boolean>(false);
+  isInsert = signal<boolean>(false);
+  isEdit = signal<boolean>(false);
+  isDelete = signal<boolean>(false);
   filteredFixedAssetList = signal<any[]>([]);
   highlightedTr: number = -1;
   assetTypeOption = signal<any[]>([]);
@@ -51,19 +57,24 @@ export class FixedAssetDescriptionComponent {
   });
 
   ngOnInit() {
-    const reqBody = {
+    const reqBody = {         // todo: set assetId
       "headId": 8,
       "allbyheadId": 8
     };
     this.accountListService.getAccountList(reqBody).subscribe(data => {
       this.assetTypeOption.set(data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() })));
+      console.log(data)
     });
     this.onLoadFixedAssets();
+    this.isView.set(this.checkPermission("Fixed Asset Entry", "View"));
+    this.isInsert.set(this.checkPermission("Fixed Asset Entry", "Insert"));
+    this.isEdit.set(this.checkPermission("Fixed Asset Entry", "Edit"));
+    this.isDelete.set(this.checkPermission("Fixed Asset Entry", "Delete"));
 
     // Focus on the search input when the component is initialized
     setTimeout(() => {
       const inputs = this.inputRefs();
-      inputs[0].nativeElement.focus();
+      inputs[0]?.nativeElement.focus();
     }, 10); // Delay to ensure the DOM is updated
   }
 
@@ -85,6 +96,21 @@ export class FixedAssetDescriptionComponent {
         )
       )
     ).subscribe(filteredData => this.filteredFixedAssetList.set(filteredData.reverse()));
+  }
+
+
+  checkPermission(moduleName: string, permission: string) {
+    const modulePermission = this.authService.getUser()?.userMenu?.find((module: any) => module?.menuName?.toLowerCase() === moduleName.toLowerCase());
+    if (modulePermission) {
+      const permissionValue = modulePermission.permissions.find((perm: any) => perm.toLowerCase() === permission.toLowerCase());
+      if (permissionValue) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
 
   // Method to filter FixedAsset list based on search query

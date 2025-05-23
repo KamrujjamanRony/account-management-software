@@ -7,6 +7,7 @@ import autoTable from 'jspdf-autotable';
 import { AccountingReportsService } from '../../../services/accounting-reports.service';
 import { DataFetchService } from '../../../../shared/services/useDataFetch';
 import { DataService } from '../../../../shared/services/data.service';
+import { AuthService } from '../../../../settings/services/auth.service';
 
 @Component({
   selector: 'app-income-expense-statement',
@@ -18,6 +19,8 @@ export class IncomeExpenseStatementComponent {
   private accountingReportsService = inject(AccountingReportsService);
   private dataFetchService = inject(DataFetchService);
   private dataService = inject(DataService);
+  private authService = inject(AuthService);
+  isView = signal<boolean>(false);
   incomeReports = signal<any>([]);
   expenseReports = signal<any>([]);
   transactionType = signal<any>("All");
@@ -36,6 +39,7 @@ export class IncomeExpenseStatementComponent {
     this.fromDate.set(today.toISOString().split('T')[0]);
     this.onLoadReport();
     this.dataService.getHeader().subscribe(data => this.header.set(data));
+    this.isView.set(this.checkPermission("Income Expense Statement Reports", "View"));
   }
 
   onLoadReport() {
@@ -59,6 +63,21 @@ export class IncomeExpenseStatementComponent {
 
     this.isLoading$ = isLoading$;
     this.hasError$ = hasError$;
+  }
+
+
+  checkPermission(moduleName: string, permission: string) {
+    const modulePermission = this.authService.getUser()?.userMenu?.find((module: any) => module?.menuName?.toLowerCase() === moduleName.toLowerCase());
+    if (modulePermission) {
+      const permissionValue = modulePermission.permissions.find((perm: any) => perm.toLowerCase() === permission.toLowerCase());
+      if (permissionValue) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
 
 

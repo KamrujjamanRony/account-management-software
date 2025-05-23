@@ -8,6 +8,7 @@ import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { MenuService } from '../../services/menu.service';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { ToastService } from '../../../shared/components/primeng/toast/toast.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-menu-list',
@@ -20,6 +21,11 @@ export class MenuListComponent {
   private menuService = inject(MenuService);
   private dataFetchService = inject(DataFetchService);
   private toastService = inject(ToastService);
+  private authService = inject(AuthService);
+  isView = signal<boolean>(false);
+  isInsert = signal<boolean>(false);
+  isEdit = signal<boolean>(false);
+  isDelete = signal<boolean>(false);
   filteredMenuList = signal<any[]>([]);
   menuOptions = signal<any[]>([]);
   highlightedTr: number = -1;
@@ -45,11 +51,15 @@ export class MenuListComponent {
 
   ngOnInit() {
     this.onLoadMenu();
+    this.isView.set(this.checkPermission("Menu List", "View"));
+    this.isInsert.set(this.checkPermission("Menu List", "Insert"));
+    this.isEdit.set(this.checkPermission("Menu List", "Edit"));
+    this.isDelete.set(this.checkPermission("Menu List", "Delete"));
 
     // Focus on the search input when the component is initialized
     setTimeout(() => {
       const inputs = this.inputRefs();
-      inputs[0].nativeElement.focus();
+      inputs[0]?.nativeElement?.focus();
     }, 10); // Delay to ensure the DOM is updated
   }
 
@@ -74,6 +84,22 @@ export class MenuListComponent {
       this.filteredMenuList.set(filteredData.reverse());
       this.menuOptions.set(filteredData.map((menuData: any) => ({ key: menuData.id, value: menuData.menuName })));
     });
+  }
+
+
+  checkPermission(moduleName: string, permission: string) {
+    const user = this.authService.getUser();
+    const modulePermission = user?.userMenu?.find((module: any) => module?.menuName?.toLowerCase() === moduleName.toLowerCase());
+    if (modulePermission && user?.username === 'SuperSoft') {
+      const permissionValue = modulePermission.permissions.find((perm: any) => perm.toLowerCase() === permission.toLowerCase());
+      if (permissionValue) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
 
   // Method to filter Menu list based on search query

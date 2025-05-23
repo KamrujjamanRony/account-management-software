@@ -10,10 +10,12 @@ import { UserService } from '../../services/user.service';
 import { MenuService } from '../../services/menu.service';
 import { EmployeeService } from '../../../hr/services/employee.service';
 import { ToastService } from '../../../shared/components/primeng/toast/toast.service';
+import { AuthService } from '../../services/auth.service';
+import { AllSvgComponent } from "../../../shared/components/svg/all-svg/all-svg.component";
 
 @Component({
   selector: 'app-users',
-  imports: [ReactiveFormsModule, UserAccessTreeComponent, FieldComponent, SearchComponent, CommonModule],
+  imports: [ReactiveFormsModule, UserAccessTreeComponent, FieldComponent, SearchComponent, CommonModule, AllSvgComponent],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css'
 })
@@ -24,6 +26,11 @@ export class UsersComponent {
   private menuService = inject(MenuService);
   private employeeService = inject(EmployeeService);
   private toastService = inject(ToastService);
+  private authService = inject(AuthService);
+  isView = signal<boolean>(false);
+  isInsert = signal<boolean>(false);
+  isEdit = signal<boolean>(false);
+  isDelete = signal<boolean>(false);
   filteredUserList = signal<any[]>([]);
   employeeOption = signal<any[]>([]);
   highlightedTr: number = -1;
@@ -51,21 +58,40 @@ export class UsersComponent {
     this.onLoadUsers();
 
     this.onLoadEmployee("");
+    this.checkPermission("Users List", "View").then(result => this.isView.set(result));
+    this.checkPermission("Users List", "Insert").then(result => this.isInsert.set(result));
+    this.checkPermission("Users List", "Edit").then(result => this.isEdit.set(result));
+    this.checkPermission("Users List", "Delete").then(result => this.isDelete.set(result));
 
     // Focus on the search input when the component is initialized
     setTimeout(() => {
       const inputs = this.inputRefs();
-      inputs[0].nativeElement.focus();
+      inputs[0]?.nativeElement.focus();
     }, 10);
   }
 
   onLoadEmployee(eId: any) {
     this.employeeService.getEmployee(eId).subscribe((data) => {
-      console.log(data)
       this.employeeOption.set(data.map((item: any) => {
         return { value: item.eId, label: item.eName }
       }))
     });
+  }
+
+
+  async checkPermission(moduleName: string, permission: string) {
+    const user = await this.authService.getUser();
+    const modulePermission = user?.userMenu?.find((module: any) => module?.menuName?.toLowerCase() === moduleName.toLowerCase());
+    if (modulePermission) {
+      const permissionValue = modulePermission.permissions.find((perm: any) => perm.toLowerCase() === permission.toLowerCase());
+      if (permissionValue) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
 
   onDisplayEmployee(eId: any) {
@@ -93,7 +119,10 @@ export class UsersComponent {
           UserData.userName?.toLowerCase().includes(query)
         )
       )
-    ).subscribe(filteredData => this.filteredUserList.set(filteredData));
+    ).subscribe(filteredData => {
+      filteredData.shift();                   // todo: remove first element of user list
+      this.filteredUserList.set(filteredData)
+    });
   }
 
   // Method to filter User list based on search query

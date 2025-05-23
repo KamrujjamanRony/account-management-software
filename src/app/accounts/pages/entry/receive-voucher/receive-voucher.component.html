@@ -1,4 +1,6 @@
+@if (isView()) {
 <section class="flex flex-col gap-5">
+  @if (isInsert()) {
   <div class="w-full border mb-10">
     <h1
       class="text-xl md:text-3xl font-bold text-teal-500 underline text-center mb-5"
@@ -220,8 +222,7 @@
       </form>
     </div>
   </div>
-
-  @if (dataArray.length > 0) {
+  } @if (dataArray.length > 0) {
   <div class="w-full border mb-10 px-3 max-h-[98vh] overflow-scroll">
     <h1
       class="text-xl md:text-3xl font-bold text-teal-500 underline text-center"
@@ -343,7 +344,9 @@
             <th scope="col" class="p-1">pay To</th>
             <th scope="col" class="p-1">amount</th>
             <th scope="col" class="p-1">remarks</th>
+            @if (isEdit() || isDelete()) {
             <th scope="col" class="px-1 py-3">Action</th>
+            }
           </tr>
         </thead>
         <tbody>
@@ -374,18 +377,21 @@
               {{ item?.remarks }}
             </td>
             <td class="flex gap-1">
+              @if (isEdit()) {
               <button
                 class="text-orange-50 bg-orange-400 hover:bg-orange-500 p-1 rounded"
                 (click)="onUpdate(item)"
               >
                 <app-all-svg icon="pencil" />
               </button>
+              } @if (isDelete()) {
               <button
                 class="text-rose-50 bg-rose-600 hover:bg-rose-700 px-2 py-[1px] rounded"
                 (click)="onDelete(item?.id)"
               >
                 X
               </button>
+              }
             </td>
           </tr>
           }
@@ -396,3 +402,8 @@
   </div>
   }
 </section>
+} @else {
+<p class="text-3xl font-bold text-center p-10 text-red-600">
+  You don't have permission to view this page.
+</p>
+}

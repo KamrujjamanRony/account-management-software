@@ -1,1 +1,9 @@
-<p>general-cash-book works!</p>
+@if (isView()) {
+<section class="flex flex-col lg:flex-row gap-5">
+  <p>general-cash-book works!</p>
+</section>
+} @else {
+<p class="text-3xl font-bold text-center p-10 text-red-600">
+  You don't have permission to view this page.
+</p>
+}

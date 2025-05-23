@@ -7,6 +7,7 @@ import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { VendorService } from '../../../services/vendor.service';
 import { DataFetchService } from '../../../../shared/services/useDataFetch';
 import { ToastService } from '../../../../shared/components/primeng/toast/toast.service';
+import { AuthService } from '../../../../settings/services/auth.service';
 
 @Component({
   selector: 'app-vendor-entry',
@@ -19,6 +20,11 @@ export class VendorEntryComponent {
   private vendorService = inject(VendorService);
   private dataFetchService = inject(DataFetchService);
   private toastService = inject(ToastService);
+  private authService = inject(AuthService);
+  isView = signal<boolean>(false);
+  isInsert = signal<boolean>(false);
+  isEdit = signal<boolean>(false);
+  isDelete = signal<boolean>(false);
   filteredVendorList = signal<any[]>([]);
   highlightedTr: number = -1;
   selectedVendor: any;
@@ -39,11 +45,15 @@ export class VendorEntryComponent {
 
   ngOnInit() {
     this.onLoadVendors();
+    this.isView.set(this.checkPermission("Vendor Setup", "View"));
+    this.isInsert.set(this.checkPermission("Vendor Setup", "Insert"));
+    this.isEdit.set(this.checkPermission("Vendor Setup", "Edit"));
+    this.isDelete.set(this.checkPermission("Vendor Setup", "Delete"));
 
     // Focus on the search input when the component is initialized
     setTimeout(() => {
       const inputs = this.inputRefs();
-      inputs[0].nativeElement.focus();
+      inputs[0]?.nativeElement.focus();
     }, 10); // Delay to ensure the DOM is updated
   }
 
@@ -66,6 +76,21 @@ export class VendorEntryComponent {
         )
       )
     ).subscribe(filteredData => this.filteredVendorList.set(filteredData.reverse()));
+  }
+
+
+  checkPermission(moduleName: string, permission: string) {
+    const modulePermission = this.authService.getUser()?.userMenu?.find((module: any) => module?.menuName?.toLowerCase() === moduleName.toLowerCase());
+    if (modulePermission) {
+      const permissionValue = modulePermission.permissions.find((perm: any) => perm.toLowerCase() === permission.toLowerCase());
+      if (permissionValue) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
 
   // Method to filter Vendor list based on search query

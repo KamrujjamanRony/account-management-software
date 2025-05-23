@@ -9,6 +9,7 @@ import { Selector2Component } from '../../../components/selector2/selector2.comp
 import { AccountListService } from '../../../services/account-list.service';
 import { VoucherService } from '../../../services/voucher.service';
 import { DataService } from '../../../../shared/services/data.service';
+import { AuthService } from '../../../../settings/services/auth.service';
 
 @Component({
   selector: 'app-transactions',
@@ -21,6 +22,8 @@ export class TransactionsComponent {
   private voucherService = inject(VoucherService);
   private dataFetchService = inject(DataFetchService);
   private dataService = inject(DataService);
+  private authService = inject(AuthService);
+  isView = signal<boolean>(false);
   filteredVoucherList = signal<any[]>([]);
   fromDate = signal<any>(null);
   toDate = signal<any>(null);
@@ -46,6 +49,7 @@ export class TransactionsComponent {
     this.fromDate.set(today.toISOString().split('T')[0]);
     this.onLoadVoucher();
     this.dataService.getHeader().subscribe(data => this.header.set(data));
+    this.isView.set(this.checkPermission("Transactions Reports", "View"));
   }
 
   ngAfterViewInit() {
@@ -92,6 +96,21 @@ export class TransactionsComponent {
       }
       this.accountListService.getAccountList(headIdReq).subscribe(data => this.chartOfAccountIdOption.set(data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() }))));
     });
+  }
+
+
+  checkPermission(moduleName: string, permission: string) {
+    const modulePermission = this.authService.getUser()?.userMenu?.find((module: any) => module?.menuName?.toLowerCase() === moduleName.toLowerCase());
+    if (modulePermission) {
+      const permissionValue = modulePermission.permissions.find((perm: any) => perm.toLowerCase() === permission.toLowerCase());
+      if (permissionValue) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
 
   ontransactionTypeChange() {

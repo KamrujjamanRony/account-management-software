@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AccountingReportsService } from '../../../services/accounting-reports.service';
 import { DataFetchService } from '../../../../shared/services/useDataFetch';
+import { AuthService } from '../../../../settings/services/auth.service';
 
 @Component({
   selector: 'app-general-cash-book',
@@ -12,6 +13,8 @@ import { DataFetchService } from '../../../../shared/services/useDataFetch';
 export class GeneralCashBookComponent {
   private accountingReportsService = inject(AccountingReportsService);
   private dataFetchService = inject(DataFetchService);
+  private authService = inject(AuthService);
+  isView = signal<boolean>(false);
   filteredReports = signal<any[]>([]);
   fromDate = signal<any>(null);
   toDate = signal<any>(null);
@@ -24,6 +27,7 @@ export class GeneralCashBookComponent {
     const today = new Date();
     this.fromDate.set(today.toISOString().split('T')[0]);
     this.onLoadReport();
+    this.isView.set(this.checkPermission("General CashBook Reports", "View"));
   }
 
   onLoadReport() {
@@ -41,6 +45,21 @@ export class GeneralCashBookComponent {
 
     this.isLoading$ = isLoading$;
     this.hasError$ = hasError$;
+  }
+
+
+  checkPermission(moduleName: string, permission: string) {
+    const modulePermission = this.authService.getUser()?.userMenu?.find((module: any) => module?.menuName?.toLowerCase() === moduleName.toLowerCase());
+    if (modulePermission) {
+      const permissionValue = modulePermission.permissions.find((perm: any) => perm.toLowerCase() === permission.toLowerCase());
+      if (permissionValue) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
 
 }

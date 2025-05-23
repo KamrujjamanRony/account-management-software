@@ -9,6 +9,7 @@ import { AccountingReportsService } from '../../../services/accounting-reports.s
 import { AccountListService } from '../../../services/account-list.service';
 import { DataFetchService } from '../../../../shared/services/useDataFetch';
 import { DataService } from '../../../../shared/services/data.service';
+import { AuthService } from '../../../../settings/services/auth.service';
 
 @Component({
   selector: 'app-general-ledger',
@@ -21,6 +22,8 @@ export class GeneralLedgerComponent {
   private accountListService = inject(AccountListService);
   private dataFetchService = inject(DataFetchService);
   private dataService = inject(DataService);
+  private authService = inject(AuthService);
+  isView = signal<boolean>(false);
   filteredReports = signal<any[]>([]);
   accountBankCashIdOption = signal<any[]>([]);
   selectedBankCash = signal<any>(null);
@@ -42,6 +45,7 @@ export class GeneralLedgerComponent {
     this.fromDate.set(today.toISOString().split('T')[0]);
     this.onLoadFilter();
     this.dataService.getHeader().subscribe(data => this.header.set(data));
+    this.isView.set(this.checkPermission("General Ledger Reports", "View"));
   }
 
   // ngAfterViewInit() {
@@ -54,12 +58,15 @@ export class GeneralLedgerComponent {
       if (this.accountBankCashIdOption()?.length > 0) {
         this.selectedId.set(this.accountBankCashIdOption()[0]?.id);
       }
+      console.log(data)
       this.onLoadReport();
     });
   }
 
   onLoadReport() {
     this.selectedBankCash.set(this.accountBankCashIdOption().find((c: any) => c.id == this.selectedId()));
+    // console.log(this.selectedBankCash())
+    console.log(this.selectedId())
     const reqData = {
       "bankCashChartofAccountId": this.selectedBankCash()?.id || null,
       "fromDate": this.fromDate(),
@@ -91,6 +98,21 @@ export class GeneralLedgerComponent {
   onSearchBank(event: Event) {
     const query = (event.target as HTMLInputElement).value.toLowerCase();
     this.searchQuery$.next(query);
+  }
+
+
+  checkPermission(moduleName: string, permission: string) {
+    const modulePermission = this.authService.getUser()?.userMenu?.find((module: any) => module?.menuName?.toLowerCase() === moduleName.toLowerCase());
+    if (modulePermission) {
+      const permissionValue = modulePermission.permissions.find((perm: any) => perm.toLowerCase() === permission.toLowerCase());
+      if (permissionValue) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
 
 

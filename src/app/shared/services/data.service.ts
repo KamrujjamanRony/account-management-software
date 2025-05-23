@@ -21,4 +21,8 @@ export class DataService {
   getOptions(): Observable<any> {
     return this.http.get<any>(this.jsonUrl).pipe(map(data => data.options));
   }
+
+  getModules(): Observable<any> {
+    return this.http.get<any>(this.jsonUrl).pipe(map(data => data.moduleNames));
+  }
 }

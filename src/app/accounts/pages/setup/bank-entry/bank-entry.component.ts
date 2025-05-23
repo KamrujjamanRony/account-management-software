@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { BankService } from '../../../services/bank.service';
 import { DataFetchService } from '../../../../shared/services/useDataFetch';
 import { ToastService } from '../../../../shared/components/primeng/toast/toast.service';
+import { AuthService } from '../../../../settings/services/auth.service';
 
 @Component({
   selector: 'app-bank-entry',
@@ -19,6 +20,11 @@ export class BankEntryComponent {
   private bankService = inject(BankService);
   private dataFetchService = inject(DataFetchService);
   private toastService = inject(ToastService);
+  private authService = inject(AuthService);
+  isView = signal<boolean>(false);
+  isInsert = signal<boolean>(false);
+  isEdit = signal<boolean>(false);
+  isDelete = signal<boolean>(false);
   filteredBankList = signal<any[]>([]);
   highlightedTr: number = -1;
   selectedBank: any;
@@ -38,11 +44,15 @@ export class BankEntryComponent {
 
   ngOnInit() {
     this.onLoadBanks();
+    this.isView.set(this.checkPermission("Bank Setup", "View"));
+    this.isInsert.set(this.checkPermission("Bank Setup", "Insert"));
+    this.isEdit.set(this.checkPermission("Bank Setup", "Edit"));
+    this.isDelete.set(this.checkPermission("Bank Setup", "Delete"));
 
     // Focus on the search input when the component is initialized
     setTimeout(() => {
       const inputs = this.inputRefs();
-      inputs[0].nativeElement.focus();
+      inputs[0]?.nativeElement?.focus();
     }, 10); // Delay to ensure the DOM is updated
   }
 
@@ -64,6 +74,21 @@ export class BankEntryComponent {
         )
       )
     ).subscribe(filteredData => this.filteredBankList.set(filteredData.reverse()));
+  }
+
+
+  checkPermission(moduleName: string, permission: string) {
+    const modulePermission = this.authService.getUser()?.userMenu?.find((module: any) => module?.menuName?.toLowerCase() === moduleName.toLowerCase());
+    if (modulePermission) {
+      const permissionValue = modulePermission.permissions.find((perm: any) => perm.toLowerCase() === permission.toLowerCase());
+      if (permissionValue) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
 
   // Method to filter Bank list based on search query

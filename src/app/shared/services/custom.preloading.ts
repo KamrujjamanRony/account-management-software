@@ -8,10 +8,10 @@ import { EMPTY, Observable } from 'rxjs';
 export class CustomPreLoadingStrategy implements PreloadingStrategy {
     preload(route: Route, fn: () => Observable<any>): Observable<any> {
         if (route.data?.['preload']) {
-            console.log(`Preloading route: ${route.path}`);
+            // console.log(`Preloading route: ${route.path}`);
             return fn();
         }
-        console.log(`Skipping preload for route: ${route.path}`);
+        // console.log(`Skipping preload for route: ${route.path}`);
         return EMPTY;
     }
 }

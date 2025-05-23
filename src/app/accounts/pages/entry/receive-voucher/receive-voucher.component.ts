@@ -11,6 +11,7 @@ import { VendorService } from '../../../services/vendor.service';
 import { VoucherService } from '../../../services/voucher.service';
 import { AccountingReportsService } from '../../../services/accounting-reports.service';
 import { ToastService } from '../../../../shared/components/primeng/toast/toast.service';
+import { AuthService } from '../../../../settings/services/auth.service';
 
 @Component({
   selector: 'app-receive-voucher',
@@ -25,6 +26,11 @@ export class ReceiveVoucherComponent {
   private voucherService = inject(VoucherService);
   private accountingReportsService = inject(AccountingReportsService);
   private toastService = inject(ToastService);
+  private authService = inject(AuthService);
+  isView = signal<boolean>(false);
+  isInsert = signal<boolean>(false);
+  isEdit = signal<boolean>(false);
+  isDelete = signal<boolean>(false);
   dataFetchService = inject(DataFetchService);
   filteredVoucherList = signal<any[]>([]);
   highlightedTr: number = -1;
@@ -64,6 +70,10 @@ export class ReceiveVoucherComponent {
     this.onLoadVoucher();
     this.accountListService.getAccountList({ "allbyheadId": 1 }).subscribe(data => this.allOption.set(data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() }))));
     setTimeout(() => this.focusFirstInput(), 10);
+    this.isView.set(this.checkPermission("Receive Voucher Entry", "View"));
+    this.isInsert.set(this.checkPermission("Receive Voucher Entry", "Insert"));
+    this.isEdit.set(this.checkPermission("Receive Voucher Entry", "Edit"));
+    this.isDelete.set(this.checkPermission("Receive Voucher Entry", "Delete"));
   }
 
   ngAfterViewInit() {
@@ -110,6 +120,21 @@ export class ReceiveVoucherComponent {
 
   onDateChange() {
     this.onLoadVoucher();
+  }
+
+
+  checkPermission(moduleName: string, permission: string) {
+    const modulePermission = this.authService.getUser()?.userMenu?.find((module: any) => module?.menuName?.toLowerCase() === moduleName.toLowerCase());
+    if (modulePermission) {
+      const permissionValue = modulePermission.permissions.find((perm: any) => perm.toLowerCase() === permission.toLowerCase());
+      if (permissionValue) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
 
   // Form Field ----------------------------------------------------------------
