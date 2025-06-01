@@ -27,7 +27,7 @@ export class GeneralCashBookComponent {
     const today = new Date();
     this.fromDate.set(today.toISOString().split('T')[0]);
     this.onLoadReport();
-    this.isView.set(this.checkPermission("General CashBook Reports", "View"));
+    this.isView.set(this.checkPermission("General CashBook", "View"));
   }
 
   onLoadReport() {
@@ -40,7 +40,6 @@ export class GeneralCashBookComponent {
 
     data$.subscribe(data => {
       this.filteredReports.set(data);
-      console.log(data)
     });
 
     this.isLoading$ = isLoading$;

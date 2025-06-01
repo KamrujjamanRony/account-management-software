@@ -70,10 +70,10 @@ export class ReceiveVoucherComponent {
     this.onLoadVoucher();
     this.accountListService.getAccountList({ "allbyheadId": 1 }).subscribe(data => this.allOption.set(data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() }))));
     setTimeout(() => this.focusFirstInput(), 10);
-    this.isView.set(this.checkPermission("Receive Voucher Entry", "View"));
-    this.isInsert.set(this.checkPermission("Receive Voucher Entry", "Insert"));
-    this.isEdit.set(this.checkPermission("Receive Voucher Entry", "Edit"));
-    this.isDelete.set(this.checkPermission("Receive Voucher Entry", "Delete"));
+    this.isView.set(this.checkPermission("Receive Voucher", "View"));
+    this.isInsert.set(this.checkPermission("Receive Voucher", "Insert"));
+    this.isEdit.set(this.checkPermission("Receive Voucher", "Edit"));
+    this.isDelete.set(this.checkPermission("Receive Voucher", "Delete"));
   }
 
   ngAfterViewInit() {

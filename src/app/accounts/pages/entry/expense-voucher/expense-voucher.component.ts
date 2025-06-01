@@ -69,10 +69,10 @@ export class ExpenseVoucherComponent {
     this.onLoadVoucher();
     this.accountListService.getAccountList({ "allbyheadId": 1 }).subscribe(data => this.allOption.set(data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() }))));
     setTimeout(() => this.focusFirstInput(), 10);
-    this.isView.set(this.checkPermission("Expense Voucher Entry", "View"));
-    this.isInsert.set(this.checkPermission("Expense Voucher Entry", "Insert"));
-    this.isEdit.set(this.checkPermission("Expense Voucher Entry", "Edit"));
-    this.isDelete.set(this.checkPermission("Expense Voucher Entry", "Delete"));
+    this.isView.set(this.checkPermission("Payment Voucher", "View"));
+    this.isInsert.set(this.checkPermission("Payment Voucher", "Insert"));
+    this.isEdit.set(this.checkPermission("Payment Voucher", "Edit"));
+    this.isDelete.set(this.checkPermission("Payment Voucher", "Delete"));
   }
 
   ngAfterViewInit() {

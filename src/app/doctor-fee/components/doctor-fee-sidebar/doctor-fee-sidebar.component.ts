@@ -15,7 +15,7 @@ export class DoctorFeeSidebarComponent {
       id: 1, label: 'Registration', icon: 'users', route: '/doctor-fee/registration'
     },
     {
-      id: 2, label: 'Setup', icon: 'settings', menu: [
+      id: 2, label: 'Entry', icon: 'settings', menu: [
         {
           id: 21, label: 'Doctor Entry', route: '/doctor-fee/setup/doctor/entry'
         },

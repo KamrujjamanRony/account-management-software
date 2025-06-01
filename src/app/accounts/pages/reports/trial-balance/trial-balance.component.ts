@@ -43,7 +43,7 @@ export class TrialBalanceComponent {
     this.fromDate.set(today.toISOString().split('T')[0]);
     this.onLoadReport();
     this.dataService.getHeader().subscribe(data => this.header.set(data));
-    this.isView.set(this.checkPermission("Trial Balance Reports", "View"));
+    this.isView.set(this.checkPermission("Trial Balance", "View"));
   }
 
   onLoadReport() {
@@ -57,7 +57,6 @@ export class TrialBalanceComponent {
 
     data$.subscribe(data => {
       this.filteredReports.set(data);
-      console.log(this.filteredReports())
       const totalCurrentAssetDebit = (data as any).currentAsset?.reduce((acc: number, curr: any) => acc + curr?.debitAmount, 0) || 0;
       const totalNonCurrentAssetDebit = (data as any).nonCurrentAsset?.reduce((acc: number, curr: any) => acc + curr?.debitAmount, 0) || 0;
       const totalCurrentLiabilityDebit = (data as any).currentLiability?.reduce((acc: number, curr: any) => acc + curr?.debitAmount, 0) || 0;

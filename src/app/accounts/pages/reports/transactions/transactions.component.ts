@@ -49,7 +49,7 @@ export class TransactionsComponent {
     this.fromDate.set(today.toISOString().split('T')[0]);
     this.onLoadVoucher();
     this.dataService.getHeader().subscribe(data => this.header.set(data));
-    this.isView.set(this.checkPermission("Transactions Reports", "View"));
+    this.isView.set(this.checkPermission("Transactions", "View"));
   }
 
   ngAfterViewInit() {

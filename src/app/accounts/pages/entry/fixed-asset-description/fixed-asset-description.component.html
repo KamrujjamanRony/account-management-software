@@ -12,12 +12,12 @@
       (ngSubmit)="onSubmit($event)"
       class="min-w-[400px] mx-auto px-2"
     >
-      <!-- assetType -->
+      <!-- assetTypeId -->
       @if (assetTypeOption().length > 0) {
       <Field label="Asset Type">
         <select
           #inputRef
-          formControlName="assetType"
+          formControlName="assetTypeId"
           placeholder=""
           class="block py-2.5 px-2 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
           (keydown.enter)="handleEnterKey($event, 0)"
@@ -103,12 +103,12 @@
           (input)="onCalculateValue($event)"
         />
       </Field>
-      <!-- depre -->
+      <!-- deprePercentage -->
       <Field label="depre%">
         <input
           #inputRef
           type="number"
-          [formControl]="getControl('depre')"
+          [formControl]="getControl('deprePercentage')"
           class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
           placeholder=""
           (keydown.enter)="handleEnterKey($event, 2)"
@@ -279,6 +279,7 @@
             <th scope="col" class="p-1">location</th>
             <th scope="col" class="p-1">warrEndDate</th>
             <th scope="col" class="p-1">fileLink</th>
+            <th scope="col" class="p-1">PostBy</th>
             @if (isEdit() || isDelete()) {
             <th scope="col" class="px-1 py-3">Action</th>
             }
@@ -295,7 +296,7 @@
               {{ item?.assetName }}
             </td>
             <td class="p-1">
-              {{ item?.assetType }}
+              {{ onDisplayAssetType(item?.assetTypeId) }}
             </td>
             <td class="p-1">
               {{ item?.purInvNO }}
@@ -326,6 +327,9 @@
             </td>
             <td class="p-1">
               {{ item?.fileLink }}
+            </td>
+            <td class="p-1">
+              {{ item?.postBy }}
             </td>
             <td class="flex gap-1">
               @if (isEdit()) {

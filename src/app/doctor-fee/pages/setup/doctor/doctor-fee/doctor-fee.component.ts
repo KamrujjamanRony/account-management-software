@@ -156,7 +156,6 @@ export class DoctorFeeComponent {
         this.doctorFeeService.addDoctorFee({ ...this.form.value, entryDate: formattedDate })
           .subscribe({
             next: (response) => {
-              console.log(response);
               if (response !== null && response !== undefined) {
                 this.success.set("Patient successfully added!");
                 this.filteredDoctorFeeList.set([response, ...this.filteredDoctorFeeList()])

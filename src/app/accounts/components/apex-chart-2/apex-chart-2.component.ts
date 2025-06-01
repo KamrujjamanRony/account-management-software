@@ -12,7 +12,6 @@ export class ApexChart2Component implements AfterViewInit {
 
   ngAfterViewInit() {
     if (!this.chartData || this.chartData.length === 0) return;  // Ensure data is available
-    console.log(this.chartData)
 
     const monthNames = [
       "January", "February", "March", "April", "May", "June",

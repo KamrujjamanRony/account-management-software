@@ -84,10 +84,10 @@ export class JournalVoucherComponent {
     this.accountListService.getAccountList({ "allbyheadId": 1 }).subscribe(data => this.allOption.set(data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() }))));
     setTimeout(() => this.focusFirstInput(), 10);
     this.dataService.getHeader().subscribe(data => this.header.set(data));
-    this.isView.set(this.checkPermission("Journal Voucher Entry", "View"));
-    this.isInsert.set(this.checkPermission("Journal Voucher Entry", "Insert"));
-    this.isEdit.set(this.checkPermission("Journal Voucher Entry", "Edit"));
-    this.isDelete.set(this.checkPermission("Journal Voucher Entry", "Delete"));
+    this.isView.set(this.checkPermission("Journal/Contra Voucher", "View"));
+    this.isInsert.set(this.checkPermission("Journal/Contra Voucher", "Insert"));
+    this.isEdit.set(this.checkPermission("Journal/Contra Voucher", "Edit"));
+    this.isDelete.set(this.checkPermission("Journal/Contra Voucher", "Delete"));
   }
 
   ngAfterViewInit() {
@@ -193,8 +193,6 @@ export class JournalVoucherComponent {
     }
     const findDebitVoucherHead = this.dataArray.find(v => v.headId == this.debitVoucherForm.value.headId);
     const findCreditVoucherHead = this.dataArray.find(v => v.headId == this.creditVoucherForm.value.headId);
-    console.log(findDebitVoucherHead, findCreditVoucherHead);
-    console.log(this.debitVoucherForm.value.subHeadId, this.creditVoucherForm.value.subHeadId);
     if ((findDebitVoucherHead && !this.debitVoucherForm.value.subHeadId) || (findCreditVoucherHead && !this.creditVoucherForm.value.subHeadId)) {
       this.toastService.showMessage('warn', 'Warning', "This Voucher Head Already Added in Voucher Details!");
       return;
@@ -439,11 +437,9 @@ export class JournalVoucherComponent {
           }
         })
         const addData = { ...voucherFormData, particular: remarks.join(','), createVoucherDetailDto };
-        console.log(addData);
         this.voucherService.addVoucher(addData)
           .subscribe({
             next: (response) => {
-              console.log(response)
               if (response !== null && response !== undefined) {
                 this.toastService.showMessage('success', 'Successful', 'Voucher successfully added!');
                 this.dataArray = [];
@@ -522,7 +518,6 @@ export class JournalVoucherComponent {
       "toDate": null
     }
     this.voucherService.getVoucher(reqData).subscribe((data: any) => {
-      console.log(data)
       if (data.length > 0) {
         this.form.get('transactionType')?.enable();
         this.form.patchValue({
@@ -629,8 +624,6 @@ export class JournalVoucherComponent {
     const keyboardEvent = event as KeyboardEvent;
     event.preventDefault();
     const inputs = this.inputRefs();
-    console.log(currentIndex);
-    console.log(inputs[currentIndex])
 
     if ((inputs[currentIndex] as any).innerText === 'Add Debit Voucher Detail' || (inputs[currentIndex] as any).innerText === 'Update Debit Voucher Detail') {
       this.addData();

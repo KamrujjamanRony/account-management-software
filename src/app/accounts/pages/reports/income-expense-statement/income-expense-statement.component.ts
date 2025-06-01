@@ -39,7 +39,7 @@ export class IncomeExpenseStatementComponent {
     this.fromDate.set(today.toISOString().split('T')[0]);
     this.onLoadReport();
     this.dataService.getHeader().subscribe(data => this.header.set(data));
-    this.isView.set(this.checkPermission("Income Expense Statement Reports", "View"));
+    this.isView.set(this.checkPermission("Income & Expense", "View"));
   }
 
   onLoadReport() {

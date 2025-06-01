@@ -64,7 +64,7 @@ export class AccountSidebarComponent {
           id: 35, label: 'Transactions', route: '/accounts/reports/transactions'
         },
         {
-          id: 35, label: 'Income & Expense', route: '/accounts/reports/income-expense-statement'
+          id: 36, label: 'Income & Expense', route: '/accounts/reports/income-expense-statement'
         },
       ]
     },

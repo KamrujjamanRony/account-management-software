@@ -45,7 +45,7 @@ export class GeneralLedgerComponent {
     this.fromDate.set(today.toISOString().split('T')[0]);
     this.onLoadFilter();
     this.dataService.getHeader().subscribe(data => this.header.set(data));
-    this.isView.set(this.checkPermission("General Ledger Reports", "View"));
+    this.isView.set(this.checkPermission("General Transaction", "View"));
   }
 
   // ngAfterViewInit() {
@@ -58,7 +58,6 @@ export class GeneralLedgerComponent {
       if (this.accountBankCashIdOption()?.length > 0) {
         this.selectedId.set(this.accountBankCashIdOption()[0]?.id);
       }
-      console.log(data)
       this.onLoadReport();
     });
   }
@@ -66,7 +65,6 @@ export class GeneralLedgerComponent {
   onLoadReport() {
     this.selectedBankCash.set(this.accountBankCashIdOption().find((c: any) => c.id == this.selectedId()));
     // console.log(this.selectedBankCash())
-    console.log(this.selectedId())
     const reqData = {
       "bankCashChartofAccountId": this.selectedBankCash()?.id || null,
       "fromDate": this.fromDate(),

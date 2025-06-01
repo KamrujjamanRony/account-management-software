@@ -13,7 +13,7 @@ export class FixedAssetService {
   private apiCall<T>(endpoint: string, method: 'get' | 'post' | 'put' | 'delete', body?: any): Observable<T> {
     return this.dataService.getPort().pipe(
       switchMap(port => {
-        const url = `${port}/api/Bank${endpoint}`;
+        const url = `${port}/api/AssetDescription${endpoint}`;
         return this.http.request<T>(method, url, { body });
       })
     );
@@ -24,14 +24,14 @@ export class FixedAssetService {
   }
 
   getFixedAsset(query: string): Observable<any> {
-    return this.apiCall<any>(`/SearchBank?Search=${query}`, 'post');
+    return this.apiCall<any>(`/SearchAssetDescription`, 'post');
   }
 
   updateFixedAsset(id: string | number, updateFixedAssetRequest: any): Observable<any> {
-    return this.apiCall<any>(`/EditFixedAsset/${id}`, 'put', updateFixedAssetRequest);
+    return this.apiCall<any>(`/EditAssetDescription/${id}`, 'put', updateFixedAssetRequest);
   }
 
   deleteFixedAsset(id: string | number): Observable<any> {
-    return this.apiCall<any>(`/DeleteFixedAsset?id=${id}`, 'delete');
+    return this.apiCall<any>(`/DeleteAssetDescription?id=${id}`, 'delete');
   }
 }

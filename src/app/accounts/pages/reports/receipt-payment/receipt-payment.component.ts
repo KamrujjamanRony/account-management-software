@@ -34,7 +34,7 @@ export class ReceiptPaymentComponent {
   ngOnInit() {
     const today = new Date();
     this.fromDate.set(today.toISOString().split('T')[0]);
-    this.isView.set(this.checkPermission("Receipt Payment Reports", "View"));
+    this.isView.set(this.checkPermission("Receipt Payment", "View"));
 
     const reqData = {
       "bankCashChartofAccountId": null,
@@ -57,7 +57,6 @@ export class ReceiptPaymentComponent {
       this.totalReceiptBalance.set(this.receiptBalance()?.reduce((prev: any, data: any) => prev + (data.amount || 0), 0));
       this.totalPaymentBalance.set(this.paymentBalance()?.reduce((prev: any, data: any) => prev + (data.amount || 0), 0));
       this.totalClosingBalance.set(this.closingBalance()?.reduce((prev: any, data: any) => prev + (data.amount || 0), 0));
-      console.log(data)
     });
   }
 

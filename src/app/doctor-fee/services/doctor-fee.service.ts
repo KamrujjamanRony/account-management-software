@@ -29,7 +29,6 @@ export class DoctorFeeService {
   }
 
   getFilteredDoctorFee(fromDate: any, toDate: any, nextFlowDate: any): Observable<any> {
-    console.log(fromDate, toDate, nextFlowDate)
     const endPoint = nextFlowDate ? `nextFlowDate=${nextFlowDate}` : `fromDate=${fromDate}&toDate=${toDate ? toDate : fromDate}`;
     return this.apiCall<any>(`/GetDoctorNextFlowDateSearch?${endPoint}`, 'post', {});
   }

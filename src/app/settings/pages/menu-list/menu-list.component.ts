@@ -51,10 +51,10 @@ export class MenuListComponent {
 
   ngOnInit() {
     this.onLoadMenu();
-    this.isView.set(this.checkPermission("Menu List", "View"));
-    this.isInsert.set(this.checkPermission("Menu List", "Insert"));
-    this.isEdit.set(this.checkPermission("Menu List", "Edit"));
-    this.isDelete.set(this.checkPermission("Menu List", "Delete"));
+    this.isView.set(this.checkPermission("Menu", "View"));
+    this.isInsert.set(this.checkPermission("Menu", "Insert"));
+    this.isEdit.set(this.checkPermission("Menu", "Edit"));
+    this.isDelete.set(this.checkPermission("Menu", "Delete"));
 
     // Focus on the search input when the component is initialized
     setTimeout(() => {
@@ -77,6 +77,7 @@ export class MenuListComponent {
         data.filter((menuData: any) =>
           menuData.menuName?.toLowerCase().includes(query) ||
           menuData.moduleName?.toLowerCase().includes(query) ||
+          menuData.parentMenuId == query ||
           menuData.url?.toLowerCase().includes(query)
         )
       )
@@ -162,7 +163,7 @@ export class MenuListComponent {
 
   onSubmit(e: Event) {
     this.isSubmitted = true;
-    console.log(this.form.value);
+    // console.log(this.form.value);
     if (this.form.valid) {
       // console.log(this.form.value);
       if (this.selectedMenu) {

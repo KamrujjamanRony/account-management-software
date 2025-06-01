@@ -15,7 +15,6 @@ export class DoctorFeeLayoutComponent {
 
   ngOnInit() {
     this.user.set(this.authService.getUser());
-    console.log(this.user());
   }
 
   isMenuPermission(menuName: string) {

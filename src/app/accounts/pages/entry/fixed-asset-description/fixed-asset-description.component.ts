@@ -43,17 +43,21 @@ export class FixedAssetDescriptionComponent {
 
   form = this.fb.group({
     assetName: ['', [Validators.required]],
-    assetType: [''],
+    assetTypeId: [''],
     purInvNO: [''],
     purDate: [''],
     purPrice: [''],
     depCalDate: [''],
-    depre: [''],
+    deprePercentage: [''],
     depValue: [{ value: 0, disabled: true }],
     wdv: [{ value: 0, disabled: true }],
     location: [''],
     warrEndDate: [''],
     fileLink: [''],
+    postBy: [this.authService.getUser()?.username || ''],
+    others1: [''],
+    others2: [''],
+    others3: [''],
   });
 
   ngOnInit() {
@@ -63,19 +67,23 @@ export class FixedAssetDescriptionComponent {
     };
     this.accountListService.getAccountList(reqBody).subscribe(data => {
       this.assetTypeOption.set(data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() })));
-      console.log(data)
     });
     this.onLoadFixedAssets();
-    this.isView.set(this.checkPermission("Fixed Asset Entry", "View"));
-    this.isInsert.set(this.checkPermission("Fixed Asset Entry", "Insert"));
-    this.isEdit.set(this.checkPermission("Fixed Asset Entry", "Edit"));
-    this.isDelete.set(this.checkPermission("Fixed Asset Entry", "Delete"));
+    this.isView.set(this.checkPermission("Fixed Asset Description", "View"));
+    this.isInsert.set(this.checkPermission("Fixed Asset Description", "Insert"));
+    this.isEdit.set(this.checkPermission("Fixed Asset Description", "Edit"));
+    this.isDelete.set(this.checkPermission("Fixed Asset Description", "Delete"));
 
     // Focus on the search input when the component is initialized
     setTimeout(() => {
       const inputs = this.inputRefs();
       inputs[0]?.nativeElement.focus();
     }, 10); // Delay to ensure the DOM is updated
+  }
+
+  onDisplayAssetType(assetTypeId: any): string {
+    const assetType = this.assetTypeOption().find((item: any) => item.id == assetTypeId);
+    return assetType ? assetType.text : '';
   }
 
   // Load Fixed Assets List
@@ -92,10 +100,30 @@ export class FixedAssetDescriptionComponent {
       map(([data, query]) =>
         data.filter((FixedAssetData: any) =>
           FixedAssetData.assetName?.toLowerCase().includes(query) ||
-          FixedAssetData.location?.toLowerCase().includes(query)
+          FixedAssetData.purInvNO?.includes(query)
         )
       )
-    ).subscribe(filteredData => this.filteredFixedAssetList.set(filteredData.reverse()));
+    ).subscribe(filteredData => this.filteredFixedAssetList.set(filteredData.reverse().map((item: any) => {
+      return {
+        id: item.id,
+        assetName: item.assetName,
+        assetTypeId: item.assetTypeId,
+        purInvNO: item.purInvNO,
+        purDate: item.purDate.split('T')[0],
+        purPrice: item.purPrice,
+        depCalDate: item.depCalDate.split('T')[0],
+        deprePercentage: item.deprePercentage,
+        depValue: item.depValue,
+        wdv: item.wdv,
+        location: item.location,
+        warrEndDate: item.warrEndDate.split('T')[0],
+        fileLink: item.fileLink,
+        postBy: item.postBy,
+        others1: item.others1,
+        others2: item.others2,
+        others3: item.others3
+      };
+    })));
   }
 
 
@@ -130,7 +158,7 @@ export class FixedAssetDescriptionComponent {
     event.preventDefault();
     this.form.get('depValue')?.enable();
     this.form.get('wdv')?.enable();
-    const depValue = (Number(this.form.get('purPrice')?.value) || 0) * (Number(this.form.get('depre')?.value) ? Number(this.form.get('depre')?.value) / 100 : 0)
+    const depValue = (Number(this.form.get('purPrice')?.value) || 0) * (Number(this.form.get('deprePercentage')?.value) ? Number(this.form.get('deprePercentage')?.value) / 100 : 0)
     this.form.patchValue({
       depValue: depValue,
       wdv: (Number(this.form.get('purPrice')?.value) || 0) - depValue,
@@ -186,6 +214,8 @@ export class FixedAssetDescriptionComponent {
     this.isSubmitted = true;
     if (this.form.valid) {
       // console.log(this.form.value);
+      this.form.get('depValue')?.enable();
+      this.form.get('wdv')?.enable();
       if (this.selectedFixedAsset) {
         this.fixedAssetService.updateFixedAsset(this.selectedFixedAsset.id, this.form.value)
           .subscribe({
@@ -203,6 +233,8 @@ export class FixedAssetDescriptionComponent {
             error: (error) => {
               console.error('Error Update:', error);
               this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message || error.error.title}`);
+              this.form.get('depValue')?.disable();
+              this.form.get('wdv')?.disable();
             }
           });
       } else {
@@ -220,6 +252,8 @@ export class FixedAssetDescriptionComponent {
             error: (error) => {
               console.error('Error register:', error);
               this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message || error.error.title}`);
+              this.form.get('depValue')?.disable();
+              this.form.get('wdv')?.disable();
             }
           });
       }
@@ -232,17 +266,21 @@ export class FixedAssetDescriptionComponent {
     this.selectedFixedAsset = data;
     this.form.patchValue({
       assetName: data?.assetName,
-      assetType: data?.assetType,
+      assetTypeId: data?.assetTypeId,
       purInvNO: data?.purInvNO,
-      purDate: data?.purDate,
+      purDate: data?.purDate.split('T')[0],
       purPrice: data?.purPrice,
-      depCalDate: data?.depCalDate,
-      depre: data?.depre,
+      depCalDate: data?.depCalDate.split('T')[0],
+      deprePercentage: data?.deprePercentage,
       depValue: data?.depValue,
       wdv: data?.wdv,
       location: data?.location,
-      warrEndDate: data?.warrEndDate,
+      warrEndDate: data?.warrEndDate.split('T')[0],
       fileLink: data?.fileLink,
+      postBy: data?.postBy,
+      others1: data?.others1,
+      others2: data?.others2,
+      others3: data?.others3,
     });
     this.showForm.set(true);
 
@@ -271,20 +309,26 @@ export class FixedAssetDescriptionComponent {
     e.preventDefault();
     this.form.reset({
       assetName: '',
-      assetType: '',
+      assetTypeId: '',
       purInvNO: '',
       purDate: '',
       purPrice: '',
       depCalDate: '',
-      depre: '',
+      deprePercentage: '',
       depValue: 0,
       wdv: 0,
       location: '',
       warrEndDate: '',
       fileLink: '',
+      postBy: this.authService.getUser()?.username || '',
+      others1: '',
+      others2: '',
+      others3: '',
     });
     this.isSubmitted = false;
     this.selectedFixedAsset = null;
+    this.form.get('depValue')?.disable();
+    this.form.get('wdv')?.disable();
   }
 
 }

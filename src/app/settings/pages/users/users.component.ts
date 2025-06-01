@@ -58,10 +58,10 @@ export class UsersComponent {
     this.onLoadUsers();
 
     this.onLoadEmployee("");
-    this.checkPermission("Users List", "View").then(result => this.isView.set(result));
-    this.checkPermission("Users List", "Insert").then(result => this.isInsert.set(result));
-    this.checkPermission("Users List", "Edit").then(result => this.isEdit.set(result));
-    this.checkPermission("Users List", "Delete").then(result => this.isDelete.set(result));
+    this.isView.set(this.checkPermission("User", "View"));
+    this.isInsert.set(this.checkPermission("User", "Insert"));
+    this.isEdit.set(this.checkPermission("User", "Edit"));
+    this.isDelete.set(this.checkPermission("User", "Delete"));
 
     // Focus on the search input when the component is initialized
     setTimeout(() => {
@@ -79,9 +79,8 @@ export class UsersComponent {
   }
 
 
-  async checkPermission(moduleName: string, permission: string) {
-    const user = await this.authService.getUser();
-    const modulePermission = user?.userMenu?.find((module: any) => module?.menuName?.toLowerCase() === moduleName.toLowerCase());
+  checkPermission(moduleName: string, permission: string) {
+    const modulePermission = this.authService.getUser()?.userMenu?.find((module: any) => module?.menuName?.toLowerCase() === moduleName.toLowerCase());
     if (modulePermission) {
       const permissionValue = modulePermission.permissions.find((perm: any) => perm.toLowerCase() === permission.toLowerCase());
       if (permissionValue) {
@@ -238,8 +237,6 @@ export class UsersComponent {
       menuPermissions: data?.menuPermissions,
     });
 
-    console.log(data)
-
     // Focus the 'userName' input field after patching the value
     setTimeout(() => {
       const inputs = this.inputRefs();
@@ -280,7 +277,7 @@ export class UsersComponent {
   savePermissions() {
     // const selectedNodes = this.getSelectedNodes(this.userAccessTree());
     const selectedNodes = this.userAccessTree();
-    console.log('Selected Access:', selectedNodes);
+    // console.log('Selected Access:', selectedNodes);
     this.form.patchValue({ menuPermissions: selectedNodes });
   }
 

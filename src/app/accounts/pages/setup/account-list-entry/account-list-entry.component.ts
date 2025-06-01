@@ -68,10 +68,10 @@ export class AccountListEntryComponent {
     this.onLoadAccountList();
     this.onLoadBanks();
     this.onLoadAccountTree();
-    this.isView.set(this.checkPermission("Account Chart Setup", "View"));
-    this.isInsert.set(this.checkPermission("Account Chart Setup", "Insert"));
-    this.isEdit.set(this.checkPermission("Account Chart Setup", "Edit"));
-    this.isDelete.set(this.checkPermission("Account Chart Setup", "Delete"));
+    this.isView.set(this.checkPermission("Chart Of Account", "View"));
+    this.isInsert.set(this.checkPermission("Chart Of Account", "Insert"));
+    this.isEdit.set(this.checkPermission("Chart Of Account", "Edit"));
+    this.isDelete.set(this.checkPermission("Chart Of Account", "Delete"));
 
     // Focus on the search input when the component is initialized
     setTimeout(() => {
