@@ -151,7 +151,8 @@ export class ReceiveVoucherComponent {
     payTo: [''],
     amount: [''],
     particular: [''],
-    remarks: ['']
+    remarks: [''],
+    postBy: [this.authService.getUser()?.username || '']
   });
 
   addVoucherForm = this.fb.group({
@@ -247,6 +248,7 @@ export class ReceiveVoucherComponent {
       particular: data?.particular,
       voucherNo: data?.voucherNo,
       remarks: data?.remarks,
+      postBy: data?.postBy
     });
     this.selectedVoucher = data;
     // const rest = data.voucherDetailDto.pop();
@@ -368,7 +370,8 @@ export class ReceiveVoucherComponent {
     this.form.reset();
     const today = new Date();
     this.form.patchValue({
-      voucherDate: today.toISOString().split('T')[0]
+      voucherDate: today.toISOString().split('T')[0],
+      postBy: this.authService.getUser()?.username || ''
     });
     this.addVoucherForm.reset();
     this.selectedVoucher = null;

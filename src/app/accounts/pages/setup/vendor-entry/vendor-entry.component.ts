@@ -41,6 +41,7 @@ export class VendorEntryComponent {
     address: [''],
     mobile: [''],
     remarks: [''],
+    postBy: [this.authService.getUser()?.username || '']
   });
 
   ngOnInit() {
@@ -199,6 +200,7 @@ export class VendorEntryComponent {
       address: data?.address,
       mobile: data?.mobile,
       remarks: data?.remarks,
+      postBy: data?.postBy
     });
 
     // Focus the 'Name' input field after patching the value
@@ -229,6 +231,7 @@ export class VendorEntryComponent {
       address: '',
       mobile: '',
       remarks: '',
+      postBy: this.authService.getUser()?.username || ''
     });
     this.isSubmitted = false;
     this.selectedVendor = null;

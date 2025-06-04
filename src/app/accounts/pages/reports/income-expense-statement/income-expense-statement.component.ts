@@ -90,8 +90,8 @@ export class IncomeExpenseStatementComponent {
   generatePDF() {
     const pageSizeWidth = 210;
     const pageSizeHeight = 297;
-    const marginLeft = 10;
-    const marginRight = 10;
+    const marginLeft = 50;
+    const marginRight = 50;
     let marginTop = (this.header()?.marginTop | 0) + 10;
     const marginBottom = 10;
 
@@ -99,29 +99,13 @@ export class IncomeExpenseStatementComponent {
     const centerX = doc.internal.pageSize.getWidth() / 2;
 
     // Header Section
-    if (this.header()) {
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(18);
-      doc.text(this.header()?.name, centerX, marginTop, { align: 'center' });
-      marginTop += 5;
-
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(12);
-      doc.text(this.header()?.address, centerX, marginTop, { align: 'center' });
-      marginTop += 5;
-
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(12);
-      doc.text(`Contact: ${this.header()?.contact}`, centerX, marginTop, { align: 'center' });
-      marginTop += 2;
-      doc.line(0, marginTop, 560, marginTop);
-      marginTop += 7;
-    }
+    this.displayReportHeader(doc, marginTop, centerX);
+    marginTop += 5; // Adjust margin after header
 
     // Title Section
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(14);
-    doc.text(`${this.transactionType() === 'All' ? 'Income & Expense' : this.transactionType()} Statements`, centerX, marginTop, { align: 'center' });
+    doc.text(`${this.transactionType() === 'All' ? 'Profit & Loss' : this.transactionType()} Statements`, centerX, marginTop, { align: 'center' });
     marginTop += 5;
 
     // Date Range
@@ -133,11 +117,11 @@ export class IncomeExpenseStatementComponent {
     }
 
     // Prepare Table Data
-    const incomeDataRows = this.incomeReports().map((data: any) => [
+    const incomeDataRows = this.incomeReports()?.map((data: any) => [
       data?.subHead,
       data?.creditAmount || 0,
     ]);
-    const expenseDataRows = this.expenseReports().map((data: any) => [
+    const expenseDataRows = this.expenseReports()?.map((data: any) => [
       data?.subHead,
       data?.debitAmount || 0,
     ]);
@@ -158,6 +142,7 @@ export class IncomeExpenseStatementComponent {
       lineWidth: 0.2,
       lineColor: 0,
       fontStyle: 'bold' as const,
+      fontSize: 11,
     };
 
     const footStyles = {
@@ -166,6 +151,7 @@ export class IncomeExpenseStatementComponent {
       lineWidth: 0.2,
       lineColor: 0,
       fontStyle: 'bold' as const,
+      fontSize: 10,
     };
 
     // Income Section
@@ -182,7 +168,7 @@ export class IncomeExpenseStatementComponent {
       autoTable(doc, {
         head: [['Head', "Amount"]],
         body: incomeDataRows,
-        foot: [['Total:', this.totalCredit().toFixed(0)]],
+        foot: [['Total:', this.totalCredit()?.toFixed(0)]],
         theme: 'grid',
         startY: marginTop,
         styles: tableStyles,
@@ -190,8 +176,8 @@ export class IncomeExpenseStatementComponent {
         footStyles: footStyles,
         margin: { left: marginLeft, right: marginRight },
         columnStyles: {
-          0: { cellWidth: 'auto' }, // Head column
-          1: { cellWidth: 30 }      // Amount column
+          0: { cellWidth: 'auto', halign: 'left' }, // Head column
+          1: { cellWidth: 40 }      // Amount column
         },
         didDrawPage: (data: any) => {
           doc.setFontSize(8);
@@ -218,7 +204,7 @@ export class IncomeExpenseStatementComponent {
       autoTable(doc, {
         head: [['Head', 'Amount']],
         body: expenseDataRows,
-        foot: [['Total:', this.totalDebit().toFixed(0)]],
+        foot: [['Total:', this.totalDebit()?.toFixed(0)]],
         theme: 'grid',
         startY: marginTop,
         styles: tableStyles,
@@ -226,8 +212,8 @@ export class IncomeExpenseStatementComponent {
         footStyles: footStyles,
         margin: { left: marginLeft, right: marginRight },
         columnStyles: {
-          0: { cellWidth: 'auto' }, // Head column
-          1: { cellWidth: 30 }      // Amount column
+          0: { cellWidth: 'auto', halign: 'left' }, // Head column
+          1: { cellWidth: 40 }      // Amount column
         },
         didDrawPage: (data: any) => {
           doc.setFontSize(8);
@@ -254,6 +240,32 @@ export class IncomeExpenseStatementComponent {
     // Output PDF
     const pdfOutput = doc.output('blob');
     window.open(URL.createObjectURL(pdfOutput));
+  }
+
+  displayReportHeader(doc: jsPDF, marginTop: number, centerX: number) {
+    // Header Section
+    if (this.header()) {
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(18);
+      doc.text(this.header()?.name, centerX, marginTop, { align: 'center' });
+      marginTop += 5;
+
+      // if (this.header()?.address) {
+      //   doc.setFont('helvetica', 'bold');
+      //   doc.setFontSize(12);
+      //   doc.text(this.header()?.address, centerX, marginTop, { align: 'center' });
+      //   marginTop += 5;
+      // }
+
+      // if (this.header()?.contact) {
+      //   doc.setFont('helvetica', 'bold');
+      //   doc.setFontSize(12);
+      //   doc.text(`Contact: ${this.header()?.contact}`, centerX, marginTop, { align: 'center' });
+      //   marginTop += 2;
+      //   doc.line(0, marginTop, 560, marginTop);
+      //   marginTop += 7;
+      // }
+    }
   }
 
 }

@@ -11,7 +11,7 @@ export class AuthService {
 
   constructor() {
     // Restore from secure storage on service init
-    this.restoreUser();
+    // this.restoreUser();
 
     // Backup to secure storage before page unload
     window.addEventListener('beforeunload', () => this.deleteUser());      // todo: this.backupUser()

@@ -157,6 +157,7 @@ export class JournalVoucherComponent {
     coaMap: [''],
     receiveFrom: [''],
     particular: [''],
+    postBy: [this.authService.getUser()?.username || '']
   });
 
   debitVoucherForm = this.fb.group({
@@ -494,7 +495,8 @@ export class JournalVoucherComponent {
     });
     const today = new Date();
     this.form.patchValue({
-      voucherDate: today.toISOString().split('T')[0]
+      voucherDate: today.toISOString().split('T')[0],
+      postBy: this.authService.getUser()?.username || ''
     });
     this.debitVoucherForm.reset();
     this.creditVoucherForm.reset();
@@ -531,6 +533,7 @@ export class JournalVoucherComponent {
           particular: data[0]?.particular,
           voucherNo: data[0]?.voucherNo,
           remarks: data[0]?.remarks,
+          postBy: data?.postBy
         });
         this.selectedVoucher = data[0];
 

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { LoginService } from '../../services/login.service';
 import { FormControl, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -20,6 +20,7 @@ export class LoginComponent {
   private router = inject(Router);
   fb = inject(NonNullableFormBuilder);
   isSubmitted = false;
+  loading = signal<boolean>(false);
 
   form = this.fb.group({
     userName: ['', [Validators.required]],
@@ -34,11 +35,14 @@ export class LoginComponent {
   onSubmit(): void {
     this.isSubmitted = true;
     if (this.form.valid) {
+      this.loading.set(true);
       this.loginSubscription = this.LoginService.login(this.form.value)
         .subscribe({
           next: (response: any) => {
             this.authService.setUser(response);
             this.toastService.showMessage('success', 'Successful', 'User Login Successfully!');
+            this.loading.set(false);
+            this.form.reset();
             this.router.navigate(['/home']);
           },
           error: (error) => {

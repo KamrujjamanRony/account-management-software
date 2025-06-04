@@ -463,6 +463,7 @@
             <th scope="col" class="p-1">pay To</th>
             <th scope="col" class="p-1">amount</th>
             <th scope="col" class="p-1">remarks</th>
+            <th scope="col" class="p-1">PostBy</th>
             @if (isEdit() || isDelete()) {
             <th scope="col" class="px-1 py-3">Action</th>
             }
@@ -494,6 +495,9 @@
             </td>
             <td class="p-1">
               {{ item?.remarks }}
+            </td>
+            <td class="p-1">
+              {{ item?.postBy }}
             </td>
             <td class="flex gap-1">
               @if (isEdit()) {

@@ -62,6 +62,7 @@ export class AccountListEntryComponent {
     accountNo: [''],
     openingBalance: [0],
     remarks: [''],
+    postBy: [this.authService.getUser()?.username || '']
   });
 
   ngOnInit() {
@@ -233,6 +234,7 @@ export class AccountListEntryComponent {
       accountNo: data?.accountNo,
       openingBalance: data?.openingBalance,
       remarks: data?.remarks,
+      postBy: data?.postBy
     });
 
     this.form.get('controlHeadId')?.disable();
@@ -263,6 +265,9 @@ export class AccountListEntryComponent {
     e.preventDefault();
     this.form.get('controlHeadId')?.enable();
     this.form.reset();
+    this.form.patchValue({
+      postBy: this.authService.getUser()?.username || ''
+    });
     this.isSubmitted = false;
     this.selectedAccount.set(null);
   }

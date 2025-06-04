@@ -135,6 +135,7 @@
             <th scope="col" class="p-1">address</th>
             <th scope="col" class="p-1">mobile</th>
             <th scope="col" class="p-1">remarks</th>
+            <th scope="col" class="p-1">PostBy</th>
             @if (isEdit()) {
             <th scope="col" class="px-1 py-3">Edit</th>
             } @if (isDelete()) {
@@ -160,6 +161,9 @@
             </td>
             <td class="p-1">
               {{ item?.remarks }}
+            </td>
+            <td class="p-1">
+              {{ item?.postBy }}
             </td>
             @if (isEdit()) {
             <td>

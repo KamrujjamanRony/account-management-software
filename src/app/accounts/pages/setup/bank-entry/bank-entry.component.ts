@@ -40,6 +40,7 @@ export class BankEntryComponent {
     name: ['', [Validators.required]],
     address: [''],
     remarks: [''],
+    postBy: [this.authService.getUser()?.username || '']
   });
 
   ngOnInit() {
@@ -196,6 +197,7 @@ export class BankEntryComponent {
       name: data?.name,
       address: data?.address,
       remarks: data?.remarks,
+      postBy: data?.postBy
     });
 
     // Focus the 'Name' input field after patching the value
@@ -225,6 +227,7 @@ export class BankEntryComponent {
       name: '',
       address: '',
       remarks: '',
+      postBy: this.authService.getUser()?.username || ''
     });
     this.isSubmitted = false;
     this.selectedBank = null;
