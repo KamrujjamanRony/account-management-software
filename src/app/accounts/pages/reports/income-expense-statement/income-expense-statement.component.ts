@@ -88,34 +88,80 @@ export class IncomeExpenseStatementComponent {
   }
 
   generatePDF() {
-    const pageSizeWidth = 210;
-    const pageSizeHeight = 297;
-    const marginLeft = 50;
-    const marginRight = 50;
-    let marginTop = (this.header()?.marginTop | 0) + 10;
-    const marginBottom = 10;
-
     const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'A4' });
+    // const pageSizeWidth = 210;
+    // const pageSizeHeight = 297;
+    const marginLeft = 10;
+    const marginRight = 10;
+    const marginTop = (this.header()?.marginTop | 0) + 10;
+    const marginBottom = 10;
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
     const centerX = doc.internal.pageSize.getWidth() / 2;
+    let yPos = (this.header()?.marginTop | 0) + 10;
 
     // Header Section
-    this.displayReportHeader(doc, marginTop, centerX);
-    marginTop += 5; // Adjust margin after header
+    yPos = this.displayReportHeader(doc, marginTop, centerX);
 
     // Title Section
+    yPos = this.displayReportTitle(doc, yPos, centerX);
+
+    // Render Table with custom column widths
+    yPos = this.displayReportTable(doc, yPos, centerX, pageWidth, pageHeight, marginLeft, marginRight, marginBottom);
+
+
+    // Output PDF
+    const pdfOutput = doc.output('blob');
+    window.open(URL.createObjectURL(pdfOutput));
+  }
+
+  displayReportHeader(doc: jsPDF, yPos: number, centerX: number) {
+    if (this.header()) {
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(18);
+      doc.text(this.header()?.name, centerX, yPos, { align: 'center' });
+      yPos += 2;
+    }
+
+    // if (this.header()?.address) {
+    //   yPos += 3;
+    //   doc.setFont('helvetica', 'bold');
+    //   doc.setFontSize(12);
+    //   doc.text(this.header()?.address, centerX, yPos, { align: 'center' });
+    //   yPos += 2;
+    // }
+
+    // if (this.header()?.contact) {
+    //   yPos += 3;
+    //   doc.setFont('helvetica', 'bold');
+    //   doc.setFontSize(12);
+    //   doc.text(`Contact: ${this.header()?.contact}`, centerX, yPos, { align: 'center' });
+    //   yPos += 2;
+    // }
+    // doc.line(0, yPos, 560, yPos);
+    yPos += 5;
+
+    return yPos;
+  }
+
+  displayReportTitle(doc: jsPDF, yPos: number, centerX: number): any {
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(14);
-    doc.text(`${this.transactionType() === 'All' ? 'Profit & Loss' : this.transactionType()} Statements`, centerX, marginTop, { align: 'center' });
-    marginTop += 5;
+    doc.text(`${this.transactionType() === 'All' ? 'Profit & Loss' : this.transactionType()} Statements`, centerX, yPos, { align: 'center' });
+    yPos += 5;
 
     // Date Range
     doc.setFontSize(10);
     if (this.fromDate()) {
       const dateRange = `From: ${this.transform(this.fromDate())} to: ${this.toDate() ? this.transform(this.toDate()) : this.transform(this.fromDate())}`;
-      doc.text(dateRange, centerX, marginTop, { align: 'center' });
-      marginTop += 5;
+      doc.text(dateRange, centerX, yPos, { align: 'center' });
+      yPos += 5;
     }
 
+    return yPos;
+  }
+
+  displayReportTable(doc: jsPDF, yPos: number, centerX: number, pageWidth: number, pageHeight: number, marginLeft: number, marginRight: number, marginBottom: number): any {
     // Prepare Table Data
     const incomeDataRows = this.incomeReports()?.map((data: any) => [
       data?.subHead,
@@ -159,10 +205,10 @@ export class IncomeExpenseStatementComponent {
       if (this.transactionType() === "All") {
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(12);
-        doc.text(`Income`, centerX, marginTop + 4, { align: 'center' });
-        marginTop += 5; // Add space after heading
+        doc.text(`Income`, centerX, yPos + 4, { align: 'center' });
+        yPos += 5; // Add space after heading
       } else {
-        marginTop += 4; // Add space for the heading
+        yPos += 4; // Add space for the heading
       }
 
       autoTable(doc, {
@@ -170,7 +216,7 @@ export class IncomeExpenseStatementComponent {
         body: incomeDataRows,
         foot: [['Total:', this.totalCredit()?.toFixed(0)]],
         theme: 'grid',
-        startY: marginTop,
+        startY: yPos,
         styles: tableStyles,
         headStyles: headStyles,
         footStyles: footStyles,
@@ -181,13 +227,13 @@ export class IncomeExpenseStatementComponent {
         },
         didDrawPage: (data: any) => {
           doc.setFontSize(8);
-          doc.text(``, pageSizeWidth - marginRight - 10, pageSizeHeight - marginBottom, {
+          doc.text(``, pageWidth - marginRight - 10, pageHeight - marginBottom, {
             align: 'right',
           });
         },
       });
 
-      marginTop = (doc as any).lastAutoTable.finalY + 5;
+      yPos = (doc as any).lastAutoTable.finalY + 5;
     }
 
     // Expense Section
@@ -195,10 +241,10 @@ export class IncomeExpenseStatementComponent {
       if (this.transactionType() === "All") {
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(12);
-        doc.text(`Expense`, centerX, marginTop, { align: 'center' });
-        marginTop += 2; // Add space after heading
+        doc.text(`Expense`, centerX, yPos, { align: 'center' });
+        yPos += 2; // Add space after heading
       } else {
-        marginTop += 4; // Add space for the heading
+        yPos += 4; // Add space for the heading
       }
 
       autoTable(doc, {
@@ -206,7 +252,7 @@ export class IncomeExpenseStatementComponent {
         body: expenseDataRows,
         foot: [['Total:', this.totalDebit()?.toFixed(0)]],
         theme: 'grid',
-        startY: marginTop,
+        startY: yPos,
         styles: tableStyles,
         headStyles: headStyles,
         footStyles: footStyles,
@@ -217,55 +263,28 @@ export class IncomeExpenseStatementComponent {
         },
         didDrawPage: (data: any) => {
           doc.setFontSize(8);
-          doc.text(``, pageSizeWidth - marginRight - 10, pageSizeHeight - marginBottom, {
+          doc.text(``, pageWidth - marginRight - 10, pageHeight - marginBottom, {
             align: 'right',
           });
         },
       });
 
-      marginTop = (doc as any).lastAutoTable.finalY + 5;
+      yPos = (doc as any).lastAutoTable.finalY + 5;
     }
 
     // Total Balance for All
     if (this.transactionType() === "All") {
-      doc.setFontSize(10);
+      doc.setFontSize(12);
       doc.text(
-        `Total Balance (${this.totalCredit()} - ${this.totalDebit()}) = ${this.totalCredit() - this.totalDebit()} Tk`,
+        `Net Profit (${this.totalCredit()} - ${this.totalDebit()}) = ${this.totalCredit() - this.totalDebit()} Tk`,
         centerX,
-        marginTop,
+        yPos,
         { align: 'center' }
       );
     }
 
-    // Output PDF
-    const pdfOutput = doc.output('blob');
-    window.open(URL.createObjectURL(pdfOutput));
-  }
 
-  displayReportHeader(doc: jsPDF, marginTop: number, centerX: number) {
-    // Header Section
-    if (this.header()) {
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(18);
-      doc.text(this.header()?.name, centerX, marginTop, { align: 'center' });
-      marginTop += 5;
-
-      // if (this.header()?.address) {
-      //   doc.setFont('helvetica', 'bold');
-      //   doc.setFontSize(12);
-      //   doc.text(this.header()?.address, centerX, marginTop, { align: 'center' });
-      //   marginTop += 5;
-      // }
-
-      // if (this.header()?.contact) {
-      //   doc.setFont('helvetica', 'bold');
-      //   doc.setFontSize(12);
-      //   doc.text(`Contact: ${this.header()?.contact}`, centerX, marginTop, { align: 'center' });
-      //   marginTop += 2;
-      //   doc.line(0, marginTop, 560, marginTop);
-      //   marginTop += 7;
-      // }
-    }
+    return yPos;
   }
 
 }

@@ -148,62 +148,79 @@ export class TransactionsComponent {
 
 
   generatePDF() {
-    const pageSizeWidth = 210;
-    const pageSizeHeight = 297;
+    const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'A4' });
+    // const pageSizeWidth = 210;
+    // const pageSizeHeight = 297;
     const marginLeft = 10;
     const marginRight = 10;
-    let marginTop = (this.header()?.marginTop | 0) + 10;
     const marginBottom = 10;
-
-    const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'A4' });
-
-    // Adjust margins based on conditions
-    if (this.chartOfAccountId()) {
-      marginTop += 5;
-    }
-
-    // Title and Header Section
-    // Get the exact center of the page (considering margins)
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
     const centerX = doc.internal.pageSize.getWidth() / 2;
+    let yPos = (this.header()?.marginTop | 0) + 10;
 
     // Header Section
+    yPos = this.displayReportHeader(doc, yPos, centerX);
+    // Title Section
+    yPos = this.displayReportTitle(doc, yPos, centerX);
+    // Render Table with custom column widths
+    yPos = this.displayReportTable(doc, yPos, pageWidth, pageHeight, marginLeft, marginRight, marginBottom);
+
+    const pdfOutput = doc.output('blob');
+    window.open(URL.createObjectURL(pdfOutput));
+  }
+
+  displayReportHeader(doc: jsPDF, yPos: number, centerX: number): any {
     if (this.header()) {
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(18);
-      doc.text(this.header()?.name, centerX, marginTop, { align: 'center' });
-      marginTop += 5;
-
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(12);
-      doc.text(this.header()?.address, centerX, marginTop, { align: 'center' });
-      marginTop += 5;
-
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(12);
-      doc.text(`Contact: ${this.header()?.contact}`, centerX, marginTop, { align: 'center' });
-      marginTop += 2;
-      doc.line(0, marginTop, 560, marginTop);
-      marginTop += 7;
+      doc.text(this.header()?.name, centerX, yPos, { align: 'center' });
+      yPos += 2;
     }
 
-    // Title Section
+    if (this.header()?.address) {
+      yPos += 3;
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(12);
+      doc.text(this.header()?.address, centerX, yPos, { align: 'center' });
+      yPos += 2;
+    }
+
+    if (this.header()?.contact) {
+      yPos += 3;
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(12);
+      doc.text(`Contact: ${this.header()?.contact}`, centerX, yPos, { align: 'center' });
+      yPos += 2;
+    }
+    doc.line(0, yPos, 560, yPos);
+    yPos += 5;
+
+    return yPos;
+  }
+
+  displayReportTitle(doc: jsPDF, yPos: number, centerX: number): any {
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(14);
-    doc.text(`${this.transactionType()} Reports`, centerX, marginTop, { align: 'center' });
-    marginTop += 5;
+    doc.text(`${this.transactionType()} Reports`, centerX, yPos, { align: 'center' });
+    yPos += 5;
 
     // Sub-header for doctor name and dates
     doc.setFontSize(10);
     if (this.chartOfAccountName()) {
-      doc.text(`Account Name: ${this.chartOfAccountName()?.toUpperCase()}`, centerX, marginTop, { align: 'center' });
-      marginTop += 5;
+      doc.text(`Account Name: ${this.chartOfAccountName()?.toUpperCase()}`, centerX, yPos, { align: 'center' });
+      yPos += 5;
     }
     if (this.fromDate()) {
       const dateRange = `From: ${this.transform(this.fromDate())} to: ${this.toDate() ? this.transform(this.toDate()) : this.transform(this.fromDate())
         }`;
-      doc.text(dateRange, centerX, marginTop, { align: 'center' });
+      doc.text(dateRange, centerX, yPos, { align: 'center' });
     }
 
+    return yPos;
+  }
+
+  displayReportTable(doc: jsPDF, yPos: number, pageWidth: number, pageHeight: number, marginLeft: number, marginRight: number, marginBottom: number): any {
     // Prepare Table Data
     const dataRows = this.filteredVoucherList().map((data: any) => [
       this.transform(data?.voucherDate),
@@ -216,11 +233,11 @@ export class TransactionsComponent {
 
     // Render Table
     autoTable(doc, {
-      head: [['VoucherDate', 'HeadName', `${this.transactionType() == "Payment" ? "DebitAmount" : "CreditAmount"}`, 'Remarks']],
+      head: [['Voucher Date', 'Head Name', `${this.transactionType() == "Payment" ? "Debit Amount" : "Credit Amount"}`, 'Remarks']],
       body: dataRows,
       foot: [
         [
-          '', 'Total:',
+          'Total:', '',
           this.transactionType() == "Payment"
             ? this.totalDebit().toFixed(2)
             : this.totalCredit().toFixed(2),
@@ -228,7 +245,7 @@ export class TransactionsComponent {
         ],
       ],
       theme: 'grid',
-      startY: marginTop + 2,
+      startY: yPos + 2,
       styles: {
         textColor: 0,
         cellPadding: 2,
@@ -251,29 +268,17 @@ export class TransactionsComponent {
         lineColor: 0,
         fontStyle: 'bold',
       },
-      margin: { top: marginTop, left: marginLeft, right: marginRight },
+      margin: { top: yPos, left: marginLeft, right: marginRight },
       didDrawPage: (data: any) => {
         // Add Footer with Margin Bottom
         doc.setFontSize(8);
-        doc.text(``, pageSizeWidth - marginRight - 10, pageSizeHeight - marginBottom, {
+        doc.text(``, pageWidth - marginRight - 10, pageHeight - marginBottom, {
           align: 'right',
         });
       },
     });
 
-
-
-    // const finalY = (doc as any).lastAutoTable.finalY + 5;
-    // doc.setFontSize(10);
-    // doc.text(
-    //   `Total Collection (${totalAmount} - ${totalDiscount}) = ${totalAmount - totalDiscount} Tk`,
-    //   105,
-    //   finalY,
-    //   { align: 'center' }
-    // );
-
-    const pdfOutput = doc.output('blob');
-    window.open(URL.createObjectURL(pdfOutput));
+    return yPos;
   }
 
 }
