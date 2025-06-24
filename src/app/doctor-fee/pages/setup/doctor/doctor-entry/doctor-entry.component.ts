@@ -7,6 +7,7 @@ import { ToastSuccessComponent } from '../../../../../shared/components/toasts/t
 import { FieldComponent } from '../../../../../shared/components/field/field.component';
 import { DoctorService } from '../../../../services/doctor.service';
 import { DataFetchService } from '../../../../../shared/services/useDataFetch';
+import { AuthService } from '../../../../../settings/services/auth.service';
 
 @Component({
   selector: 'app-doctor-entry',
@@ -18,9 +19,14 @@ import { DataFetchService } from '../../../../../shared/services/useDataFetch';
 export class DoctorEntryComponent {
   fb = inject(NonNullableFormBuilder);
   private doctorService = inject(DoctorService);
-  dataFetchService = inject(DataFetchService);
+  private dataFetchService = inject(DataFetchService);
+  private authService = inject(AuthService);
   filteredDoctorList = signal<any[]>([]);
   isSubmitting = signal<boolean>(false);
+  isView = signal<boolean>(false);
+  isInsert = signal<boolean>(false);
+  isEdit = signal<boolean>(false);
+  isDelete = signal<boolean>(false);
 
   isChamberOptions: any[] = [{ id: "", name: 'Select' }, { id: -1, name: 'No' }, { id: 1, name: 'Yes' }];
   takeComOptions: any[] = [{ id: "", name: 'Select' }, { id: 0, name: 'No' }, { id: 1, name: 'Yes' }];
@@ -51,6 +57,8 @@ export class DoctorEntryComponent {
     entryDate: [this.today],
     reportUserName: ['superSoft', [Validators.required]],
     drFee: [0],
+    code: [null],
+    postBy: [this.authService.getUser()?.username || ''],
   });
 
   transform(value: any, args?: any): any {
@@ -65,11 +73,30 @@ export class DoctorEntryComponent {
 
   ngOnInit() {
     this.onLoadDoctors();
+    this.isView.set(this.checkPermission("Doctor Entry", "View"));
+    this.isInsert.set(this.checkPermission("Doctor Entry", "Insert"));
+    this.isEdit.set(this.checkPermission("Doctor Entry", "Edit"));
+    this.isDelete.set(this.checkPermission("Doctor Entry", "Delete"));
 
     // Focus on the search input when the component is initialized
     setTimeout(() => {
       this.searchInput.nativeElement.focus();
     }, 0); // Use setTimeout to ensure the DOM is ready
+  }
+
+
+  checkPermission(moduleName: string, permission: string) {
+    const modulePermission = this.authService.getUser()?.userMenu?.find((module: any) => module?.menuName?.toLowerCase() === moduleName.toLowerCase());
+    if (modulePermission) {
+      const permissionValue = modulePermission.permissions.find((perm: any) => perm.toLowerCase() === permission.toLowerCase());
+      if (permissionValue) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
 
   onLoadDoctors() {
@@ -159,7 +186,7 @@ export class DoctorEntryComponent {
     this.isSubmitted = true;
     this.isSubmitting.set(true);
     if (this.form.valid) {
-      this.form.value.drFee ?? this.form.patchValue({ drFee: 0 });
+      !this.form.value.drFee ? this.form.patchValue({ drFee: 0, takeCom: Number(this.form.value.takeCom), isChamberDoctor: Number(this.form.value.isChamberDoctor) }) : this.form.patchValue({ takeCom: Number(this.form.value.takeCom), isChamberDoctor: Number(this.form.value.isChamberDoctor) });
       // console.log(this.form.value);
       if (this.selectedDoctor) {
         this.doctorService.updateDoctor(this.selectedDoctor.id, this.form.value)
@@ -221,6 +248,8 @@ export class DoctorEntryComponent {
       valid: data?.valid,
       entryDate: data?.entryDate,
       reportUserName: data?.reportUserName,
+      code: data?.code,
+      postBy: data?.postBy,
       drFee: data?.drFee || 0,
     });
 
@@ -261,6 +290,8 @@ export class DoctorEntryComponent {
       entryDate: this.today,
       reportUserName: 'superSoft',
       drFee: 0,
+      code: null,
+      postBy: this.authService.getUser()?.username || '',
     });
     this.isSubmitted = false;
     this.selectedDoctor = null;

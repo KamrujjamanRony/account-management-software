@@ -202,7 +202,7 @@ export class GeneralLedgerComponent {
       data?.balance || 0,
       data?.remarks || '',
     ]);
-    autoTable(doc, {
+    (doc as any).autoTable({
       head: [['Voucher Date', 'Voucher No', 'Head Name', 'Debit Amount', "Credit Amount", "Balance", 'Remarks']],
       body: dataRows,
       foot: [

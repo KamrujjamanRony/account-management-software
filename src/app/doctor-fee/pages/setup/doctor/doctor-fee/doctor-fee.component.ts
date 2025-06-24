@@ -12,6 +12,7 @@ import { PatientService } from '../../../../services/patient.service';
 import { DoctorService } from '../../../../services/doctor.service';
 import { DoctorFeeService } from '../../../../services/doctor-fee.service';
 import { DataFetchService } from '../../../../../shared/services/useDataFetch';
+import { AuthService } from '../../../../../settings/services/auth.service';
 
 
 @Component({
@@ -27,6 +28,7 @@ export class DoctorFeeComponent {
   private patientService = inject(PatientService);
   private doctorService = inject(DoctorService);
   private doctorFeeService = inject(DoctorFeeService);
+  private authService = inject(AuthService);
   private datePipe = inject(DatePipe);
   dataFetchService = inject(DataFetchService);
   isLoading$: Observable<any> | undefined;
@@ -38,6 +40,7 @@ export class DoctorFeeComponent {
   private searchQuery$ = new BehaviorSubject<string>('');
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
   @ViewChildren('inputRef') inputRefs!: QueryList<ElementRef>;
+  initialLoad = signal<boolean>(true);
   options: any[] = ['New', 'Old', 'Others'];
   selectedDoctor: any;
   selectedPatient: any;
@@ -49,6 +52,10 @@ export class DoctorFeeComponent {
   // today = new Date();
   isSubmitted = false;
   isSubmitting = signal<boolean>(false);
+  isView = signal<boolean>(false);
+  isInsert = signal<boolean>(false);
+  isEdit = signal<boolean>(false);
+  isDelete = signal<boolean>(false);
 
   form = this.fb.group<any>({
     doctorId: [{ value: '', disabled: false }, [Validators.required]],
@@ -57,7 +64,7 @@ export class DoctorFeeComponent {
     amount: [''],
     discount: [''],
     remarks: [''],
-    postBy: [''],
+    postBy: [this.authService.getUser()?.username || ''],
     nextFlowDate: [null],
     entryDate: [""],
   });
@@ -68,12 +75,32 @@ export class DoctorFeeComponent {
     this.onLoadDoctorFees();
     this.onLoadPatients();
     this.onLoadDoctors();
+    this.isView.set(this.checkPermission("Doctor Fee", "View"));
+    this.isInsert.set(this.checkPermission("Doctor Fee", "Insert"));
+    this.isEdit.set(this.checkPermission("Doctor Fee", "Edit"));
+    this.isDelete.set(this.checkPermission("Doctor Fee", "Delete"));
 
     // Focus the 'Name' input field after patching the value
     setTimeout(() => {
+      this.initialLoad.set(false);
       const inputs = this.inputRefs.toArray();
-      inputs[0].nativeElement.focus();
-    }, 10); // Delay to ensure the DOM is updated
+      inputs[0]?.nativeElement.focus();
+    }, 100); // Delay to ensure the DOM is updated
+  }
+
+
+  checkPermission(moduleName: string, permission: string) {
+    const modulePermission = this.authService.getUser()?.userMenu?.find((module: any) => module?.menuName?.toLowerCase() === moduleName.toLowerCase());
+    if (modulePermission) {
+      const permissionValue = modulePermission.permissions.find((perm: any) => perm.toLowerCase() === permission.toLowerCase());
+      if (permissionValue) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
 
   onLoadPatients() {
@@ -145,8 +172,8 @@ export class DoctorFeeComponent {
   onSubmit(e: Event) {
     this.isSubmitted = true;
     this.form.get('doctorId')?.enable();
-    this.isDoctorEnable = true;
     this.form.get('patientRegId')?.enable();
+    this.isDoctorEnable = true;
     this.isPatientEnable = true;
     this.isSubmitting.set(true);
     // console.log(this.form.value)
@@ -205,6 +232,8 @@ export class DoctorFeeComponent {
   }
 
   onUpdate(data: any) {
+    this.form.get('doctorId')?.enable();
+    this.form.get('patientRegId')?.enable();
     this.selected = data.gid;
 
     // Format the nextFlowDate to YYYY-MM-DD
@@ -226,6 +255,8 @@ export class DoctorFeeComponent {
       nextFlowDate: formattedDate,
       entryDate: data?.entryDate,
     });
+    this.form.get('doctorId')?.disable();
+    this.form.get('patientRegId')?.disable();
 
     // Focus the 'Name' input field after patching the value
     setTimeout(() => {
@@ -235,6 +266,7 @@ export class DoctorFeeComponent {
 
     // Reset the highlighted row
     this.highlightedIndexPatient = -1;
+    this.highlightedIndexDoctor = -1;
   }
 
   onDelete(id: any) {
@@ -266,7 +298,7 @@ export class DoctorFeeComponent {
       amount: '',
       discount: '',
       remarks: '',
-      postBy: 'superSoft',
+      postBy: this.authService.getUser()?.username || '',
       nextFlowDate: null,
       entryDate: ""
     });
@@ -381,10 +413,12 @@ export class DoctorFeeComponent {
   }
 
   onPatientChange(data: any) {
+    this.form.get('patientRegId')?.enable();
     this.selectedPatient = data;
     this.form.patchValue({
       patientRegId: this.selectedPatient.id,
     });
+    this.form.get('patientRegId')?.disable();
   }
 
   onPatientSearchChange(event: Event) {
@@ -467,10 +501,12 @@ export class DoctorFeeComponent {
   }
 
   onDoctorChange(data: any) {
+    this.form.get('doctorId')?.enable();
     this.selectedDoctor = data;
     this.form.patchValue({
       doctorId: this.selectedDoctor.id,
     });
+    this.form.get('doctorId')?.disable();
   }
 
   onDoctorSearchChange(event: Event) {
@@ -618,71 +654,6 @@ export class DoctorFeeComponent {
     doc.output('dataurlnewwindow');
     // doc.save(`${entry.regNo}-FeeToken.pdf`);
   }
-
-
-
-  // generatePDF(entry: any) {
-  //   const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: [74, 105] });
-  //   let marginTop = 10;
-  //   const pageWidth = doc.internal.pageSize.width;
-
-  //   doc.setFontSize(10);
-  //   doc.setFont('monaco', 'bold');
-  //   doc.text('Doctor Fee Entry', pageWidth / 2, marginTop, { align: 'center' });
-
-  //   marginTop += 6;
-  //     doc.setFontSize(8);
-  //     doc.setFont('helvetica', 'bold');
-  //     const doctorName = `Doctor: ${entry?.doctorName}`;
-  //     const wrappedDoctorName = doc.splitTextToSize(doctorName, contentWidth);
-  //     doc.text(wrappedDoctorName, marginLeft, marginTop);
-  //     marginTop += wrappedDoctorName.length * 4;
-
-  //   if (entry) {
-  //     marginTop += 8;
-  //     doc.setFontSize(8);
-  //     doc.setFont('helvetica', 'bold');
-  //     doc.text('Patient Details:', 10, marginTop);
-
-  //     marginTop += 6;
-  //     doc.setFontSize(10);
-  //     doc.setFont('helvetica', 'normal');
-  //     doc.text(`Patient Name: ${entry.patientName}`, 10, marginTop);
-
-  //     marginTop += 6;
-  //     doc.text(`Reg No: ${entry.regNo}`, 10, marginTop);
-
-  //     marginTop += 6;
-  //     doc.text(`Contact No: ${entry.contactNo}`, 10, marginTop);
-
-  //     marginTop += 6;
-  //     doc.text(`Patient Type: ${entry.patientType}`, 10, marginTop);
-
-  //     marginTop += 6;
-  //     if (entry.amount) {
-  //       doc.text(`Amount: ${entry.amount.toFixed(0)} Tk`, 10, marginTop);
-  //     }
-
-  //     marginTop += 6;
-  //     if (entry.discount) {
-  //       doc.text(`Discount: ${entry.discount.toFixed(0)} Tk`, 10, marginTop);
-  //     }
-
-  //     marginTop += 6;
-  //     if (entry.nextFlowDate) {
-  //       doc.text(
-  //         `Next Follow Date: ${this.transform(entry.nextFlowDate, "dd/MM/yyyy")}`,
-  //         10,
-  //         marginTop
-  //       );
-  //     }
-
-  //     marginTop += 6;
-  //     doc.text(`Remarks: ${entry.remarks || 'N/A'}`, 10, marginTop);
-  //   }
-
-  //   doc.output('dataurlnewwindow');
-  // }
 
 
 }

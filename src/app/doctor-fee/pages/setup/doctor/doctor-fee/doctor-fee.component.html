@@ -1,4 +1,8 @@
+@if (initialLoad()) {
+<p class="text-3xl font-bold text-center p-10 text-teal-600">Loading ...</p>
+} @else { @if (isView()) {
 <section class="flex flex-col lg:flex-row gap-5">
+  @if (isInsert()) {
   <div class="w-full md:w-1/2 border mb-10 px-2">
     <h1
       class="text-xl md:text-3xl font-bold text-teal-500 underline text-center mb-5"
@@ -13,12 +17,12 @@
       <!-- patientRegId -->
       <div class="gap-2 relative">
         <Field label="patient">
+          <!-- [disabled]="selectedPatient" -->
           <input
             #inputRef
             type="text"
             [value]="displayPatient(getControl('patientRegId').value)"
             [formControl]="getControl('patientRegId')"
-            [disabled]="selectedPatient"
             required
             class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
             [class.invalid]="
@@ -85,12 +89,12 @@
       <!-- doctorId -->
       <div class="gap-2 relative">
         <Field label="doctor">
+          <!-- [disabled]="selectedDoctor" -->
           <input
             #inputRef
             type="text"
             [value]="displayDoctor(getControl('doctorId').value)"
             [formControl]="getControl('doctorId')"
-            [disabled]="selectedDoctor"
             class="block py-2.5 px-0 w-full text-xs text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
             [class.invalid]="
               (getControl('doctorId').invalid &&
@@ -173,18 +177,6 @@
         />
       </Field>
 
-      <!-- postBy -->
-      <Field label="post By">
-        <input
-          #inputRef
-          type="text"
-          [formControl]="getControl('postBy')"
-          class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
-          placeholder=""
-          (keydown.enter)="handleEnterKey($event, 6)"
-        />
-      </Field>
-
       <!-- remarks -->
       <Field label="remarks">
         <input
@@ -224,6 +216,7 @@
       </div>
     </form>
   </div>
+  }
 
   <div class="w-full border px-3 h-[95vh] overflow-scroll">
     <h1
@@ -336,8 +329,11 @@
             <th scope="col" class="px-1 py-3">Entry date</th>
             <th scope="col" class="px-1 py-3">post By</th>
             <th scope="col" class="px-1 py-3">Print</th>
+            @if (isEdit()) {
             <th scope="col" class="px-1 py-3">Edit</th>
+            } @if (isDelete()) {
             <th scope="col" class="px-1 py-3">Delete</th>
+            }
           </tr>
         </thead>
         <tbody>
@@ -393,6 +389,7 @@
                 Print
               </button>
             </td>
+            @if (isEdit()) {
             <td class="p-1">
               <button
                 class="text-yellow-400 hover:bg-teal-50 px-1 rounded"
@@ -401,6 +398,7 @@
                 Edit
               </button>
             </td>
+            } @if (isDelete()) {
             <td class="p-1">
               <button
                 class="text-rose-400 hover:bg-teal-50 px-1 rounded"
@@ -409,6 +407,7 @@
                 Delete
               </button>
             </td>
+            }
           </tr>
           }
         </tbody>
@@ -417,8 +416,11 @@
     </div>
   </div>
 </section>
-
-@if (success()) {
+} @else {
+<p class="text-3xl font-bold text-center p-10 text-red-600">
+  You don't have permission to view this page.
+</p>
+} @if (success()) {
 <app-toast-success [title]="success()"></app-toast-success>
 } @if (followupModal) {
 <ModalWrapper title="Next Followup Date" (closeModal)="closeFollowupModal()">
@@ -462,4 +464,4 @@
     />
   </form>
 </ModalWrapper>
-}
+} }

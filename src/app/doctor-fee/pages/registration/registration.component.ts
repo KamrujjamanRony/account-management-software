@@ -7,6 +7,7 @@ import { FieldComponent } from '../../../shared/components/field/field.component
 import { SearchComponent } from '../../../shared/components/svg/search/search.component';
 import { PatientService } from '../../services/patient.service';
 import { DataFetchService } from '../../../shared/services/useDataFetch';
+import { AuthService } from '../../../settings/services/auth.service';
 
 @Component({
   selector: 'app-registration',
@@ -18,6 +19,7 @@ import { DataFetchService } from '../../../shared/services/useDataFetch';
 export class RegistrationComponent {
   fb = inject(NonNullableFormBuilder);
   private patientService = inject(PatientService);
+  private authService = inject(AuthService);
   dataFetchService = inject(DataFetchService);
   filteredPatientList = signal<any[]>([]);
   private searchQuery$ = new BehaviorSubject<string>('');
@@ -30,6 +32,10 @@ export class RegistrationComponent {
   highlightedTr: number = -1;
 
   success = signal<any>("");
+  isView = signal<boolean>(false);
+  isInsert = signal<boolean>(false);
+  isEdit = signal<boolean>(false);
+  isDelete = signal<boolean>(false);
   today = new Date();
   @ViewChildren('inputRef') inputRefs!: QueryList<ElementRef>;
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
@@ -46,7 +52,7 @@ export class RegistrationComponent {
     nid: [''],
     address: ['', [Validators.required]],
     remarks: [''],
-    postedBy: ['superSoft', [Validators.required]],
+    postedBy: [this.authService.getUser()?.username || ''],
     entryDate: [this.today, [Validators.required]],
   });
 
@@ -58,11 +64,30 @@ export class RegistrationComponent {
 
   ngOnInit() {
     this.onLoadPatients();
+    this.isView.set(this.checkPermission("Registration", "View"));
+    this.isInsert.set(this.checkPermission("Registration", "Insert"));
+    this.isEdit.set(this.checkPermission("Registration", "Edit"));
+    this.isDelete.set(this.checkPermission("Registration", "Delete"));
 
     // Focus on the search input when the component is initialized
     setTimeout(() => {
       this.searchInput.nativeElement.focus();
     }, 0); // Use setTimeout to ensure the DOM is ready
+  }
+
+
+  checkPermission(moduleName: string, permission: string) {
+    const modulePermission = this.authService.getUser()?.userMenu?.find((module: any) => module?.menuName?.toLowerCase() === moduleName.toLowerCase());
+    if (modulePermission) {
+      const permissionValue = modulePermission.permissions.find((perm: any) => perm.toLowerCase() === permission.toLowerCase());
+      if (permissionValue) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
 
   onLoadPatients() {
@@ -257,7 +282,7 @@ export class RegistrationComponent {
       nid: '',
       address: '',
       remarks: '',
-      postedBy: 'superSoft',
+      postedBy: this.authService.getUser()?.username || '',
       entryDate: this.today
     });
     this.isSubmitted = false;

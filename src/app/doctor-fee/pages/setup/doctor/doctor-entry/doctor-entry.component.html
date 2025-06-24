@@ -1,4 +1,6 @@
+@if (isView()) {
 <section class="flex flex-col lg:flex-row gap-5">
+  @if (isInsert()) {
   <div class="border mb-10">
     <h1
       class="text-xl md:text-3xl font-bold text-teal-500 underline text-center mb-5"
@@ -97,64 +99,7 @@
             }
           </select>
         </Field>
-        <!-- Valid -->
-        <!-- <app-input
-          cType="select"
-          [options]="optionsD"
-          label="Valid"
-          [formControl]="getControl('valid')"
-          (keydown.enter)="handleEnterKey($event, 6)"
-        ></app-input> -->
       </div>
-
-      <!-- mpoId -->
-      <!-- <div class="flex flex-row gap-2 relative">
-        <app-input
-          class="w-full"
-          label="Mpo Id"
-          [formControl]="getControl('mpoId')"
-          (focus)="isDropdownOpen = false"
-          (keydown.enter)="handleEnterKey($event, 7)"
-          (keydown)="handleMpoKeyDown($event)"
-        >
-          <button
-            (click)="toggleDropdown($event)"
-            class="absolute top-3 right-1"
-          >
-            <app-down-arrow></app-down-arrow>
-          </button>
-        </app-input>
-        
-        <div>
-          <button
-            (click)="addMpo($event)"
-            class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-cyan-700 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-gray-50  focus:ring-1 focus:outline-none focus:ring-cyan-200"
-          >
-            <span
-              class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-teal-50  rounded-md group-hover:bg-opacity-0"
-            >
-              Add
-            </span>
-          </button>
-        </div>
-        
-        <div
-          *ngIf="isDropdownOpen && mpoOptions.length > 0"
-          class="absolute bg-teal-50 border border-gray-300 mt-12 w-full z-10 rounded shadow-lg"
-        >
-          <ul>
-            <li
-              *ngFor="let option of mpoOptions; let i = index"
-              (click)="selectMpo(option)"
-              [class.highlighted]="i === highlightedIndex"
-              class="py-2 px-3 hover:text-gray-50 hover:bg-teal-600 cursor-pointer"
-            >
-              {{ option }}
-            </li>
-          </ul>
-        </div>
-      </div> -->
-
       <div class="flex gap-2">
         <!-- Save -->
         @if (!isSubmitting()) {
@@ -182,6 +127,7 @@
       </div>
     </form>
   </div>
+  }
 
   <div class="w-full border mb-10 px-3 max-h-[98vh] overflow-scroll">
     <h1
@@ -266,12 +212,11 @@
           <tr>
             <th scope="col" class="p-1">name</th>
             <th scope="col" class="p-1">Contact</th>
+            @if (isEdit()) {
             <th scope="col" class="px-1 py-3">Edit</th>
+            } @if (isDelete()) {
             <th scope="col" class="px-1 py-3">Delete</th>
-            <!-- <th scope="col" class="p-1">Address</th>
-            <th scope="col" class="p-1">fee</th> -->
-            <!-- <th scope="col" class="p-1">mpo id</th> -->
-            <!-- <th scope="col" class="p-1">is chamber doctor</th> -->
+            }
           </tr>
         </thead>
         <tbody>
@@ -287,6 +232,7 @@
             <td class="p-1">
               {{ item?.contactNo }}
             </td>
+            @if (isEdit()) {
             <td>
               <button
                 class="text-yellow-400 hover:bg-teal-50 px-1 rounded"
@@ -295,6 +241,7 @@
                 Edit
               </button>
             </td>
+            } @if (isDelete()) {
             <td>
               <button
                 class="text-rose-400 hover:bg-teal-50 px-1 rounded"
@@ -303,18 +250,7 @@
                 Delete
               </button>
             </td>
-            <!-- <td class="p-1">
-              {{ item?.address }}
-            </td>
-            <td class="p-1">
-              {{ item?.drFee }}
-            </td> -->
-            <!-- <td class="p-1">
-              {{ item?.mpoId }}
-            </td> -->
-            <!-- <td class="p-1">
-              {{ is(item?.isChamberDoctor) }}
-            </td> -->
+            }
           </tr>
           }
         </tbody>
@@ -323,7 +259,10 @@
     </div>
   </div>
 </section>
-
-@if (success()) {
+} @else {
+<p class="text-3xl font-bold text-center p-10 text-red-600">
+  You don't have permission to view this page.
+</p>
+} @if (success()) {
 <app-toast-success [title]="success()"></app-toast-success>
 }

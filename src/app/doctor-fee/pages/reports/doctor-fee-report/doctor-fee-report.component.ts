@@ -1,7 +1,7 @@
 import { Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { SearchComponent } from '../../../../shared/components/svg/search/search.component';
@@ -9,6 +9,8 @@ import { PatientService } from '../../../services/patient.service';
 import { DoctorService } from '../../../services/doctor.service';
 import { DataFetchService } from '../../../../shared/services/useDataFetch';
 import { DoctorFeeService } from '../../../services/doctor-fee.service';
+import { DataService } from '../../../../shared/services/data.service';
+import { AuthService } from '../../../../settings/services/auth.service';
 
 @Component({
   selector: 'app-doctor-fee-report',
@@ -21,6 +23,8 @@ export class DoctorFeeReportComponent {
   private patientService = inject(PatientService);
   private doctorService = inject(DoctorService);
   private doctorFeeService = inject(DoctorFeeService);
+  private dataService = inject(DataService);
+  private authService = inject(AuthService);
   dataFetchService = inject(DataFetchService);
   filteredPatientList = signal<any[]>([]);
   filteredDoctorList = signal<any[]>([]);
@@ -32,7 +36,8 @@ export class DoctorFeeReportComponent {
   toDate: any;
   nextFollowDate: any;
   selectedDoctor: any = '';
-  marginTop: any = 0;
+  header = signal<any>(null);
+  isView = signal<boolean>(false);
   private searchQuery$ = new BehaviorSubject<string>('');
   isLoading$: Observable<any> | undefined;
   hasError$: Observable<any> | undefined;
@@ -45,6 +50,8 @@ export class DoctorFeeReportComponent {
   }
 
   ngOnInit() {
+    this.dataService.getHeader().subscribe(data => this.header.set(data));
+    this.isView.set(this.checkPermission("Doctor Fee Report", "View"));
     const today = new Date();
     this.fromDate = today.toISOString().split('T')[0];
     // this.toDate = today.toISOString().split('T')[0];
@@ -54,8 +61,23 @@ export class DoctorFeeReportComponent {
 
     // Focus on the search input when the component is initialized
     setTimeout(() => {
-      this.searchInput.nativeElement.focus();
-    }, 10);
+      this.searchInput?.nativeElement.focus();
+    }, 500);
+  }
+
+
+  checkPermission(moduleName: string, permission: string) {
+    const modulePermission = this.authService.getUser()?.userMenu?.find((module: any) => module?.menuName?.toLowerCase() === moduleName.toLowerCase());
+    if (modulePermission) {
+      const permissionValue = modulePermission.permissions.find((perm: any) => perm.toLowerCase() === permission.toLowerCase());
+      if (permissionValue) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
 
   onLoadPatients() {
@@ -184,49 +206,83 @@ export class DoctorFeeReportComponent {
   }
 
   generatePDF() {
-    const pageSizeWidth = 210;
-    const pageSizeHeight = 297;
+    const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'A4' });
+    // const pageSizeWidth = 210;
+    // const pageSizeHeight = 297;
     const marginLeft = 10;
     const marginRight = 10;
-    let marginTop = this.marginTop + 10;
     const marginBottom = 10;
-
-    const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'A4' });
-
-    // Adjust margins based on conditions
-    if (this.selectedDoctor) {
-      marginTop += 5;
-    }
-    if (this.nextFollowDate || this.fromDate) {
-      marginTop += 4;
-    }
-
-    // Title and Header Section
-    // Get the exact center of the page (considering margins)
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
     const centerX = doc.internal.pageSize.getWidth() / 2;
+    let yPos = (this.header()?.marginTop | 0) + 10;
 
+    // Header Section
+    yPos = this.displayReportHeader(doc, yPos, centerX);
+    // Title Section
+    yPos = this.displayReportTitle(doc, yPos, centerX);
+    // Render Table with custom column widths
+    yPos = this.displayReportTable(doc, yPos, pageWidth, pageHeight, marginLeft, marginRight, marginBottom);
+
+    // Option 2: open
+    const pdfOutput = doc.output('blob');
+    window.open(URL.createObjectURL(pdfOutput));
+  }
+
+  displayReportHeader(doc: jsPDF, yPos: number, centerX: number): any {
+    if (this.header()) {
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(18);
+      doc.text(this.header()?.name, centerX, yPos, { align: 'center' });
+      yPos += 2;
+    }
+
+    if (this.header()?.address) {
+      yPos += 3;
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(12);
+      doc.text(this.header()?.address, centerX, yPos, { align: 'center' });
+      yPos += 2;
+    }
+
+    if (this.header()?.contact) {
+      yPos += 3;
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(12);
+      doc.text(`Contact: ${this.header()?.contact}`, centerX, yPos, { align: 'center' });
+      yPos += 2;
+    }
+    doc.line(0, yPos, 560, yPos);
+    yPos += 5;
+
+    return yPos;
+  }
+
+  displayReportTitle(doc: jsPDF, yPos: number, centerX: number): any {
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(14);
-    doc.text('Doctor Fee Report', centerX, marginTop, { align: 'center' });
-    marginTop += 8;
+    doc.text('Doctor Fee Report', centerX, yPos, { align: 'center' });
+    yPos += 5;
 
     // Sub-header for doctor name and dates
     doc.setFontSize(10);
     if (this.selectedDoctor) {
-      doc.text(`Doctor: ${this.getDoctorName(this.selectedDoctor)}`, centerX, marginTop, { align: 'center' });
-      marginTop += 5;
+      doc.text(`Doctor: ${this.getDoctorName(this.selectedDoctor)}`, centerX, yPos, { align: 'center' });
+      yPos += 5;
     }
     if (this.nextFollowDate) {
-      doc.text(`Next Follow Date: ${this.transform(this.nextFollowDate)}`, centerX, marginTop, { align: 'center' });
-      marginTop += 4;
-    } else if (this.fromDate) {
+      doc.text(`Next Follow Date: ${this.transform(this.nextFollowDate)}`, centerX, yPos, { align: 'center' });
+    }
+    if (this.fromDate) {
       const dateRange = `From: ${this.transform(this.fromDate)} to: ${this.toDate ? this.transform(this.toDate) : this.transform(this.fromDate)
         }`;
-      doc.text(dateRange, centerX, marginTop, { align: 'center' });
-      marginTop += 4;
+      doc.text(dateRange, centerX, yPos, { align: 'center' });
     }
 
-    // Prepare Table Data
+    return yPos;
+  }
+
+  displayReportTable(doc: jsPDF, yPos: number, pageWidth: number, pageHeight: number, marginLeft: number, marginRight: number, marginBottom: number): any {// Prepare Table Data
     const dataRows = this.filteredDoctorFeeList().map((data: any) => [
       data?.sl,
       this.getPatientName(data?.patientRegId),
@@ -243,7 +299,7 @@ export class DoctorFeeReportComponent {
     const totalDiscount = this.filteredDoctorFeeList().reduce((sum: number, data: any) => sum + (data.discount || 0), 0);
 
     // Render Table
-    (doc as any).autoTable({
+    autoTable(doc, {
       head: [['SL', 'Patient', 'Reg No', 'Contact No', 'Type', 'Amount', 'Discount', 'Next Follow Date', 'Remarks']],
       body: dataRows,
       foot: [
@@ -255,7 +311,7 @@ export class DoctorFeeReportComponent {
         ],
       ],
       theme: 'grid',
-      startY: marginTop + 5,
+      startY: yPos + 2,
       styles: {
         textColor: 0,
         cellPadding: 2,
@@ -278,11 +334,11 @@ export class DoctorFeeReportComponent {
         lineColor: 0,
         fontStyle: 'bold',
       },
-      margin: { top: marginTop, left: marginLeft, right: marginRight },
+      margin: { top: yPos, left: marginLeft, right: marginRight },
       didDrawPage: (data: any) => {
         // Add Footer with Margin Bottom
         doc.setFontSize(8);
-        doc.text(``, pageSizeWidth - marginRight - 10, pageSizeHeight - marginBottom, {
+        doc.text(``, pageWidth - marginRight - 10, pageHeight - marginBottom, {
           align: 'right',
         });
       },
@@ -299,38 +355,7 @@ export class DoctorFeeReportComponent {
       { align: 'center' }
     );
 
-
-
-    // // Option 1: save
-    // const fileName = `Transaction_Report_${this.transform(this.fromDate())}` +
-    //   (this.toDate() ? `_to_${this.transform(this.toDate())}` : '') + '.pdf';
-    // doc.save(fileName);
-
-    // Option 2: open
-    const pdfOutput = doc.output('blob');
-    window.open(URL.createObjectURL(pdfOutput));
-
-
-    // // Option 3: open
-    // const pdfDataUri = doc.output('datauristring');
-    // const newWindow = window.open();
-    // if (newWindow) {
-    //   newWindow.document.write(`<iframe width='100%' height='100%' src='${pdfDataUri}'></iframe>`);
-    // } else {
-    //   console.error('Failed to open a new window.');
-    // }
-
-    // // Option 4: open
-    //   var string = doc.output('datauristring');
-    //   var iframe = "<iframe width='100%' height='100%' src='" + string + "'></iframe>"
-    //   var x = window.open();
-    //   if (x) {
-    //     x.document.open();
-    //     x.document.write(iframe);
-    //     x.document.close();
-    //   } else {
-    //     console.error('Failed to open a new window.');
-    //   }
+    return yPos;
   }
 
 

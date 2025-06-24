@@ -1,4 +1,6 @@
+@if (isView()) {
 <section class="flex flex-col lg:flex-row gap-5">
+  @if (isInsert()) {
   <div class="border mb-10">
     <h1
       class="text-xl md:text-3xl font-bold text-teal-500 underline text-center mb-5"
@@ -36,7 +38,6 @@
             type="text"
             [value]="getControl('regNo').value"
             [formControl]="getControl('regNo')"
-            [disabled]="getControl('regNo').disabled"
             class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
             placeholder=""
           />
@@ -193,6 +194,7 @@
       </div>
     </form>
   </div>
+  }
 
   <div class="w-full border mb-10 px-3 max-h-[98vh] overflow-scroll">
     <h1
@@ -251,8 +253,12 @@
             <th scope="col" class="px-1 py-3">remarks</th>
             <!-- <th scope="col" class="px-1 py-3">post by</th> -->
             <!-- <th scope="col" class="px-1 py-3">entry date</th> -->
+
+            @if (isEdit()) {
             <th scope="col" class="px-1 py-3">Edit</th>
+            } @if (isDelete()) {
             <th scope="col" class="px-1 py-3 hidden">Delete</th>
+            }
           </tr>
         </thead>
         <tbody>
@@ -298,6 +304,7 @@
             <!-- <td class="p-1">
               {{ transform(item?.entryDate, "dd/MM/yyyy") }}
             </td> -->
+            @if (isEdit()) {
             <td>
               <button
                 class="text-yellow-400 hover:bg-teal-50 px-1 rounded"
@@ -306,7 +313,8 @@
                 Edit
               </button>
             </td>
-            <td hidden>
+            } @if (isDelete()) {
+            <td>
               <button
                 class="text-rose-400 hover:bg-teal-50 px-1 rounded"
                 (click)="onDelete(item.id)"
@@ -314,6 +322,7 @@
                 Delete
               </button>
             </td>
+            }
           </tr>
           }
         </tbody>
@@ -322,7 +331,10 @@
     </div>
   </div>
 </section>
-
-@if (success()) {
+} @else {
+<p class="text-3xl font-bold text-center p-10 text-red-600">
+  You don't have permission to view this page.
+</p>
+} @if (success()) {
 <app-toast-success [title]="success()"></app-toast-success>
 }

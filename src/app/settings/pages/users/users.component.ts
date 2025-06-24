@@ -322,21 +322,8 @@ export class UsersComponent {
 
       return node.isSelected;
     }
-
-    // If it's a leaf node, return its isSelected status
-    // console.log('Leaf node:', node.menuName, 'isSelected:', node.isSelected);
     return node.isSelected;
   }
-
-
-  // private getSelectedNodes(nodes: any[]): any[] {
-  //   return nodes
-  //     .filter((node) => node.isSelected || node.children?.some((child: any) => child.isSelected))
-  //     .map((node) => ({
-  //       ...node,
-  //       children: node.children ? this.getSelectedNodes(node.children) : undefined,
-  //     }));
-  // }
 
   // User Accessibility Code End----------------------------------------------------------------
 
