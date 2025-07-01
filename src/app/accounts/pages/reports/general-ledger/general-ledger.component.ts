@@ -63,10 +63,11 @@ export class GeneralLedgerComponent {
   }
 
   onLoadReport() {
+    console.log(this.accountBankCashIdOption())
     this.selectedBankCash.set(this.accountBankCashIdOption().find((c: any) => c.id == this.selectedId()));
     // console.log(this.selectedBankCash())
     const reqData = {
-      "bankCashChartofAccountId": this.selectedBankCash()?.id || null,
+      "bankCashChartofAccountId": this.selectedBankCash()?.id || 39,
       "fromDate": this.fromDate(),
       "toDate": this.toDate() || this.fromDate()
     }

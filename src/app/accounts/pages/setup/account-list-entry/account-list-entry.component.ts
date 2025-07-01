@@ -9,10 +9,11 @@ import { AccountListService } from '../../../services/account-list.service';
 import { DataFetchService } from '../../../../shared/services/useDataFetch';
 import { ToastService } from '../../../../shared/components/primeng/toast/toast.service';
 import { AuthService } from '../../../../settings/services/auth.service';
+import { AllSvgComponent } from "../../../../shared/components/svg/all-svg/all-svg.component";
 
 @Component({
   selector: 'app-account-list-entry',
-  imports: [SearchComponent, CommonModule, ReactiveFormsModule, FieldComponent],
+  imports: [SearchComponent, CommonModule, ReactiveFormsModule, FieldComponent, AllSvgComponent],
   templateUrl: './account-list-entry.component.html',
   styleUrl: './account-list-entry.component.css'
 })

@@ -8,11 +8,12 @@ import { FieldComponent } from '../../../../../shared/components/field/field.com
 import { DoctorService } from '../../../../services/doctor.service';
 import { DataFetchService } from '../../../../../shared/services/useDataFetch';
 import { AuthService } from '../../../../../settings/services/auth.service';
+import { AllSvgComponent } from "../../../../../shared/components/svg/all-svg/all-svg.component";
 
 @Component({
   selector: 'app-doctor-entry',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, SearchComponent, ToastSuccessComponent, FieldComponent],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, SearchComponent, ToastSuccessComponent, FieldComponent, AllSvgComponent],
   templateUrl: './doctor-entry.component.html',
   styleUrl: './doctor-entry.component.css'
 })

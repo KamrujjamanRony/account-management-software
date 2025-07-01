@@ -215,8 +215,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (item of filteredMenuList().slice(0,20); track item?.id ||
-          $index) {
+          @for (item of filteredMenuList(); track item?.id || $index) {
           <tr
             id="row-{{ $index }}"
             class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"

@@ -187,8 +187,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (item of filteredUserList().slice(0,20); track item?.id ||
-            $index) {
+            @for (item of filteredUserList(); track item?.id || $index) {
             <tr
               id="row-{{ $index }}"
               class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"

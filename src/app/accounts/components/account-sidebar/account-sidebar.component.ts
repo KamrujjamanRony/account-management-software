@@ -22,9 +22,9 @@ export class AccountSidebarComponent {
         {
           id: 11, label: 'Bank Setup', route: '/accounts/setup/bank'
         },
-        // {
-        //   id: 12, label: 'Vendor Setup', route: '/accounts/setup/vendor'
-        // },
+        {
+          id: 12, label: 'Vendor Setup', route: '/accounts/setup/vendor'
+        },
         {
           id: 13, label: 'Chart Of Account', route: '/accounts/setup/account-chart'
         }

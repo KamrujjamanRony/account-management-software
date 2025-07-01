@@ -8,10 +8,11 @@ import { VendorService } from '../../../services/vendor.service';
 import { DataFetchService } from '../../../../shared/services/useDataFetch';
 import { ToastService } from '../../../../shared/components/primeng/toast/toast.service';
 import { AuthService } from '../../../../settings/services/auth.service';
+import { AllSvgComponent } from "../../../../shared/components/svg/all-svg/all-svg.component";
 
 @Component({
   selector: 'app-vendor-entry',
-  imports: [CommonModule, FieldComponent, SearchComponent, ReactiveFormsModule],
+  imports: [CommonModule, FieldComponent, SearchComponent, ReactiveFormsModule, AllSvgComponent],
   templateUrl: './vendor-entry.component.html',
   styleUrl: './vendor-entry.component.css'
 })

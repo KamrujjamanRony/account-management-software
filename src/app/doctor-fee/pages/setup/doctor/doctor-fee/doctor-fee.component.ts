@@ -13,12 +13,13 @@ import { DoctorService } from '../../../../services/doctor.service';
 import { DoctorFeeService } from '../../../../services/doctor-fee.service';
 import { DataFetchService } from '../../../../../shared/services/useDataFetch';
 import { AuthService } from '../../../../../settings/services/auth.service';
+import { AllSvgComponent } from "../../../../../shared/components/svg/all-svg/all-svg.component";
 
 
 @Component({
   selector: 'app-doctor-fee',
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule, ToastSuccessComponent, SearchComponent, CommonModule, FieldComponent, ModalWrapperComponent],
+  imports: [ReactiveFormsModule, FormsModule, ToastSuccessComponent, SearchComponent, CommonModule, FieldComponent, ModalWrapperComponent, AllSvgComponent],
   providers: [DatePipe],
   templateUrl: './doctor-fee.component.html',
   styleUrl: './doctor-fee.component.css'

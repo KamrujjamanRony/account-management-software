@@ -8,11 +8,12 @@ import { SearchComponent } from '../../../shared/components/svg/search/search.co
 import { PatientService } from '../../services/patient.service';
 import { DataFetchService } from '../../../shared/services/useDataFetch';
 import { AuthService } from '../../../settings/services/auth.service';
+import { AllSvgComponent } from "../../../shared/components/svg/all-svg/all-svg.component";
 
 @Component({
   selector: 'app-registration',
   standalone: true,
-  imports: [ReactiveFormsModule, SearchComponent, ToastSuccessComponent, CommonModule, FieldComponent],
+  imports: [ReactiveFormsModule, SearchComponent, ToastSuccessComponent, CommonModule, FieldComponent, AllSvgComponent],
   templateUrl: './registration.component.html',
   styleUrl: './registration.component.css'
 })

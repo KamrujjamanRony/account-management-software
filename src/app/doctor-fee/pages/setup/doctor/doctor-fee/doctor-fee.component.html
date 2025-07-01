@@ -329,16 +329,13 @@
             <th scope="col" class="px-1 py-3">Entry date</th>
             <th scope="col" class="px-1 py-3">post By</th>
             <th scope="col" class="px-1 py-3">Print</th>
-            @if (isEdit()) {
-            <th scope="col" class="px-1 py-3">Edit</th>
-            } @if (isDelete()) {
-            <th scope="col" class="px-1 py-3">Delete</th>
+            @if (isEdit() || isDelete()) {
+            <th scope="col" class="px-1">Action</th>
             }
           </tr>
         </thead>
         <tbody>
-          @for (item of filteredDoctorFeeList().slice(0,20); track item?.gid ||
-          $index) {
+          @for (item of filteredDoctorFeeList(); track item?.gid || $index) {
           <tr
             id="row-{{ $index }}"
             class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
@@ -389,25 +386,23 @@
                 Print
               </button>
             </td>
-            @if (isEdit()) {
-            <td class="p-1">
+            <td class="flex gap-1">
+              @if (isEdit()) {
               <button
-                class="text-yellow-400 hover:bg-teal-50 px-1 rounded"
+                class="text-orange-50 bg-orange-400 hover:bg-orange-500 p-1 rounded"
                 (click)="onUpdate(item)"
               >
-                Edit
+                <app-all-svg icon="pencil" />
               </button>
-            </td>
-            } @if (isDelete()) {
-            <td class="p-1">
+              } @if (isDelete()) {
               <button
-                class="text-rose-400 hover:bg-teal-50 px-1 rounded"
-                (click)="onDelete(item.gid)"
+                class="text-rose-50 bg-rose-600 hover:bg-rose-700 px-2 py-[1px] rounded"
+                (click)="onDelete(item?.id)"
               >
-                Delete
+                X
               </button>
+              }
             </td>
-            }
           </tr>
           }
         </tbody>
