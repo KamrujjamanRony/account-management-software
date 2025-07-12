@@ -360,9 +360,9 @@
             </td>
             <td class="p-1">
               @if (item?.nextFlowDate) {
-              <button (click)="onFollowUpUpdate(item)">
-                {{ transform(item?.nextFlowDate) }}
-              </button>
+              <!-- <button (click)="onFollowUpUpdate(item)"> -->
+              {{ transform(item?.nextFlowDate) }}
+              <!-- </button> -->
               } @else {
               <button
                 class="text-yellow-400 hover:bg-teal-50 px-1 rounded"

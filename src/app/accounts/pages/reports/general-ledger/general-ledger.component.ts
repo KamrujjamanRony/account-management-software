@@ -63,7 +63,6 @@ export class GeneralLedgerComponent {
   }
 
   onLoadReport() {
-    console.log(this.accountBankCashIdOption())
     this.selectedBankCash.set(this.accountBankCashIdOption().find((c: any) => c.id == this.selectedId()));
     // console.log(this.selectedBankCash())
     const reqData = {
@@ -203,7 +202,7 @@ export class GeneralLedgerComponent {
       data?.balance || 0,
       data?.remarks || '',
     ]);
-    (doc as any).autoTable({
+    autoTable(doc, {
       head: [['Voucher Date', 'Voucher No', 'Head Name', 'Debit Amount', "Credit Amount", "Balance", 'Remarks']],
       body: dataRows,
       foot: [

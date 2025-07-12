@@ -201,7 +201,7 @@ export class DoctorFeeComponent {
             }
           });
       } else {
-        this.doctorFeeService.updateDoctorFee(this.selected, { ...this.form.value, entryDate: formattedDate })
+        this.doctorFeeService.updateDoctorFee(this.selected, this.form.value)
           .subscribe({
             next: (response) => {
               if (response !== null && response !== undefined) {
