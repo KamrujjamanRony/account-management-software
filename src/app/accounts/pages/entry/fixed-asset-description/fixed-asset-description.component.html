@@ -21,7 +21,6 @@
           placeholder=""
           class="block py-2.5 px-2 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
           (keydown.enter)="handleEnterKey($event, 0)"
-          [disabled]="assetTypeOption().length === 0"
         >
           <option value="" class="capitalize">Select Option</option>
           @for(option of assetTypeOption(); track $index){
@@ -54,7 +53,7 @@
             isSubmitted
           "
           placeholder=""
-          (keydown.enter)="handleEnterKey($event, 0)"
+          (keydown.enter)="handleEnterKey($event, 1)"
           required
         />
       </Field>
@@ -66,7 +65,7 @@
           [formControl]="getControl('purInvNO')"
           class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
           placeholder=""
-          (keydown.enter)="handleEnterKey($event, 1)"
+          (keydown.enter)="handleEnterKey($event, 2)"
         />
       </Field>
       <!-- purDate -->
@@ -77,7 +76,7 @@
           [formControl]="getControl('purDate')"
           class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
           placeholder=""
-          (keydown.enter)="handleEnterKey($event, 2)"
+          (keydown.enter)="handleEnterKey($event, 3)"
         />
       </Field>
       <!-- depCalDate -->
@@ -88,7 +87,7 @@
           [formControl]="getControl('depCalDate')"
           class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
           placeholder=""
-          (keydown.enter)="handleEnterKey($event, 2)"
+          (keydown.enter)="handleEnterKey($event, 4)"
         />
       </Field>
       <!-- purPrice -->
@@ -99,8 +98,7 @@
           [formControl]="getControl('purPrice')"
           class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
           placeholder=""
-          (keydown.enter)="handleEnterKey($event, 2)"
-          (input)="onCalculateValue($event)"
+          (keydown.enter)="handleEnterKey($event, 5)"
         />
       </Field>
       <!-- deprePercentage -->
@@ -111,8 +109,7 @@
           [formControl]="getControl('deprePercentage')"
           class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
           placeholder=""
-          (keydown.enter)="handleEnterKey($event, 2)"
-          (input)="onCalculateValue($event)"
+          (keydown.enter)="handleEnterKey($event, 6)"
         />
       </Field>
       <!-- depValue -->
@@ -123,7 +120,7 @@
           [formControl]="getControl('depValue')"
           class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
           placeholder=""
-          (keydown.enter)="handleEnterKey($event, 2)"
+          (keydown.enter)="handleEnterKey($event, 7)"
         />
       </Field>
       <!-- wdv -->
@@ -134,7 +131,7 @@
           [formControl]="getControl('wdv')"
           class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
           placeholder=""
-          (keydown.enter)="handleEnterKey($event, 2)"
+          (keydown.enter)="handleEnterKey($event, 8)"
         />
       </Field>
       <!-- Previous Value -->
@@ -142,11 +139,90 @@
         <input
           #inputRef
           type="number"
-          [value]="getControl('depValue').value + getControl('wdv').value"
+          [formControl]="getControl('others1')"
           class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
           placeholder=""
-          disabled="true"
+          (keydown.enter)="handleEnterKey($event, 9)"
         />
+      </Field>
+      <!-- vendor -->
+      <Field label="Vendor">
+        <input
+          #inputRef
+          type="text"
+          [formControl]="getControl('vendor')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          placeholder=""
+          (keydown.enter)="handleEnterKey($event, 10)"
+        />
+      </Field>
+      <!-- model -->
+      <Field label="Model">
+        <input
+          #inputRef
+          type="text"
+          [formControl]="getControl('model')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          placeholder=""
+          (keydown.enter)="handleEnterKey($event, 11)"
+        />
+      </Field>
+      <!-- qty -->
+      <Field label="Quantity">
+        <input
+          #inputRef
+          type="text"
+          [formControl]="getControl('qty')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          placeholder=""
+          (keydown.enter)="handleEnterKey($event, 12)"
+        />
+      </Field>
+      <!-- cpu -->
+      <Field label="CPU">
+        <input
+          #inputRef
+          type="text"
+          [formControl]="getControl('cpu')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          placeholder=""
+          (keydown.enter)="handleEnterKey($event, 13)"
+        />
+      </Field>
+      <!-- eul -->
+      <Field label="EUL">
+        <input
+          #inputRef
+          type="text"
+          [formControl]="getControl('eul')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          placeholder=""
+          (keydown.enter)="handleEnterKey($event, 14)"
+        />
+      </Field>
+      <!-- adInf -->
+      <Field label="AD Info">
+        <textarea
+          [formControl]="getControl('adInf')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          placeholder=""
+        ></textarea>
+      </Field>
+      <!-- status -->
+      <Field label="Status">
+        <select
+          #inputRef
+          formControlName="status"
+          class="block py-2.5 px-2 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+          (keydown.enter)="handleEnterKey($event, 16)"
+        >
+          <option value="" class="capitalize">Select Status</option>
+          @for(status of statusOptions(); track $index){
+          <option [value]="status" class="capitalize">
+            {{ status }}
+          </option>
+          }
+        </select>
       </Field>
       <!-- location -->
       <Field label="location">
@@ -156,7 +232,7 @@
           [formControl]="getControl('location')"
           class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
           placeholder=""
-          (keydown.enter)="handleEnterKey($event, 2)"
+          (keydown.enter)="handleEnterKey($event, 17)"
         />
       </Field>
       <!-- warrEndDate -->
@@ -167,7 +243,7 @@
           [formControl]="getControl('warrEndDate')"
           class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
           placeholder=""
-          (keydown.enter)="handleEnterKey($event, 2)"
+          (keydown.enter)="handleEnterKey($event, 18)"
         />
       </Field>
       <!-- fileLink -->
@@ -178,8 +254,17 @@
           [formControl]="getControl('fileLink')"
           class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
           placeholder=""
-          (keydown.enter)="handleEnterKey($event, 2)"
+          (keydown.enter)="handleEnterKey($event, 19)"
         />
+      </Field>
+      <!-- remarks -->
+      <Field label="Remarks">
+        <textarea
+          #inputRef
+          [formControl]="getControl('remarks')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          placeholder=""
+        ></textarea>
       </Field>
 
       <div class="flex gap-2">
@@ -189,7 +274,7 @@
           type="submit"
           [value]="selectedFixedAsset ? 'Update' : 'Save'"
           class="text-gray-50 bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 shadow-lg shadow-teal-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
-          (keydown.enter)="handleEnterKey($event, 3)"
+          (keydown.enter)="handleEnterKey($event, 21)"
         />
 
         <button
@@ -208,7 +293,7 @@
       @if (isInsert()) {
       <button
         (click)="showForm.set(!showForm())"
-        class="text-gray-50 bg-gradient-to-r hover:bg-gradient-to-br focus:ring-1 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 my-2 w-36"
+        class="text-gray-50 bg-gradient-to-r hover:bg-gradient-to-br focus:ring-1 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 my-2 w-40"
         [ngClass]="{
           'from-teal-400 via-teal-500 to-teal-600 focus:ring-teal-300 shadow-lg shadow-teal-500/50':
             !showForm(),
@@ -216,7 +301,7 @@
             showForm()
         }"
       >
-        {{ showForm() ? "Hide" : "Show" }} Form
+        {{ showForm() ? "Hide Form" : "Add New Asset" }}
       </button>
       }
 
@@ -228,7 +313,9 @@
     </div>
 
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
-      <div class="flex items-end gap-2 flex-col md:flex-row px-2">
+      <div
+        class="flex justify-between items-end gap-2 flex-col md:flex-row px-2"
+      >
         <div class="w-full max-w-lg">
           <label for="table-search" class="sr-only">Search</label>
           <div class="relative mt-1">
@@ -249,6 +336,16 @@
             />
           </div>
         </div>
+        <button
+          class="relative inline-flex items-center justify-center p-0.5 me-2 overflow-hidden text-sm font-medium text-teal-600 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-gray-50 focus:ring-4 focus:outline-none focus:ring-green-200"
+          (click)="generatePDF()"
+        >
+          <span
+            class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-teal-50 rounded-md group-hover:bg-opacity-0 w-40"
+          >
+            Print
+          </span>
+        </button>
       </div>
 
       @if (isLoading$ | async) {
@@ -276,9 +373,18 @@
             <th scope="col" class="p-1">depre</th>
             <th scope="col" class="p-1">depValue</th>
             <th scope="col" class="p-1">wdv</th>
+            <th scope="col" class="p-1">previous Value</th>
+            <th scope="col" class="p-1">model</th>
+            <th scope="col" class="p-1">vendor</th>
+            <th scope="col" class="p-1">quantity</th>
+            <th scope="col" class="p-1">cpu</th>
+            <th scope="col" class="p-1">eul</th>
+            <th scope="col" class="p-1">adInf</th>
+            <th scope="col" class="p-1">status</th>
             <th scope="col" class="p-1">location</th>
             <th scope="col" class="p-1">warrEndDate</th>
             <th scope="col" class="p-1">fileLink</th>
+            <th scope="col" class="p-1">remarks</th>
             <th scope="col" class="p-1">PostBy</th>
             @if (isEdit() || isDelete()) {
             <th scope="col" class="px-1 py-3">Action</th>
@@ -310,14 +416,36 @@
             <td class="p-1">
               {{ item?.depCalDate }}
             </td>
-            <td class="p-1">
-              {{ item?.depre }}
-            </td>
+            <td class="p-1">{{ item?.deprePercentage }}%</td>
             <td class="p-1">
               {{ item?.depValue }}
             </td>
             <td class="p-1">
               {{ item?.wdv }}
+            </td>
+            <td class="p-1">
+              {{ item?.others1 }}
+            </td>
+            <td class="p-1">
+              {{ item?.model }}
+            </td>
+            <td class="p-1">
+              {{ item?.vendor }}
+            </td>
+            <td class="p-1">
+              {{ item?.qty }}
+            </td>
+            <td class="p-1">
+              {{ item?.cpu }}
+            </td>
+            <td class="p-1">
+              {{ item?.eul }}
+            </td>
+            <td class="p-1">
+              {{ item?.adInf }}
+            </td>
+            <td class="p-1">
+              {{ item?.status }}
             </td>
             <td class="p-1">
               {{ item?.location }}
@@ -329,9 +457,18 @@
               {{ item?.fileLink }}
             </td>
             <td class="p-1">
+              {{ item?.remarks }}
+            </td>
+            <td class="p-1">
               {{ item?.postBy }}
             </td>
-            <td class="flex gap-1">
+            <td class="flex gap-1 justify-center items-center h-full p-1">
+              <button
+                class="text-blue-50 bg-blue-500 hover:bg-blue-600 p-1 rounded"
+                (click)="openViewModal(item)"
+              >
+                <app-all-svg icon="eye" />
+              </button>
               @if (isEdit()) {
               <button
                 class="text-orange-50 bg-orange-400 hover:bg-orange-500 p-1 rounded"
@@ -360,4 +497,13 @@
 <p class="text-3xl font-bold text-center p-10 text-red-600">
   You don't have permission to view this page.
 </p>
+}
+
+<!-- Add this at the bottom of your template -->
+@if (showViewModal) {
+<app-asset-view-modal
+  [asset]="selectedAsset"
+  [assetType]="selectedAssetType"
+  (close)="closeViewModal()"
+></app-asset-view-modal>
 }

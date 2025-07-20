@@ -1,0 +1,134 @@
+<div
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+>
+  <div
+    class="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+  >
+    <div
+      class="flex justify-between items-center bg-gray-800 text-white p-4 rounded-t-lg"
+    >
+      <h3 class="text-xl font-bold">Asset Details</h3>
+      <button (click)="closeModal()" class="text-white hover:text-gray-300">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
+    </div>
+
+    <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="space-y-2">
+        <p>
+          <span class="font-semibold">Asset Name:</span> {{ asset?.assetName }}
+        </p>
+        <p><span class="font-semibold">Asset Type:</span> {{ assetType }}</p>
+        <p>
+          <span class="font-semibold">Purchase Invoice No:</span>
+          {{ asset?.purInvNO }}
+        </p>
+        <p>
+          <span class="font-semibold">Purchase Date:</span>
+          {{ asset?.purDate | date }}
+        </p>
+        <p>
+          <span class="font-semibold">Purchase Price:</span>
+          {{ asset?.purPrice | currency }}
+        </p>
+        <p>
+          <span class="font-semibold">Depreciation Calculation Date:</span>
+          {{ asset?.depCalDate | date }}
+        </p>
+        <p>
+          <span class="font-semibold">Depreciation Percentage:</span>
+          {{ asset?.deprePercentage }}%
+        </p>
+        <p>
+          <span class="font-semibold">Depreciation Value:</span>
+          {{ asset?.depValue | currency }}
+        </p>
+      </div>
+
+      <div class="space-y-2">
+        <p>
+          <span class="font-semibold">Written Down Value:</span>
+          {{ asset?.wdv | currency }}
+        </p>
+        <p>
+          <span class="font-semibold">Previous Value:</span>
+          {{ asset?.others1 }}
+        </p>
+        <p><span class="font-semibold">Model:</span> {{ asset?.model }}</p>
+        <p><span class="font-semibold">Vendor:</span> {{ asset?.vendor }}</p>
+        <p><span class="font-semibold">Quantity:</span> {{ asset?.qty }}</p>
+        <p>
+          <span class="font-semibold">Cost Per Unit:</span>
+          {{ asset?.cpu | currency }}
+        </p>
+        <p>
+          <span class="font-semibold">Estimated Useful Life:</span>
+          {{ asset?.eul }}
+        </p>
+      </div>
+
+      <div class="space-y-2">
+        <p><span class="font-semibold">Status:</span> {{ asset?.status }}</p>
+        <p>
+          <span class="font-semibold">Location:</span> {{ asset?.location }}
+        </p>
+        <p>
+          <span class="font-semibold">Warranty End Date:</span>
+          {{ asset?.warrEndDate | date }}
+        </p>
+      </div>
+
+      <div class="space-y-2">
+        <p>
+          <span class="font-semibold">File Link:</span>
+          @if (asset?.fileLink) {
+          <a
+            [href]="asset?.fileLink"
+            target="_blank"
+            class="text-blue-600 hover:underline"
+            >View Document</a
+          >
+          } @else { N/A }
+        </p>
+        <p><span class="font-semibold">Posted By:</span> {{ asset?.postBy }}</p>
+      </div>
+
+      <!-- Full width sections for large text fields -->
+      <div class="col-span-full space-y-2">
+        <p class="font-semibold">Additional Information:</p>
+        <div class="bg-gray-100 p-3 rounded-md max-h-40 overflow-y-auto">
+          {{ asset?.adInf || "N/A" }}
+        </div>
+      </div>
+
+      <div class="col-span-full space-y-2">
+        <p class="font-semibold">Remarks:</p>
+        <div class="bg-gray-100 p-3 rounded-md max-h-40 overflow-y-auto">
+          {{ asset?.remarks || "N/A" }}
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-gray-100 px-4 py-3 rounded-b-lg flex justify-end">
+      <button
+        (click)="closeModal()"
+        class="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+</div>
