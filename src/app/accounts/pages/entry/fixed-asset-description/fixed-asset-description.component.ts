@@ -445,7 +445,7 @@ export class FixedAssetDescriptionComponent {
   displayReportTitle(doc: jsPDF, yPos: number, centerX: number): any {
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(14);
-    doc.text(`Current Asset List`, centerX, yPos, { align: 'center' });
+    doc.text(`Fixed Asset List`, centerX, yPos, { align: 'center' });
     yPos += 2;
 
     // Sub-header for doctor name and dates
