@@ -50,10 +50,11 @@ export class FixedAssetDescriptionComponent {
 
   form = this.fb.group({
     assetName: ['', [Validators.required]],
-    assetTypeId: [''],
+    assetTypeId: ['', [Validators.required]],
     purInvNO: [''],
     purDate: [''],
     purPrice: [''],
+    pv: [''],
     depCalDate: [''],
     deprePercentage: [''],
     // depValue: [{ value: 0, disabled: false }],
@@ -73,7 +74,7 @@ export class FixedAssetDescriptionComponent {
     postBy: [this.authService.getUser()?.username || ''],
     status: ['Active'],
     remarks: [''],
-    others1: [''],
+    others1: ['others1'],
     others2: [''],
     others3: [''],
   });
@@ -129,6 +130,7 @@ export class FixedAssetDescriptionComponent {
         assetTypeId: item.assetTypeId,
         purInvNO: item.purInvNO,
         purDate: item.purDate?.split('T')[0] || null,
+        pv: item.pv,
         purPrice: item.purPrice,
         depCalDate: item.depCalDate?.split('T')[0] || null,
         deprePercentage: item.deprePercentage,
@@ -227,7 +229,7 @@ export class FixedAssetDescriptionComponent {
       // console.log(this.form.value);
       // this.form.get('depValue')?.enable();
       // this.form.get('wdv')?.enable();
-      const submitValue = { ...this.form.value, purPrice: this.form.value.purPrice || 0, depValue: this.form.value.depValue || 0, wdv: this.form.value.wdv || 0, others1: this.form.value.others1 || 0, deprePercentage: this.form.value.deprePercentage || 0, purDate: this.form.value.purDate ? new Date(this.form.value.purDate) : null, depCalDate: this.form.value.depCalDate ? new Date(this.form.value.depCalDate) : null, warrEndDate: this.form.value.warrEndDate ? new Date(this.form.value.warrEndDate) : null };
+      const submitValue = { ...this.form.value, purPrice: this.form.value.purPrice || 0, pv: this.form.value.pv || 0, depValue: this.form.value.depValue || 0, wdv: this.form.value.wdv || 0, others1: this.form.value.others1 || 0, deprePercentage: this.form.value.deprePercentage || 0, purDate: this.form.value.purDate ? new Date(this.form.value.purDate) : null, depCalDate: this.form.value.depCalDate ? new Date(this.form.value.depCalDate) : null, warrEndDate: this.form.value.warrEndDate ? new Date(this.form.value.warrEndDate) : null };
       if (this.selectedFixedAsset) {
         this.fixedAssetService.updateFixedAsset(this.selectedFixedAsset.id, submitValue)
           .subscribe({
@@ -282,6 +284,7 @@ export class FixedAssetDescriptionComponent {
       purInvNO: data?.purInvNO || '',
       purDate: data?.purDate?.split('T')[0] || null,
       purPrice: data?.purPrice || 0,
+      pv: data?.pv || 0,
       depCalDate: data?.depCalDate?.split('T')[0] || null,
       deprePercentage: data?.deprePercentage || 0,
       depValue: data?.depValue || 0,
@@ -336,6 +339,7 @@ export class FixedAssetDescriptionComponent {
       purInvNO: '',
       purDate: '',
       purPrice: '',
+      pv: '',
       depCalDate: '',
       deprePercentage: '',
       depValue: '',
@@ -352,7 +356,7 @@ export class FixedAssetDescriptionComponent {
       cpu: '',
       eul: '',
       adInf: '',
-      others1: '',
+      others1: 'others1',
       others2: '',
       others3: '',
     });
@@ -470,9 +474,9 @@ export class FixedAssetDescriptionComponent {
       data?.cpu || '',
       data?.qty || '',
       data?.purPrice || '',
+      data?.pv || '',
       data?.eul || '',
       this.transform(data?.depCalDate) || '',
-      data?.others1 || '',
       data?.deprePercentage + '%' || '',
       data?.depValue || '',
       data?.wdv || '',

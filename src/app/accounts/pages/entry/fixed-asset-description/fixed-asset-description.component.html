@@ -41,7 +41,7 @@
       </Field>
       }
       <!-- assetName -->
-      <Field label="assetName">
+      <Field label="Asset Name">
         <input
           #inputRef
           type="text"
@@ -58,7 +58,7 @@
         />
       </Field>
       <!-- purInvNO -->
-      <Field label="purInvNO">
+      <Field label="Purchase Invoice No">
         <input
           #inputRef
           type="text"
@@ -69,7 +69,7 @@
         />
       </Field>
       <!-- purDate -->
-      <Field label="purDate">
+      <Field label="Purchase Date">
         <input
           #inputRef
           type="date"
@@ -80,7 +80,7 @@
         />
       </Field>
       <!-- depCalDate -->
-      <Field label="depCalDate">
+      <Field label="Depreciation Calculation Date">
         <input
           #inputRef
           type="date"
@@ -91,7 +91,7 @@
         />
       </Field>
       <!-- purPrice -->
-      <Field label="purPrice">
+      <Field label="Purchase Price">
         <input
           #inputRef
           type="number"
@@ -101,8 +101,19 @@
           (keydown.enter)="handleEnterKey($event, 5)"
         />
       </Field>
+      <!-- Previous Value -->
+      <Field label="Previous Value">
+        <input
+          #inputRef
+          type="number"
+          [formControl]="getControl('pv')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          placeholder=""
+          (keydown.enter)="handleEnterKey($event, 9)"
+        />
+      </Field>
       <!-- deprePercentage -->
-      <Field label="depre%">
+      <Field label="Depreciation %">
         <input
           #inputRef
           type="number"
@@ -113,7 +124,7 @@
         />
       </Field>
       <!-- depValue -->
-      <Field label="depValue">
+      <Field label="Depreciation Value">
         <input
           #inputRef
           type="number"
@@ -124,7 +135,7 @@
         />
       </Field>
       <!-- wdv -->
-      <Field label="wdv">
+      <Field label="Written Down Value">
         <input
           #inputRef
           type="number"
@@ -132,17 +143,6 @@
           class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
           placeholder=""
           (keydown.enter)="handleEnterKey($event, 8)"
-        />
-      </Field>
-      <!-- Previous Value -->
-      <Field label="Previous Value">
-        <input
-          #inputRef
-          type="number"
-          [formControl]="getControl('others1')"
-          class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
-          placeholder=""
-          (keydown.enter)="handleEnterKey($event, 9)"
         />
       </Field>
       <!-- vendor -->
@@ -179,7 +179,7 @@
         />
       </Field>
       <!-- cpu -->
-      <Field label="CPU">
+      <Field label="Cost/Unit">
         <input
           #inputRef
           type="text"
@@ -190,7 +190,7 @@
         />
       </Field>
       <!-- eul -->
-      <Field label="EUL">
+      <Field label="Estimated Useful Life">
         <input
           #inputRef
           type="text"
@@ -201,7 +201,7 @@
         />
       </Field>
       <!-- adInf -->
-      <Field label="AD Info">
+      <Field label="Additional Info">
         <textarea
           [formControl]="getControl('adInf')"
           class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
@@ -236,7 +236,7 @@
         />
       </Field>
       <!-- warrEndDate -->
-      <Field label="warrEndDate">
+      <Field label="warranty End Date">
         <input
           #inputRef
           type="date"
@@ -247,7 +247,7 @@
         />
       </Field>
       <!-- fileLink -->
-      <Field label="fileLink">
+      <Field label="file Link">
         <input
           #inputRef
           type="text"
@@ -369,11 +369,11 @@
             <th scope="col" class="p-1">purInvNO</th>
             <th scope="col" class="px-1 py-3">purDate</th>
             <th scope="col" class="px-1 py-3">purPrice</th>
+            <th scope="col" class="p-1">previous Value</th>
             <th scope="col" class="p-1">depCalDate</th>
             <th scope="col" class="p-1">depre</th>
             <th scope="col" class="p-1">depValue</th>
             <th scope="col" class="p-1">wdv</th>
-            <th scope="col" class="p-1">previous Value</th>
             <th scope="col" class="p-1">model</th>
             <th scope="col" class="p-1">vendor</th>
             <th scope="col" class="p-1">quantity</th>
@@ -414,6 +414,9 @@
               {{ item?.purPrice }}
             </td>
             <td class="p-1">
+              {{ item?.pv }}
+            </td>
+            <td class="p-1">
               {{ item?.depCalDate }}
             </td>
             <td class="p-1">{{ item?.deprePercentage }}%</td>
@@ -422,9 +425,6 @@
             </td>
             <td class="p-1">
               {{ item?.wdv }}
-            </td>
-            <td class="p-1">
-              {{ item?.others1 }}
             </td>
             <td class="p-1">
               {{ item?.model }}
