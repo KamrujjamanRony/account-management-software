@@ -37,7 +37,7 @@
         <Field label="password">
           <input
             #inputRef
-            type="text"
+            type="password"
             [formControl]="getControl('password')"
             class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
             [class.invalid]="
@@ -180,7 +180,7 @@
             <tr>
               <th scope="col" class="p-1">user Name</th>
               <th scope="col" class="p-1">Employee Name</th>
-              <th scope="col" class="p-1">password</th>
+              <!-- <th scope="col" class="p-1">password</th> -->
               @if (isEdit() || isDelete()) {
               <th scope="col" class="px-1">Action</th>
               }
@@ -198,9 +198,9 @@
               <td scope="row" class="p-1">
                 {{ onDisplayEmployee(item?.eId) }}
               </td>
-              <td class="p-1">
+              <!-- <td class="p-1">
                 {{ item?.password }}
-              </td>
+              </td> -->
               <td class="flex gap-1">
                 @if (isEdit()) {
                 <button

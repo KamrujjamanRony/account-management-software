@@ -1,5 +1,5 @@
 {
-  "port": "http://supersoft:2222",
+  "port": "http://localhost:1003",
   "header": {
     "name": "Mawna Diabetic Association",
     "address": "Easy Life Bhaban, Mawna Bazar Road Mawna Chowrasta, 1740",

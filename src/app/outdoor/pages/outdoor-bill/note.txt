@@ -1,0 +1,334 @@
+import { DatePipe } from '@angular/common';
+import { Component, ElementRef, inject, signal, viewChild, viewChildren } from '@angular/core';
+import { FormControl, NonNullableFormBuilder, Validators } from '@angular/forms';
+import { DataService } from '../../../shared/services/data.service';
+import { DataFetchService } from '../../../shared/services/useDataFetch';
+import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
+import { OutdoorBillService } from '../../services/outdoor-bill.service';
+
+@Component({
+  selector: 'app-outdoor-bill',
+  imports: [],
+  templateUrl: './outdoor-bill.component.html',
+  styleUrl: './outdoor-bill.component.css'
+})
+export class OutdoorBillComponent {
+  fb = inject(NonNullableFormBuilder);
+  private billService = inject(OutdoorBillService);
+  private dataService = inject(DataService);
+  private dataFetchService = inject(DataFetchService);
+  filteredBillList = signal<any[]>([]);
+  sexOption = signal<any[]>([]);
+  dueLessOption = signal<any[]>([]);
+  mobileNoOption = signal<any[]>([]);
+  BillTypeOption = signal<any[]>([]);
+  departmentOption = signal<any[]>([]);
+  highlightedTr: number = -1;
+  success = signal<any>("");
+  selectedBill: any;
+
+  private searchQuery$ = new BehaviorSubject<string>('');
+  isLoading$: Observable<any> | undefined;
+  hasError$: Observable<any> | undefined;
+  readonly inputRefs = viewChildren<ElementRef>('inputRef');
+  readonly searchInput = viewChild.required<ElementRef<HTMLInputElement>>('searchInput');
+  isSubmitted = false;
+
+  form = this.fb.group({
+    billNo: [''],
+    sex: [''],
+    mobileNo: ['', [Validators.required]],
+    age: [''],
+    patientName: ['', [Validators.required]],
+    billTime: [''],
+    consDr: [''],
+    totalAmt: [''],
+    lessAmt: [''],
+    collAmt: [''],
+    dueLess: [''],
+    dueColl: [''],
+    dueLessFrom: [''],
+    deliveryDate: [''],
+    lastPrintPc: [''],
+    pcName: [''],
+    bedNo: [''],
+    regNo: [''],
+    underDrCode: [''],
+    postedBy: ['', [Validators.required]],
+    //------------------------------------------------
+    masterId: [''],
+    refDr: [''],
+    refDrId: [''],
+    refCode: [''],
+    address: [''],
+    lessForm: [''],
+    lessType: [''],
+    lessPc: [''],
+    charge: [''],
+    testName: [''],
+    remarks: [''],
+    dueLessPc: [''],
+    dueLessType: [''],
+    deliveryNumber: [''],
+    deliveryTimeAmPm: [''],
+    gridRemarks: [''],
+  });
+
+  ngOnInit() {
+    this.onLoadBill();
+    this.onLoadOptions();
+
+    // Focus on the search input when the component is initialized
+    setTimeout(() => {
+      const inputs = this.inputRefs();
+      inputs[0].nativeElement.focus();
+    }, 10); // Delay to ensure the DOM is updated
+  };
+
+  onLoadOptions() {
+    this.dataService.getOptions().subscribe((data: any) => {
+      this.sexOption.set(data.sexOption);
+      this.dueLessOption.set(data.dueLessOption);
+      this.mobileNoOption.set(data.mobileNoOption);
+      this.BillTypeOption.set(data.BillTypeOption);
+      this.departmentOption.set(data.departmentOption);
+    })
+  }
+
+  onLoadBill() {
+    const { data$, isLoading$, hasError$ } = this.dataFetchService.fetchData(this.billService.getOutdoorBill(""));
+
+    this.isLoading$ = isLoading$;
+    this.hasError$ = hasError$;
+    // Combine the original data stream with the search query to create a filtered list
+    combineLatest([
+      data$,
+      this.searchQuery$
+    ]).pipe(
+      map(([data, query]) =>
+        data.filter((BillData: any) =>
+          BillData.billNo?.toLowerCase().includes(query) ||
+          BillData.billTime?.toLowerCase().includes(query)
+        )
+      )
+    ).subscribe(filteredData => this.filteredBillList.set(filteredData.reverse()));
+  }
+
+  // Method to filter Bill list based on search query
+  onSearchBill(event: Event) {
+    const query = (event.target as HTMLInputElement).value.toLowerCase();
+    this.searchQuery$.next(query);
+  }
+
+  // Simplified method to get form controls
+  getControl(controlName: string): FormControl {
+    return this.form.get(controlName) as FormControl;
+  }
+
+
+  handleEnterKey(event: Event, currentIndex: number) {
+    const keyboardEvent = event as KeyboardEvent;
+    event.preventDefault();
+    const allInputs = this.inputRefs();
+    const inputs = allInputs.filter((i: any) => !i.nativeElement.disabled);
+
+    if (currentIndex + 1 < inputs.length) {
+      inputs[currentIndex + 1].nativeElement.focus();
+    } else {
+      this.onSubmit(keyboardEvent);
+    }
+  }
+
+  handleSearchKeyDown(event: KeyboardEvent) {
+    if (this.filteredBillList().length === 0) {
+      return; // Exit if there are no items to navigate
+    }
+
+    if (event.key === 'Tab') {
+      event.preventDefault();
+      const inputs = this.inputRefs();
+      inputs[0].nativeElement.focus();
+    } else if (event.key === 'ArrowDown') {
+      event.preventDefault(); // Prevent default scrolling behavior
+      this.highlightedTr = (this.highlightedTr + 1) % this.filteredBillList().length;
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault(); // Prevent default scrolling behavior
+      this.highlightedTr =
+        (this.highlightedTr - 1 + this.filteredBillList().length) % this.filteredBillList().length;
+    } else if (event.key === 'Enter') {
+      event.preventDefault(); // Prevent form submission
+
+      // Call onUpdate for the currently highlighted item
+      if (this.highlightedTr !== -1) {
+        const selectedItem = this.filteredBillList()[this.highlightedTr];
+        this.onUpdate(selectedItem);
+        this.highlightedTr = -1;
+      }
+    }
+  }
+
+  onSubmit(e: Event) {
+    this.isSubmitted = true;
+    if (this.form.valid) {
+      // console.log(this.form.value);
+      if (this.selectedBill) {
+        this.billService.updateOutdoorBill(this.selectedBill.eId, this.form.value)
+          .subscribe({
+            next: (response) => {
+              if (response !== null && response !== undefined) {
+                this.success.set("Bill successfully updated!");
+                const rest = this.filteredBillList().filter(d => d.eId !== response.eId);
+                this.filteredBillList.set([response, ...rest]);
+                this.isSubmitted = false;
+                this.selectedBill = null;
+                this.formReset(e);
+                setTimeout(() => {
+                  this.success.set("");
+                }, 1000);
+              }
+
+            },
+            error: (error) => {
+              console.error('Error register:', error);
+            }
+          });
+      } else {
+        this.billService.addOutdoorBill(this.form.value)
+          .subscribe({
+            next: (response) => {
+              if (response !== null && response !== undefined) {
+                this.success.set("Bill successfully added!");
+                this.filteredBillList.set([response, ...this.filteredBillList()])
+                this.isSubmitted = false;
+                this.formReset(e);
+                setTimeout(() => {
+                  this.success.set("");
+                }, 1000);
+              }
+
+            },
+            error: (error) => {
+              console.error('Error register:', error);
+            }
+          });
+      }
+    } else {
+      alert('Form is invalid! Please Fill Name Field.');
+    }
+  }
+
+  onUpdate(data: any) {
+    this.selectedBill = data;
+    this.form.patchValue({
+      billNo: data?.billNo,
+      sex: data?.sex,
+      mobileNo: data?.mobileNo,
+      age: data?.age,
+      postedBy: data?.postedBy,
+      patientName: data?.patientName,
+      billTime: data?.billTime,
+      consDr: data?.consDr,
+      totalAmt: data?.totalAmt,
+      lessAmt: data?.lessAmt,
+      collAmt: data?.collAmt,
+      dueLess: data?.dueLess,
+      dueColl: data?.dueColl,
+      dueLessFrom: data?.dueLessFrom,
+      deliveryDate: data?.deliveryDate,
+      lastPrintPc: data?.lastPrintPc,
+      pcName: data?.pcName,
+      bedNo: data?.bedNo,
+      regNo: data?.regNo,
+      underDrCode: data?.underDrCode,
+      masterId: data?.masterId,
+      refDr: data?.refDr,
+      refCode: data?.refCode,
+      refDrId: data?.refDrId,
+      address: data?.address,
+      lessForm: data?.lessForm,
+      lessType: data?.lessType,
+      lessPc: data?.lessPc,
+      charge: data?.charge,
+      testName: data?.testName,
+      remarks: data?.remarks,
+      dueLessPc: data?.dueLessPc,
+      dueLessType: data?.dueLessType,
+      deliveryNumber: data?.deliveryNumber,
+      deliveryTimeAmPm: data?.deliveryTimeAmPm,
+      gridRemarks: data?.gridRemarks,
+    });
+
+    // Focus the 'Name' input field after patching the value
+    setTimeout(() => {
+      const inputs = this.inputRefs();
+      inputs[0].nativeElement.focus();
+    }, 0); // Delay to ensure the DOM is updated
+  }
+
+  onDelete(id: any) {
+    if (confirm("Are you sure you want to delete?")) {
+      this.billService.deleteOutdoorBill(id).subscribe(data => {
+        if (data.eId) {
+          this.success.set("Bill deleted successfully!");
+          this.filteredBillList.set(this.filteredBillList().filter(d => d.eId !== id));
+          setTimeout(() => {
+            this.success.set("");
+          }, 1000);
+        } else {
+          console.error('Error deleting Bill:', data);
+          alert('Error deleting Bill: ' + data.message)
+        }
+      });
+    }
+  }
+
+  formReset(e: Event): void {
+    e.preventDefault();
+    this.form.reset({
+      billNo: '',
+      sex: '',
+      mobileNo: '',
+      age: '',
+      postedBy: '',
+      patientName: '',
+      billTime: '',
+      consDr: '',
+      totalAmt: '',
+      lessAmt: '',
+      collAmt: '',
+      dueLess: '',
+      dueColl: '',
+      dueLessFrom: '',
+      deliveryDate: '',
+      lastPrintPc: '',
+      pcName: '',
+      bedNo: '',
+      regNo: '',
+      underDrCode: '',
+      masterId: '',
+      refDr: '',
+      refCode: '',
+      refDrId: '',
+      address: '',
+      lessForm: '',
+      lessType: '',
+      lessPc: '',
+      charge: '',
+      testName: '',
+      remarks: '',
+      dueLessPc: '',
+      dueLessType: '',
+      deliveryNumber: '',
+      deliveryTimeAmPm: '',
+      gridRemarks: '',
+    });
+    this.isSubmitted = false;
+    this.selectedBill = null;
+  }
+  transform(value: any, args: any = 'dd/MM/yyyy'): any {
+    if (!value) return null;
+    const datePipe = new DatePipe('en-US');
+    return datePipe.transform(value, args);
+  }
+
+}

@@ -51,7 +51,7 @@ export class RegistrationComponent {
     sex: ['', [Validators.required]],
     dob: ['', [Validators.required]],
     nid: [''],
-    address: ['', [Validators.required]],
+    address: [''],
     remarks: [''],
     postedBy: [this.authService.getUser()?.username || ''],
     entryDate: [this.today, [Validators.required]],

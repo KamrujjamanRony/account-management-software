@@ -11,10 +11,10 @@ export class AuthService {
 
   constructor() {
     // Restore from secure storage on service init
-    // this.restoreUser();
+    this.restoreUser();    // todo: remove this.restoreUser()
 
     // Backup to secure storage before page unload
-    window.addEventListener('beforeunload', () => this.deleteUser());      // todo: this.backupUser()
+    window.addEventListener('beforeunload', () => this.backupUser());      // todo: this.backupUser()   // todo: this.deleteUser()
   }
 
   setUser(user: any) {
@@ -55,39 +55,17 @@ export class AuthService {
       }
     }
   }
+
+  // Hash password before sending to server
+  hashPassword(password: string): string {
+    const salt = CryptoJS.lib.WordArray.random(128 / 8).toString();
+    const iterations = 10000;
+    const keySize = 256;
+
+    return CryptoJS.PBKDF2(password, salt, {
+      keySize: keySize / 32,
+      iterations: iterations
+    }).toString() + ':' + salt + ':' + iterations;
+  }
 }
-
-
-
-// import { Injectable } from '@angular/core';
-
-// @Injectable({
-//   providedIn: 'root'
-// })
-// export class AuthService {
-
-//   private localStorageKey = 'hmsUser';
-
-//   constructor() {
-//     // Add event listener for when the window/tab is closed
-//     window.addEventListener('beforeunload', () => this.deleteUser());
-//   }
-
-//   setUser(user: any) {
-
-//     // Save user to local storage
-//     localStorage.setItem(this.localStorageKey, JSON.stringify(user));
-//   }
-
-//   getUser() {
-//     // Retrieve user from local storage
-//     const storedUser = localStorage.getItem(this.localStorageKey);
-//     return storedUser ? JSON.parse(storedUser) : null;
-//   }
-
-//   deleteUser() {
-//     // Remove user from local storage
-//     localStorage.removeItem(this.localStorageKey);
-//   }
-// }
 

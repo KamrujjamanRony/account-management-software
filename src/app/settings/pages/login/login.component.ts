@@ -5,6 +5,7 @@ import { FormControl, NonNullableFormBuilder, ReactiveFormsModule, Validators } 
 import { Subscription } from 'rxjs';
 import { ToastService } from '../../../shared/components/primeng/toast/toast.service';
 import { Router } from '@angular/router';
+import { DataService } from '../../../shared/services/data.service';
 
 @Component({
   selector: 'app-login',
@@ -16,16 +17,25 @@ export class LoginComponent {
   private authService = inject(AuthService);
   private LoginService = inject(LoginService);
   private toastService = inject(ToastService);
+  private dataService = inject(DataService);
   private loginSubscription?: Subscription;
   private router = inject(Router);
   fb = inject(NonNullableFormBuilder);
   isSubmitted = false;
   loading = signal<boolean>(false);
+  name = signal<string>("");
 
   form = this.fb.group({
     userName: ['', [Validators.required]],
     password: ['', Validators.required],
   });
+
+  ngOnInit() {
+    this.dataService.getHeader().subscribe((data) => {
+      this.name.set(data?.name || "Hospital Management System");
+    }
+    );
+  }
 
   // Simplified method to get form controls
   getControl(controlName: string): FormControl {

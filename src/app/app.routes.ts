@@ -5,6 +5,7 @@ import { HrLayoutComponent } from './layouts/hr-layout/hr-layout.component';
 import { DoctorFeeLayoutComponent } from './layouts/doctor-fee-layout/doctor-fee-layout.component';
 import { SettingsLayoutComponent } from './layouts/settings-layout/settings-layout.component';
 import { authGuard } from './settings/services/auth.guard';
+import { OutdoorComponent } from './layouts/outdoor/outdoor.component';
 
 export const routes: Routes = [
   {
@@ -124,6 +125,19 @@ export const routes: Routes = [
             path: 'entry/employee',
             loadComponent: () =>
               import('./hr/pages/entry/employee/employee.component').then(m => m.EmployeeComponent),
+            data: { preload: true },
+          },
+        ],
+      },
+      {
+        path: 'outdoor',
+        component: OutdoorComponent,
+        children: [
+          { path: '', redirectTo: 'bill', pathMatch: 'full' },
+          {
+            path: 'bill',
+            loadComponent: () =>
+              import('./outdoor/pages/outdoor-bill/outdoor-bill.component').then(m => m.OutdoorBillComponent),
             data: { preload: true },
           },
         ],
