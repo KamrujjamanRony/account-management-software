@@ -1,0 +1,48 @@
+<div class="w-full relative max-w-md min-w-96">
+  <div
+    (click)="toggleDropdown()"
+    class="border border-gray-500 text-gray-950 rounded-md px-5 py-2 flex justify-between cursor-pointer"
+    [ngClass]="{ 'text-gray-950': !selected() }"
+  >
+    <span>
+      {{
+        selected()
+          ? selected().text.length > 200
+            ? selected().text.substring(0, 200) + "..."
+            : selected().text
+          : placeholder()
+      }}
+    </span>
+    <app-all-svg icon="down-arrow"></app-all-svg>
+  </div>
+
+  <ul
+    class="mt-1 overflow-y-auto rounded-md w-full bg-teal-50"
+    [ngClass]="{
+      'max-h-96 border absolute top-10 z-50': open,
+      hidden: !open
+    }"
+  >
+    <div class="flex items-center px-2 sticky top-0">
+      <app-all-svg icon="search" class="absolute left-4"></app-all-svg>
+      <input
+        type="text"
+        [(ngModel)]="inputValue"
+        placeholder="Search"
+        class="placeholder:text-gray-950 text-xs rounded-md px-2 pl-8 outline-none w-full my-1"
+      />
+    </div>
+    <li
+      *ngFor="let option of options"
+      class="p-2 text-sm hover:bg-teal-600 hover:text-gray-50 cursor-pointer w-full"
+      [ngClass]="{
+        'bg-sky-600 text-gray-50': option.id === selected()?.id,
+        block: option.text.toLowerCase().startsWith(inputValue.toLowerCase()),
+        hidden: !option.text.toLowerCase().startsWith(inputValue.toLowerCase())
+      }"
+      (click)="selectOption(option)"
+    >
+      {{ option.text }}
+    </li>
+  </ul>
+</div>

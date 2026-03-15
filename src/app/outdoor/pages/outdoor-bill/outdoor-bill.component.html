@@ -1,0 +1,162 @@
+<div class="w-full max-w-7xl mx-auto p-4">
+  <!-- Patient Information -->
+  <form
+    [formGroup]="form"
+    (ngSubmit)="onSubmit($event)"
+    class="grid grid-cols-3 gap-6"
+  >
+    <!-- Patient Info -->
+    <div class="col-span-2">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
+        <Field label="Contact No">
+          <input
+            #inputRef
+            type="text"
+            [formControl]="getControl('mobileNo')"
+            class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+            placeholder=""
+            (keydown.enter)="handleEnterKey($event, 3)"
+            required
+          />
+        </Field>
+
+        <Field label="Adm. No">
+          <input
+            #inputRef
+            type="text"
+            [formControl]="getControl('regNo')"
+            class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+            placeholder=""
+            (keydown.enter)="handleEnterKey($event, 0)"
+            required
+          />
+        </Field>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
+        <Field label="Patient Name">
+          <input
+            #inputRef
+            type="text"
+            [formControl]="getControl('patientName')"
+            class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+            placeholder=""
+            (keydown.enter)="handleEnterKey($event, 0)"
+            required
+          />
+        </Field>
+
+        <Field label="Age">
+          <input
+            #inputRef
+            type="number"
+            [formControl]="getControl('age')"
+            class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+            placeholder=""
+            (keydown.enter)="handleEnterKey($event, 1)"
+          />
+        </Field>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
+        <Field label="Sex">
+          <select
+            #inputRef
+            [formControl]="getControl('sex')"
+            class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+            (keydown.enter)="handleEnterKey($event, 2)"
+          >
+            <option *ngFor="let s of sexOption()" [value]="s.value">
+              {{ s.label }}
+            </option>
+          </select>
+        </Field>
+
+        <Field label="Address">
+          <input
+            #inputRef
+            type="text"
+            [formControl]="getControl('address')"
+            class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+            placeholder=""
+            (keydown.enter)="handleEnterKey($event, 4)"
+          />
+        </Field>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-2"></div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-2"></div>
+    </div>
+
+    <!-- Billing Info -->
+    <div class="col-span-1">
+      <Field label="Bill No">
+        <input
+          type="text"
+          [formControl]="getControl('billNo')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          readonly
+        />
+      </Field>
+
+      <Field label="Total Amount">
+        <input
+          type="number"
+          [formControl]="getControl('totalAmt')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          readonly
+        />
+      </Field>
+
+      <Field label="Discount">
+        <input
+          type="number"
+          [formControl]="getControl('lessAmt')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+        />
+      </Field>
+
+      <Field label="Paid Amount">
+        <input
+          type="number"
+          [formControl]="getControl('collAmt')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+        />
+      </Field>
+
+      <Field label="Due Amount">
+        <input
+          type="number"
+          [formControl]="getControl('dueColl')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          readonly
+        />
+      </Field>
+    </div>
+
+    <!-- Remarks -->
+    <div class="col-span-2">
+      <Field label="Remarks">
+        <textarea
+          [formControl]="getControl('remarks')"
+          class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+          placeholder=""
+        ></textarea>
+      </Field>
+    </div>
+
+    <!-- Buttons -->
+    <div class="col-span-2 flex gap-4 mt-4">
+      <button type="submit" class="bg-teal-600 text-white px-4 py-2 rounded">
+        Save & Print
+      </button>
+      <button
+        type="button"
+        (click)="formReset($event)"
+        class="bg-gray-400 text-white px-4 py-2 rounded"
+      >
+        Clear
+      </button>
+    </div>
+  </form>
+</div>

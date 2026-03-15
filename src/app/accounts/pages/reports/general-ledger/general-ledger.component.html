@@ -1,0 +1,143 @@
+@if (isView()) {
+  <div class="w-full border mb-10 px-3 max-h-[98vh] overflow-scroll">
+    <h1 class="text-xl md:text-3xl font-bold text-teal-500 underline text-center">
+      General Transaction
+    </h1>
+
+    <div class="flex justify-end gap-1">
+      <div class="flex items-start gap-2 flex-col md:flex-row px-2 w-full">
+        <div class="w-full max-w-lg">
+          <label for="table-search" class="sr-only">Search</label>
+          <div class="relative mt-1">
+            <div
+              class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none"
+            >
+              <app-search></app-search>
+            </div>
+            <input
+              #searchInput
+              type="text"
+              id="table-search"
+              autocomplete="off"
+              class="block ps-10 text-xs text-gray-950 border border-gray-300 rounded bg-teal-100 focus:ring-teal-500 focus:border-teal-500 w-full"
+              placeholder="Search"
+              (input)="onSearchBank($event)"
+            />
+          </div>
+        </div>
+      </div>
+      <select
+        id="transactionType"
+        [(ngModel)]="selectedId"
+        (change)="onLoadReport()"
+        class="border border-gray-500 text-gray-950 rounded-md px-5 py-2"
+      >
+        @for (item of accountBankCashIdOption(); track $index) {
+          <option [value]="item.id">
+            {{ item?.text }}
+          </option>
+        }
+      </select>
+      <input
+        type="date"
+        id="fromDate"
+        [(ngModel)]="fromDate"
+        (change)="onLoadReport()"
+        class="border border-gray-500 text-gray-950 rounded-md px-5 py-2"
+      />
+      <input
+        type="date"
+        id="toDate"
+        [(ngModel)]="toDate"
+        (change)="onLoadReport()"
+        class="border border-gray-500 text-gray-950 rounded-md px-5 py-2"
+      />
+      <button
+        class="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-heading rounded-base group bg-linear-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
+        (click)="generatePDF()"
+      >
+        <span
+          class="relative px-4 py-2.5 transition-all ease-in duration-75 bg-neutral-primary-soft rounded-base group-hover:bg-transparent group-hover:dark:bg-transparent leading-5 dark:bg-teal-950 w-40"
+        >
+          Print
+        </span>
+      </button>
+    </div>
+    @if (isLoading$ | async) {
+      <p class="text-3xl font-bold text-center p-10 text-teal-600">Loading ...</p>
+    } @else if (hasError$ | async) {
+      <p class="text-3xl font-bold text-center p-10 text-red-600">
+        There was an error loading data.
+      </p>
+    } @else if (filteredReports().length === 0) {
+      <p class="text-3xl font-bold text-center p-10 text-orange-600">Data is Empty.</p>
+    } @else {
+      <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
+        <table class="w-full text-sm text-left rtl:text-right text-gray-950 mt-2">
+          <thead class="text-sm text-gray-50 uppercase bg-teal-800">
+            <tr>
+              <th scope="col" class="p-1">voucherDate</th>
+              <th scope="col" class="p-1">voucherNo</th>
+              <th scope="col" class="p-1">headName</th>
+              <th scope="col" class="p-1">remarks</th>
+              <th scope="col" class="p-1">debitAmount</th>
+              <th scope="col" class="p-1">creditAmount</th>
+              <th scope="col" class="p-1">balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of filteredReports(); track $index) {
+              <tr
+                id="row-{{ $index }}"
+                [ngClass]="{
+                  'bg-red-500 text-gray-50': item?.balance < 0,
+                  'bg-teal-50': item?.balance >= 0,
+                }"
+                class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
+              >
+                <td class="p-1 capitalize">
+                  {{ transform(item?.voucherDate) }}
+                </td>
+                <td class="p-1 capitalize">
+                  {{ item?.voucherNo }}
+                </td>
+                <td class="p-1 capitalize">
+                  {{ item?.headName }}
+                </td>
+                <td class="p-1">
+                  {{ item?.remarks }}
+                </td>
+                <td class="p-1">
+                  {{ item?.debitAmount }}
+                </td>
+                <td class="p-1">
+                  {{ item?.creditAmount }}
+                </td>
+                <td class="p-1">
+                  {{ item?.balance }}
+                </td>
+              </tr>
+            }
+            <tr class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer">
+              <td class="p-1 capitalize">Total:</td>
+              <td class="p-1 capitalize"></td>
+              <td class="p-1 capitalize"></td>
+              <td class="p-1 capitalize"></td>
+              <td class="p-1">
+                {{ totalDebit().toFixed(2) }}
+              </td>
+              <td class="p-1">
+                {{ totalCredit().toFixed(2) }}
+              </td>
+              <td class="p-1"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+} @else {
+  <p class="text-3xl font-bold text-center p-10 text-red-600">
+    You don't have permission to view this page.
+  </p>
+}

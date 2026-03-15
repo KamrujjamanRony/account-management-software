@@ -1,0 +1,217 @@
+@if (isView()) {
+  <section class="container mx-auto">
+    <div class="flex justify-between flex-wrap items-center py-5">
+      <h1 class="text-3xl md:text-5xl font-bold tracking-tight text-gray-950 dark:text-gray-100">Dashboard</h1>
+      <input
+        type="date"
+        id="fromDate"
+        [(ngModel)]="fromDate"
+        (change)="onLoadReport()"
+        class="border border-gray-500 text-gray-950 dark:text-gray-100 bg-inherit rounded-md px-5 py-2"
+      />
+    </div>
+    @if (header()) {
+      <h1
+        class="text-xl md:text-3xl font-bold tracking-tight text-blue-700 dark:text-blue-300 text-center mb-2 -mt-2 underline"
+      >
+        {{ header()?.name }}
+      </h1>
+    }
+    @if (isLoading$ | async) {
+      <p class="text-3xl font-bold text-center p-10 text-teal-600 dark:text-teal-300">Loading ...</p>
+    } @else if (!fromDate()) {
+      <p class="text-3xl font-bold text-center p-10 text-red-600 dark:text-red-300">
+        Please Select any date to continue!
+      </p>
+    } @else if (hasError$ | async) {
+      <p class="text-3xl font-bold text-center p-10 text-red-600 dark:text-red-300">
+        There was an error loading data.
+      </p>
+    } @else if (filteredReports().length === 0) {
+      <p class="text-3xl font-bold text-center p-10 text-orange-600 dark:text-orange-300">Data is Empty.</p>
+    } @else {
+      <div>
+        <div>
+          <div class="grid grid-cols-1 md:grid-cols-3 w-full h-full gap-2 md:gap-5 mb-2 md:mb-5">
+            <!-- Today Received Payment Slot  -->
+            <div
+              class="block max-w-3xl p-6 bg-blue-300 border border-gray-200 rounded-lg shadow-sm text-center w-full h-full"
+            >
+              <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-950">Today</h5>
+              <p class="font-bold text-gray-950">
+                Total Received :
+                {{ filteredReports()?.datewiseIncomeExpenceResult?.totalIncome }} Tk
+              </p>
+              <p class="font-bold text-gray-950">
+                Total Payment :
+                {{ filteredReports()?.datewiseIncomeExpenceResult?.totalExpense }}
+                Tk
+              </p>
+              <p class="font-bold text-gray-950">
+                Total Profit :
+                {{ filteredReports()?.datewiseIncomeExpenceResult?.profit }} Tk
+              </p>
+            </div>
+            <!-- This Month Received Payment Slot  -->
+            <div
+              class="block max-w-3xl p-6 bg-orange-300 border border-gray-200 rounded-lg shadow-sm text-center w-full h-full"
+            >
+              <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-950">This Month</h5>
+              <p class="font-bold text-gray-950">
+                Total Received :
+                {{ filteredReports().monthlyIncome }} Tk
+              </p>
+              <p class="font-bold text-gray-950">
+                Total Payment :
+                {{ filteredReports()?.monthlyExpense }} Tk
+              </p>
+              <p class="font-bold text-gray-950">
+                Total Profit :
+                {{ filteredReports()?.monthlyProfit }} Tk
+              </p>
+            </div>
+            <!-- This Year Received Payment Slot  -->
+            <div
+              class="block max-w-3xl p-6 bg-purple-300 border border-gray-200 rounded-lg shadow-sm text-center w-full h-full"
+            >
+              <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-950">This Year</h5>
+              <p class="font-bold text-gray-950">
+                Total Received :
+                {{ filteredReports().totalReceipt }} Tk
+              </p>
+              <p class="font-bold text-gray-950">
+                Total Payment :
+                {{ filteredReports()?.totalPayment }} Tk
+              </p>
+              <p class="font-bold text-gray-950">
+                Total Profit :
+                {{ filteredReports()?.totalBalance }} Tk
+              </p>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 w-full h-full gap-2 md:gap-5 mb-2 md:mb-5">
+            <!-- Today Opening Balance Slot  -->
+            <div
+              class="block max-w-3xl p-6 bg-green-300 border border-gray-200 rounded-lg shadow-sm text-center w-full h-full"
+            >
+              <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-950">
+                Today Opening Balance
+              </h5>
+              @for (item of filteredReports().totalBalanceResult; track $index) {
+                <p class="font-bold text-gray-950">{{ item?.bankCash }} : {{ item?.balance }} Tk</p>
+              }
+            </div>
+            <!-- Today Current Balance Slot  -->
+            <div
+              class="block max-w-3xl p-6 bg-teal-300 border border-gray-200 rounded-lg shadow-sm text-center w-full h-full"
+            >
+              <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-950">
+                Today Current Balance
+              </h5>
+              @for (item of filteredReports().totalCurrentBalanceResult; track $index) {
+                <p class="font-bold text-gray-950">{{ item?.bankCash }} : {{ item?.balance }} Tk</p>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Yearly Received Payment Chart  -->
+        <div>
+          <h1 class="text-xl md:text-3xl font-bold text-teal-500 dark:text-teal-200 underline text-center">
+            Yearly Received Payment Chart
+          </h1>
+          <app-apex-chart
+            [categories]="totalMonth"
+            [chartData]="filteredReports().incomeExpenseChartData"
+          ></app-apex-chart>
+        </div>
+        <!-- Yearly Profit Chart  -->
+        <div>
+          <h1 class="text-xl md:text-3xl font-bold text-teal-500 dark:text-teal-200 underline text-center">
+            Yearly Profit Chart
+          </h1>
+          <app-apex-chart
+            [categories]="totalMonth"
+            [chartData]="filteredReports().profitChartData"
+          ></app-apex-chart>
+        </div>
+        <!-- Yearly Received Payment & Profit Table  -->
+        <div class="w-full border mb-10 px-3 max-h-[98vh] overflow-scroll">
+          <div class="flex justify-between items-center">
+            <h1 class="text-xl md:text-3xl font-bold text-teal-500 dark:text-teal-200 underline text-center">
+              Yearly Received Payment & Profit Table
+            </h1>
+
+            <button
+              class="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-heading rounded-base group bg-linear-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
+              (click)="generatePDF()"
+            >
+              <span
+                class="relative px-4 py-2.5 transition-all ease-in duration-75 bg-neutral-primary-soft rounded-base group-hover:bg-transparent group-hover:dark:bg-transparent leading-5 dark:bg-teal-950 w-40"
+              >
+                Print
+              </span>
+            </button>
+          </div>
+
+          <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
+            <table class="w-full text-sm text-left rtl:text-right text-gray-950 dark:text-gray-200 mt-2">
+              <thead class="text-sm text-gray-50 capitalize bg-teal-800 dark:bg-teal-900">
+                <tr>
+                  <th scope="col" class="p-1">Month</th>
+                  <th scope="col" class="p-1">Receipt</th>
+                  <th scope="col" class="p-1">Payment</th>
+                  <th scope="col" class="p-1">Balance</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of filteredReports().monthwiseIncomeExpenceResult; track $index) {
+                  <tr
+                    id="row-{{ $index }}"
+                    class="bg-teal-50 dark:bg-teal-800 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
+                  >
+                    <td class="p-1 capitalize">
+                      {{ totalMonth[item?.month - 1] + ', ' + item?.year }}
+                    </td>
+                    <td class="p-1 capitalize">
+                      {{ item?.totalIncome }}
+                    </td>
+                    <td class="p-1">
+                      {{ item?.totalExpense }}
+                    </td>
+                    <td class="p-1">
+                      {{ item?.profit }}
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="6" class="text-center text-gray-950">No data found</td>
+                  </tr>
+                }
+                <tr
+                  id="row-last"
+                  class="bg-teal-200 dark:bg-teal-700 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer font-bold"
+                >
+                  <td class="p-1 capitalize">Total:</td>
+                  <td class="p-1 capitalize">
+                    {{ filteredReports().totalReceipt }}
+                  </td>
+                  <td class="p-1 capitalize">
+                    {{ filteredReports().totalPayment }}
+                  </td>
+                  <td class="p-1 capitalize">
+                    {{ filteredReports().totalBalance }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    }
+  </section>
+} @else {
+  <p class="text-3xl font-bold text-center p-10 text-red-600">
+    You don't have permission to view this page.
+  </p>
+}

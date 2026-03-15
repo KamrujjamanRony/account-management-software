@@ -1,0 +1,21 @@
+.invalid {
+  border-color: red !important;
+}
+
+.highlighted {
+  background-color: #007bff !important;
+  color: white;
+}
+
+.login {
+  background: linear-gradient(135deg, #1abc9c, #16a085);
+}
+
+.btn {
+  background: linear-gradient(90deg, #16a085, #1abc9c);
+  transition: background 0.3s ease;
+}
+
+.btn:hover {
+  background: linear-gradient(90deg, #1abc9c, #16a085);
+}

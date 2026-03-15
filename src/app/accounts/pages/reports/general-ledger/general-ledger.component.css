@@ -1,0 +1,22 @@
+/* Example of custom styling */
+.select2-container--default .select2-selection--single {
+  height: 40px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.select2-container--default
+  .select2-selection--single
+  .select2-selection__rendered {
+  line-height: 40px;
+  padding-left: 10px;
+  font-size: 14px;
+  color: #333;
+}
+
+.select2-container--default
+  .select2-selection--single
+  .select2-selection__arrow {
+  height: 40px;
+  right: 10px;
+}

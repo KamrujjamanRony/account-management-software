@@ -1,0 +1,95 @@
+<aside
+  class="group w-12 hover:w-72 h-full bg-blue-600 dark:bg-blue-900 transition-all"
+  (mouseenter)="setSidebarHover(true)"
+  (mouseleave)="setSidebarHover(false)"
+  aria-label="Sidebar"
+>
+  <div class="h-full pl-2 py-4 overflow-hidden">
+    <ul class="space-y-2 font-medium space-x-2">
+
+      <!-- Sidebar Menu -->
+      @for (item of filteredList() || []; track item?.id) {
+        @if (item.children) {
+        <li class="cursor-pointer">
+          @if (item?.children && item.children.length > 0) {
+            <button
+              type="button"
+              class="flex items-center w-full py-2 px-3 -ml-1 text-gray-50 hover:text-blue-900 duration-75 rounded hover:bg-gray-100 transition-all"
+              [attr.aria-controls]="item.label"
+              [attr.data-accordion-target]="'#' + item?.label"
+              aria-expanded="menuState()[item.id]"
+              (click)="toggleMenu(item.id)"
+            >
+              <!-- Fix icon display -->
+              @if (getIcon(item.icon)) {
+                <fa-icon [icon]="getIcon(item.icon)"></fa-icon>
+              }
+              <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">
+                {{ item.label }}
+              </span>
+              <!-- Fix caret logic -->
+              @if (menuState()[item.id]) {
+                <fa-icon [icon]="faCaretUp"></fa-icon>
+              } @else {
+                <fa-icon [icon]="faCaretDown"></fa-icon>
+              }
+            </button>
+
+            <!-- Submenu -->
+            <ul
+              [id]="item?.label"
+              [attr.aria-labelledby]="item?.label"
+              [class.hidden]="!menuState()[item.id] || !sidebarHovered()"
+              class="w-[97%] mx-auto bg-blue-600 rounded"
+            >
+              @for (subItem of item.children; track subItem?.route) {
+                <li class="cursor-pointer">
+                  <a
+                    [routerLink]="subItem?.route"
+                    routerLinkActive="bg-green-600 text-white" 
+                    type="button"
+                    class="flex items-center w-full p-2 text-base text-gray-50 hover:text-blue-900 duration-75 rounded hover:bg-gray-100 transition-all hover:text-xl"
+                  >
+                    @if (getIcon(subItem.icon)) {
+                      <fa-icon [icon]="getIcon(subItem.icon)"></fa-icon>
+                    }
+                    <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">{{
+                      subItem.label
+                    }}</span>
+                  </a>
+                </li>
+              }
+            </ul>
+          } @else {
+            <!-- Single Link -->
+            <a
+              [routerLink]="item?.route"
+              routerLinkActive="bg-green-600 text-white"
+              type="button"
+              class="flex items-center w-full p-2 text-base text-gray-50 hover:text-blue-900 duration-75 rounded hover:bg-gray-100 transition-all"
+            >
+              @if (getIcon(item.icon)) {
+                <fa-icon [icon]="getIcon(item.icon)"></fa-icon>
+              }
+              <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">{{
+                item.label
+              }}</span>
+            </a>
+          }
+        </li>
+      }
+      }
+      <li class="cursor-pointer mr-2">
+        <!-- Log Out -->
+        <a
+          (click)="auth.deleteUser()"
+          type="button"
+          class="flex items-center w-full p-2 text-base text-gray-50 hover:text-rose-600 duration-75 rounded hover:bg-gray-100 transition-all"
+        >
+          <fa-icon [icon]="faRightFromBracket"></fa-icon>
+          <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">Log Out</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</aside>

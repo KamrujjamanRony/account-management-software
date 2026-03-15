@@ -1,0 +1,5 @@
+#theme-toggle-dark-icon,
+#theme-toggle-light-icon {
+  transition: opacity 0.3s ease;
+}
+

@@ -1,0 +1,211 @@
+@if (isView()) {
+  <div class="w-full border mb-10 px-3 max-h-[98vh] overflow-scroll">
+    <h1 class="text-xl md:text-3xl font-bold text-teal-500 underline text-center">Trail Balance</h1>
+
+    <div class="flex justify-end gap-1">
+      <input
+        type="date"
+        id="fromDate"
+        [(ngModel)]="fromDate"
+        (change)="onLoadReport()"
+        class="border border-gray-500 text-gray-950 rounded-md px-5 py-2"
+      />
+      <input
+        type="date"
+        id="toDate"
+        [(ngModel)]="toDate"
+        (change)="onLoadReport()"
+        class="border border-gray-500 text-gray-950 rounded-md px-5 py-2"
+      />
+      <button
+        class="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-heading rounded-base group bg-linear-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
+        (click)="generatePDF()"
+      >
+        <span
+          class="relative px-4 py-2.5 transition-all ease-in duration-75 bg-neutral-primary-soft rounded-base group-hover:bg-transparent group-hover:dark:bg-transparent leading-5 dark:bg-teal-950"
+        >
+          Print
+        </span>
+      </button>
+    </div>
+    @if (isLoading$ | async) {
+      <p class="text-3xl font-bold text-center p-10 text-teal-600">Loading ...</p>
+    } @else if (hasError$ | async) {
+      <p class="text-3xl font-bold text-center p-10 text-red-600">
+        There was an error loading data.
+      </p>
+    } @else if (
+      filteredReports().currentAsset.length === 0 &&
+      filteredReports().nonCurrentAsset.length === 0 &&
+      filteredReports().currentLiability.length === 0 &&
+      filteredReports().nonCurrentLiability.length === 0 &&
+      filteredReports().income.length === 0 &&
+      filteredReports().expense.length === 0
+    ) {
+      <p class="text-3xl font-bold text-center p-10 text-orange-600">Data is Empty.</p>
+    } @else {
+      <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
+        <table class="w-full text-sm text-left rtl:text-right text-gray-950 mt-2">
+          <thead class="text-sm text-gray-50 uppercase bg-teal-800">
+            <tr>
+              <th scope="col" class="p-1">Head</th>
+              <th scope="col" class="p-1">subHead</th>
+              <th scope="col" class="p-1">debitAmount</th>
+              <th scope="col" class="p-1">creditAmount</th>
+              <th scope="col" class="p-1">balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of filteredReports()?.currentAsset; track $index) {
+              <tr
+                id="row-{{ $index }}"
+                class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
+              >
+                <td class="p-1 capitalize">
+                  {{ item?.subHead }}
+                </td>
+                <td class="p-1 capitalize">
+                  {{ item?.subSubHead }}
+                </td>
+                <td class="p-1">
+                  {{ item?.debitAmount }}
+                </td>
+                <td class="p-1">
+                  {{ item?.creditAmount }}
+                </td>
+                <td class="p-1">
+                  {{ item?.balance }}
+                </td>
+              </tr>
+            }
+            @for (item of filteredReports()?.nonCurrentAsset; track $index) {
+              <tr
+                id="row-{{ $index }}"
+                class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
+              >
+                <td class="p-1 capitalize">
+                  {{ item?.subHead }}
+                </td>
+                <td class="p-1 capitalize">
+                  {{ item?.subSubHead }}
+                </td>
+                <td class="p-1">
+                  {{ item?.debitAmount }}
+                </td>
+                <td class="p-1">
+                  {{ item?.creditAmount }}
+                </td>
+                <td class="p-1">
+                  {{ item?.balance }}
+                </td>
+              </tr>
+            }
+            @for (item of filteredReports()?.currentLiability; track $index) {
+              <tr
+                id="row-{{ $index }}"
+                class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
+              >
+                <td class="p-1 capitalize">
+                  {{ item?.subHead }}
+                </td>
+                <td class="p-1 capitalize">
+                  {{ item?.subSubHead }}
+                </td>
+                <td class="p-1">
+                  {{ item?.debitAmount }}
+                </td>
+                <td class="p-1">
+                  {{ item?.creditAmount }}
+                </td>
+                <td class="p-1">
+                  {{ item?.balance }}
+                </td>
+              </tr>
+            }
+            @for (item of filteredReports()?.nonCurrentLiability; track $index) {
+              <tr
+                id="row-{{ $index }}"
+                class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
+              >
+                <td class="p-1 capitalize">
+                  {{ item?.subHead }}
+                </td>
+                <td class="p-1 capitalize">
+                  {{ item?.subSubHead }}
+                </td>
+                <td class="p-1">
+                  {{ item?.debitAmount }}
+                </td>
+                <td class="p-1">
+                  {{ item?.creditAmount }}
+                </td>
+                <td class="p-1">
+                  {{ item?.balance }}
+                </td>
+              </tr>
+            }
+            @for (item of filteredReports()?.income; track $index) {
+              <tr
+                id="row-{{ $index }}"
+                class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
+              >
+                <td class="p-1 capitalize">
+                  {{ item?.subHead }}
+                </td>
+                <td class="p-1 capitalize">
+                  {{ item?.subSubHead }}
+                </td>
+                <td class="p-1">
+                  {{ item?.debitAmount }}
+                </td>
+                <td class="p-1">
+                  {{ item?.creditAmount }}
+                </td>
+                <td class="p-1">
+                  {{ item?.balance }}
+                </td>
+              </tr>
+            }
+            @for (item of filteredReports()?.expense; track $index) {
+              <tr
+                id="row-{{ $index }}"
+                class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
+              >
+                <td class="p-1 capitalize">
+                  {{ item?.subHead }}
+                </td>
+                <td class="p-1 capitalize">
+                  {{ item?.subSubHead }}
+                </td>
+                <td class="p-1">
+                  {{ item?.debitAmount }}
+                </td>
+                <td class="p-1">
+                  {{ item?.creditAmount }}
+                </td>
+                <td class="p-1">
+                  {{ item?.balance }}
+                </td>
+              </tr>
+            }
+            <tr class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer">
+              <td class="p-1 capitalize">Total:</td>
+              <td class="p-1 capitalize"></td>
+              <td class="p-1">
+                {{ totalDebit().toFixed(2) }}
+              </td>
+              <td class="p-1">
+                {{ totalCredit().toFixed(2) }}
+              </td>
+              <td class="p-1"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+} @else {
+  <p class="text-3xl font-bold text-center p-10 text-red-600">
+    You don't have permission to view this page.
+  </p>
+}
