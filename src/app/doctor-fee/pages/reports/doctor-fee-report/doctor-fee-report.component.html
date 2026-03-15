@@ -15,7 +15,7 @@
               type="text"
               id="table-search"
               autocomplete="off"
-              class="block pt-2 ps-10 text-sm text-gray-950 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-teal-500 focus:border-teal-500"
+              class="block pt-2 ps-10 text-sm border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-teal-500 focus:border-teal-500"
               placeholder="Search for Doctor Fee"
               (input)="onSearchDoctorFee($event)"
             />
@@ -46,48 +46,46 @@
 
       <div class="flex gap-2 flex-col md:flex-row px-2">
         <div class="w-[150px]">
-          <label for="fromDate" class="block text-sm font-medium text-gray-950">From Date</label>
+          <label for="fromDate" class="block text-sm font-medium">From Date</label>
           <div class="relative">
             <input
               id="fromDate"
               [(ngModel)]="fromDate"
               (change)="onFilterData()"
               type="date"
-              class="bg-gray-50 border border-gray-300 text-gray-950 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5"
+              class="bg-gray-50 border border-gray-300 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5"
             />
           </div>
         </div>
 
         <div class="w-[150px]">
-          <label for="toDate" class="block text-sm font-medium text-gray-950">To Date</label>
+          <label for="toDate" class="block text-sm font-medium">To Date</label>
           <div class="relative">
             <input
               id="toDate"
               [(ngModel)]="toDate"
               (change)="onFilterData()"
               type="date"
-              class="bg-gray-50 border border-gray-300 text-gray-950 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5"
+              class="bg-gray-50 border border-gray-300 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5"
             />
           </div>
         </div>
 
         <div class="w-[150px]">
-          <label for="nextFollowDate" class="block text-sm font-medium text-gray-950"
-            >Next Follow Date</label
-          >
+          <label for="nextFollowDate" class="block text-sm font-medium">Next Follow Date</label>
           <div class="relative">
             <input
               id="nextFollowDate"
               [(ngModel)]="nextFollowDate"
               (change)="onFilterData()"
               type="date"
-              class="bg-gray-50 border border-gray-300 text-gray-950 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5"
+              class="bg-gray-50 border border-gray-300 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5"
             />
           </div>
         </div>
 
         <!-- <div class="w-[150px]">
-        <label for="marginTop" class="block text-sm font-medium text-gray-950"
+        <label for="marginTop" class="block text-sm font-medium "
           >Margin Top</label
         >
         <div class="relative">
@@ -96,21 +94,19 @@
             [(ngModel)]="marginTop"
             (change)="onFilterData()"
             type="number"
-            class="bg-gray-50 border border-gray-300 text-gray-950 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5"
+            class="bg-gray-50 border border-gray-300  text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5"
           />
         </div>
       </div> -->
 
         <div class="w-full max-w-lg">
-          <label for="selectedDoctor" class="block text-sm font-medium text-gray-950"
-            >Select Doctor</label
-          >
+          <label for="selectedDoctor" class="block text-sm font-medium">Select Doctor</label>
           <select
             id="selectedDoctor"
             name="selectedDoctor"
             [(ngModel)]="selectedDoctor"
             (change)="onSelectInputChange()"
-            class="bg-gray-50 border border-gray-300 text-gray-950 text-sm rounded focus:ring-teal-500 focus:border-teal-500 block w-full px-2 py-1.5"
+            class="bg-gray-50 border border-gray-300 text-sm rounded focus:ring-teal-500 focus:border-teal-500 block w-full px-2 py-1.5"
           >
             <option value="">All Doctors</option>
             @for (doctor of filteredDoctorOptions(); track $index) {
@@ -133,8 +129,8 @@
       } @else if (filteredDoctorFeeList().length === 0) {
         <p class="text-3xl font-bold text-center p-10 text-orange-600">Data is Empty.</p>
       } @else {
-        <table class="w-full text-xs text-left rtl:text-right text-gray-950">
-          <thead class="text-xs text-gray-950 uppercase bg-gray-50">
+        <table class="w-full text-xs text-left rtl:text-right">
+          <thead class="text-xs uppercase bg-gray-50">
             <tr>
               <th scope="col" class="px-1 py-3">sl</th>
               <th scope="col" class="px-1 py-3">entry date</th>

@@ -114,7 +114,7 @@ export class AccountListEntryComponent {
   }
 
   onLoadBanks() {
-    const { data$ } = this.dataFetchService.fetchData(this.bankService.getBank(''));
+    const { data$ } = this.dataFetchService.fetchData(this.bankService.search(''));
 
     data$.subscribe(data => this.bankOption.set(data.map((b: any) => ({ id: b.id, text: b.name }))));
   }

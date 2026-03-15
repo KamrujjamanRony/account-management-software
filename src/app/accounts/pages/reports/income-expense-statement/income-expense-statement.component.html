@@ -4,7 +4,7 @@
       <select
         id="transactionType"
         [(ngModel)]="transactionType"
-        class="border border-gray-500 text-gray-950 rounded-md px-5 py-2"
+        class="border border-gray-500 rounded-md px-5 py-2"
       >
         @for (item of transactionTypeOptions(); track $index) {
           <option [value]="item">
@@ -17,14 +17,14 @@
         id="fromDate"
         [(ngModel)]="fromDate"
         (change)="onLoadReport()"
-        class="border border-gray-500 text-gray-950 rounded-md px-5 py-2"
+        class="border border-gray-500 rounded-md px-5 py-2"
       />
       <input
         type="date"
         id="toDate"
         [(ngModel)]="toDate"
         (change)="onLoadReport()"
-        class="border border-gray-500 text-gray-950 rounded-md px-5 py-2"
+        class="border border-gray-500 rounded-md px-5 py-2"
       />
       <button
         class="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-heading rounded-base group bg-linear-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
@@ -54,7 +54,7 @@
           <p class="text-3xl font-bold text-center p-10 text-orange-600">Data is Empty.</p>
         } @else {
           <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
-            <table class="w-full text-sm text-left rtl:text-right text-gray-950 mt-2">
+            <table class="w-full text-sm text-left rtl:text-right mt-2">
               <thead class="text-sm text-gray-50 uppercase bg-teal-800">
                 <tr>
                   <th scope="col" class="p-1">Head</th>
@@ -102,7 +102,7 @@
           <p class="text-3xl font-bold text-center p-10 text-orange-600">Data is Empty.</p>
         } @else {
           <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
-            <table class="w-full text-sm text-left rtl:text-right text-gray-950 mt-2">
+            <table class="w-full text-sm text-left rtl:text-right mt-2">
               <thead class="text-sm text-gray-50 uppercase bg-teal-800">
                 <tr>
                   <th scope="col" class="p-1">Head</th>
@@ -151,7 +151,7 @@
             <p class="text-3xl font-bold text-center p-10 text-orange-600">Data is Empty.</p>
           } @else {
             <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
-              <table class="w-full text-sm text-left rtl:text-right text-gray-950 mt-2">
+              <table class="w-full text-sm text-left rtl:text-right mt-2">
                 <thead class="text-sm text-gray-50 uppercase bg-teal-800">
                   <tr>
                     <th scope="col" class="p-1">Head</th>
@@ -201,7 +201,7 @@
             <p class="text-3xl font-bold text-center p-10 text-orange-600">Data is Empty.</p>
           } @else {
             <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
-              <table class="w-full text-sm text-left rtl:text-right text-gray-950 mt-2">
+              <table class="w-full text-sm text-left rtl:text-right mt-2">
                 <thead class="text-sm text-gray-50 uppercase bg-teal-800">
                   <tr>
                     <th scope="col" class="p-1">Head</th>

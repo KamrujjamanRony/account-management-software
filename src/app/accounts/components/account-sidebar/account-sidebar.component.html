@@ -11,7 +11,7 @@
       <li class="cursor-pointer">
         <a
           routerLink="/"
-          class="flex items-center p-2 rounded-lg text-gray-950 hover:bg-gray-100 dark:text-gray-50 dark:hover:bg-teal-950"
+          class="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:text-gray-50 dark:hover:bg-teal-950"
         >
           <span class="ms-12 text-xl font-bold text-teal-700 dark:text-teal-400">SuperSoft</span>
         </a>
@@ -19,64 +19,58 @@
 
       <!-- Sidebar Menu -->
       @for (item of sidebarData(); track item?.id) {
-      <li class="cursor-pointer">
-        @if (item?.menu) {
-        <button
-          type="button"
-          class="flex items-center w-full py-2 px-3 -ml-1 text-gray-950 transition duration-75 rounded-lg hover:bg-gray-100"
-          [attr.aria-controls]="item.label"
-          [attr.data-accordion-target]="'#' + item?.label"
-          aria-expanded="menuState()[item.id]"
-          (click)="toggleMenu(item.id)"
-        >
-          <app-all-svg [icon]="item.icon"></app-all-svg>
-          <span
-            class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap text-gray-950"
-          >
-            {{ item.label }}
-          </span>
-          <app-all-svg
-            [icon]="
-              menuState()[item.id] ? 'sidebar-down-arrow' : 'sidebar-up-arrow'
-            "
-          ></app-all-svg>
-        </button>
-
-        <!-- Submenu -->
-        <ul
-          [id]="item?.label"
-          [attr.aria-labelledby]="item?.label"
-          [class.hidden]="!menuState()[item.id] || !sidebarHovered()"
-          class="py-2 w-[97%] mx-auto bg-teal-200 rounded-lg"
-        >
-          @for (subItem of item.menu; track subItem?.route) {
-          <li class="cursor-pointer">
-            <a
-              [routerLink]="subItem?.route"
-              class="flex items-center w-full p-2 text-gray-950 transition duration-75 rounded-lg pl-10 hover:bg-gray-100"
+        <li class="cursor-pointer">
+          @if (item?.menu) {
+            <button
+              type="button"
+              class="flex items-center w-full py-2 px-3 -ml-1 transition duration-75 rounded-lg hover:bg-gray-100"
+              [attr.aria-controls]="item.label"
+              [attr.data-accordion-target]="'#' + item?.label"
+              aria-expanded="menuState()[item.id]"
+              (click)="toggleMenu(item.id)"
             >
-              {{ subItem.label }}
+              <app-all-svg [icon]="item.icon"></app-all-svg>
+              <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">
+                {{ item.label }}
+              </span>
+              <app-all-svg
+                [icon]="menuState()[item.id] ? 'sidebar-down-arrow' : 'sidebar-up-arrow'"
+              ></app-all-svg>
+            </button>
+
+            <!-- Submenu -->
+            <ul
+              [id]="item?.label"
+              [attr.aria-labelledby]="item?.label"
+              [class.hidden]="!menuState()[item.id] || !sidebarHovered()"
+              class="py-2 w-[97%] mx-auto bg-teal-200 rounded-lg"
+            >
+              @for (subItem of item.menu; track subItem?.route) {
+                <li class="cursor-pointer">
+                  <a
+                    [routerLink]="subItem?.route"
+                    class="flex items-center w-full p-2 transition duration-75 rounded-lg pl-10 hover:bg-gray-100"
+                  >
+                    {{ subItem.label }}
+                  </a>
+                </li>
+              }
+            </ul>
+          } @else {
+            <!-- Single Link -->
+            <a
+              [routerLink]="item?.route"
+              type="button"
+              class="flex items-center w-full p-2 text-base transition duration-75 rounded-lg hover:bg-gray-100"
+            >
+              <app-all-svg [icon]="item.icon"></app-all-svg>
+              <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">{{
+                item.label
+              }}</span>
             </a>
-          </li>
           }
-        </ul>
-        } @else {
-        <!-- Single Link -->
-        <a
-          [routerLink]="item?.route"
-          type="button"
-          class="flex items-center w-full p-2 text-base text-gray-950 transition duration-75 rounded-lg hover:bg-gray-100"
-        >
-          <app-all-svg [icon]="item.icon"></app-all-svg>
-          <span
-            class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap"
-            >{{ item.label }}</span
-          >
-        </a>
-        }
-      </li>
+        </li>
       }
     </ul>
   </div>
 </aside>
-

@@ -25,5 +25,4 @@ export class Confirm {
       info: 'bg-brand hover:bg-brand-strong focus:ring-brand-medium',
     }[variant ?? 'info'];
   }
-
 }

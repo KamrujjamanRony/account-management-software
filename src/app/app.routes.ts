@@ -27,7 +27,7 @@ export const routes: Routes = [
                     {
                         path: 'setup/bank',
                         loadComponent: () =>
-                            import('./accounts/pages/setup/bank-entry/bank-entry').then(m => m.BankEntryComponent),
+                            import('./accounts/pages/setup/bank/bank').then(m => m.Bank),
                         data: { preload: true },
                     },
                     {

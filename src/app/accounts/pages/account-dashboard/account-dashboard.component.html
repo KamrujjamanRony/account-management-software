@@ -1,13 +1,13 @@
 @if (isView()) {
   <section class="container mx-auto">
     <div class="flex justify-between flex-wrap items-center py-5">
-      <h1 class="text-3xl md:text-5xl font-bold tracking-tight text-gray-950 dark:text-gray-100">Dashboard</h1>
+      <h1 class="text-3xl md:text-5xl font-bold tracking-tight dark:text-gray-100">Dashboard</h1>
       <input
         type="date"
         id="fromDate"
         [(ngModel)]="fromDate"
         (change)="onLoadReport()"
-        class="border border-gray-500 text-gray-950 dark:text-gray-100 bg-inherit rounded-md px-5 py-2"
+        class="border border-gray-500 dark:text-gray-100 bg-inherit rounded-md px-5 py-2"
       />
     </div>
     @if (header()) {
@@ -18,7 +18,9 @@
       </h1>
     }
     @if (isLoading$ | async) {
-      <p class="text-3xl font-bold text-center p-10 text-teal-600 dark:text-teal-300">Loading ...</p>
+      <p class="text-3xl font-bold text-center p-10 text-teal-600 dark:text-teal-300">
+        Loading ...
+      </p>
     } @else if (!fromDate()) {
       <p class="text-3xl font-bold text-center p-10 text-red-600 dark:text-red-300">
         Please Select any date to continue!
@@ -28,7 +30,9 @@
         There was an error loading data.
       </p>
     } @else if (filteredReports().length === 0) {
-      <p class="text-3xl font-bold text-center p-10 text-orange-600 dark:text-orange-300">Data is Empty.</p>
+      <p class="text-3xl font-bold text-center p-10 text-orange-600 dark:text-orange-300">
+        Data is Empty.
+      </p>
     } @else {
       <div>
         <div>
@@ -37,17 +41,17 @@
             <div
               class="block max-w-3xl p-6 bg-blue-300 border border-gray-200 rounded-lg shadow-sm text-center w-full h-full"
             >
-              <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-950">Today</h5>
-              <p class="font-bold text-gray-950">
+              <h5 class="mb-2 text-2xl font-bold tracking-tight">Today</h5>
+              <p class="font-bold">
                 Total Received :
                 {{ filteredReports()?.datewiseIncomeExpenceResult?.totalIncome }} Tk
               </p>
-              <p class="font-bold text-gray-950">
+              <p class="font-bold">
                 Total Payment :
                 {{ filteredReports()?.datewiseIncomeExpenceResult?.totalExpense }}
                 Tk
               </p>
-              <p class="font-bold text-gray-950">
+              <p class="font-bold">
                 Total Profit :
                 {{ filteredReports()?.datewiseIncomeExpenceResult?.profit }} Tk
               </p>
@@ -56,16 +60,16 @@
             <div
               class="block max-w-3xl p-6 bg-orange-300 border border-gray-200 rounded-lg shadow-sm text-center w-full h-full"
             >
-              <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-950">This Month</h5>
-              <p class="font-bold text-gray-950">
+              <h5 class="mb-2 text-2xl font-bold tracking-tight">This Month</h5>
+              <p class="font-bold">
                 Total Received :
                 {{ filteredReports().monthlyIncome }} Tk
               </p>
-              <p class="font-bold text-gray-950">
+              <p class="font-bold">
                 Total Payment :
                 {{ filteredReports()?.monthlyExpense }} Tk
               </p>
-              <p class="font-bold text-gray-950">
+              <p class="font-bold">
                 Total Profit :
                 {{ filteredReports()?.monthlyProfit }} Tk
               </p>
@@ -74,16 +78,16 @@
             <div
               class="block max-w-3xl p-6 bg-purple-300 border border-gray-200 rounded-lg shadow-sm text-center w-full h-full"
             >
-              <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-950">This Year</h5>
-              <p class="font-bold text-gray-950">
+              <h5 class="mb-2 text-2xl font-bold tracking-tight">This Year</h5>
+              <p class="font-bold">
                 Total Received :
                 {{ filteredReports().totalReceipt }} Tk
               </p>
-              <p class="font-bold text-gray-950">
+              <p class="font-bold">
                 Total Payment :
                 {{ filteredReports()?.totalPayment }} Tk
               </p>
-              <p class="font-bold text-gray-950">
+              <p class="font-bold">
                 Total Profit :
                 {{ filteredReports()?.totalBalance }} Tk
               </p>
@@ -94,22 +98,18 @@
             <div
               class="block max-w-3xl p-6 bg-green-300 border border-gray-200 rounded-lg shadow-sm text-center w-full h-full"
             >
-              <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-950">
-                Today Opening Balance
-              </h5>
+              <h5 class="mb-2 text-2xl font-bold tracking-tight">Today Opening Balance</h5>
               @for (item of filteredReports().totalBalanceResult; track $index) {
-                <p class="font-bold text-gray-950">{{ item?.bankCash }} : {{ item?.balance }} Tk</p>
+                <p class="font-bold">{{ item?.bankCash }} : {{ item?.balance }} Tk</p>
               }
             </div>
             <!-- Today Current Balance Slot  -->
             <div
               class="block max-w-3xl p-6 bg-teal-300 border border-gray-200 rounded-lg shadow-sm text-center w-full h-full"
             >
-              <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-950">
-                Today Current Balance
-              </h5>
+              <h5 class="mb-2 text-2xl font-bold tracking-tight">Today Current Balance</h5>
               @for (item of filteredReports().totalCurrentBalanceResult; track $index) {
-                <p class="font-bold text-gray-950">{{ item?.bankCash }} : {{ item?.balance }} Tk</p>
+                <p class="font-bold">{{ item?.bankCash }} : {{ item?.balance }} Tk</p>
               }
             </div>
           </div>
@@ -117,7 +117,9 @@
 
         <!-- Yearly Received Payment Chart  -->
         <div>
-          <h1 class="text-xl md:text-3xl font-bold text-teal-500 dark:text-teal-200 underline text-center">
+          <h1
+            class="text-xl md:text-3xl font-bold text-teal-500 dark:text-teal-200 underline text-center"
+          >
             Yearly Received Payment Chart
           </h1>
           <app-apex-chart
@@ -127,7 +129,9 @@
         </div>
         <!-- Yearly Profit Chart  -->
         <div>
-          <h1 class="text-xl md:text-3xl font-bold text-teal-500 dark:text-teal-200 underline text-center">
+          <h1
+            class="text-xl md:text-3xl font-bold text-teal-500 dark:text-teal-200 underline text-center"
+          >
             Yearly Profit Chart
           </h1>
           <app-apex-chart
@@ -138,7 +142,9 @@
         <!-- Yearly Received Payment & Profit Table  -->
         <div class="w-full border mb-10 px-3 max-h-[98vh] overflow-scroll">
           <div class="flex justify-between items-center">
-            <h1 class="text-xl md:text-3xl font-bold text-teal-500 dark:text-teal-200 underline text-center">
+            <h1
+              class="text-xl md:text-3xl font-bold text-teal-500 dark:text-teal-200 underline text-center"
+            >
               Yearly Received Payment & Profit Table
             </h1>
 
@@ -155,7 +161,7 @@
           </div>
 
           <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
-            <table class="w-full text-sm text-left rtl:text-right text-gray-950 dark:text-gray-200 mt-2">
+            <table class="w-full text-sm text-left rtl:text-right dark:text-gray-200 mt-2">
               <thead class="text-sm text-gray-50 capitalize bg-teal-800 dark:bg-teal-900">
                 <tr>
                   <th scope="col" class="p-1">Month</th>
@@ -185,7 +191,7 @@
                   </tr>
                 } @empty {
                   <tr>
-                    <td colspan="6" class="text-center text-gray-950">No data found</td>
+                    <td colspan="6" class="text-center">No data found</td>
                   </tr>
                 }
                 <tr

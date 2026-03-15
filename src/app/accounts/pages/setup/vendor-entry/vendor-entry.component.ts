@@ -1,241 +1,219 @@
-import { CommonModule } from '@angular/common';
-import { Component, ElementRef, inject, signal, viewChildren, viewChild } from '@angular/core';
-import { FieldComponent } from '../../../../shared/components/field/field.component';
-import { SearchComponent } from '../../../../shared/components/svg/search/search.component';
-import { FormControl, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
+import { Component, computed, ElementRef, inject, signal, ViewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faPencil, faXmark, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { form, required, validate, debounce, FormField, maxLength } from '@angular/forms/signals';
 import { VendorService } from '../../../services/vendor.service';
-import { DataFetchService } from '../../../../shared/services/useDataFetch';
-import { ToastService } from '../../../../shared/components/primeng/toast/toast.service';
+import { PermissionS } from '../../../../settings/services/permission-s';
+import { ToastService } from '../../../../utils/toast/toast.service';
+import { ConfirmService } from '../../../../utils/confirm/confirm.service';
 import { AuthService } from '../../../../settings/services/auth.service';
-import { AllSvgComponent } from "../../../../shared/components/svg/all-svg/all-svg.component";
+// import { VendorM } from '../../../models/Vendor'; // Create this model if not exists
 
 @Component({
   selector: 'app-vendor-entry',
-  imports: [CommonModule, FieldComponent, SearchComponent, ReactiveFormsModule, AllSvgComponent],
+  imports: [FormsModule, FormField, FontAwesomeModule],
   templateUrl: './vendor-entry.component.html',
-  styleUrl: './vendor-entry.component.css'
+  styleUrls: ['./vendor-entry.component.css']
 })
 export class VendorEntryComponent {
-  fb = inject(NonNullableFormBuilder);
+  faPencil = faPencil;
+  faXmark = faXmark;
+  faMagnifyingGlass = faMagnifyingGlass;
+  @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
+
+  /* ---------------- DI ---------------- */
   private vendorService = inject(VendorService);
-  private dataFetchService = inject(DataFetchService);
-  private toastService = inject(ToastService);
+  private permissionService = inject(PermissionS);
+  private toast = inject(ToastService);
+  private confirm = inject(ConfirmService);
   private authService = inject(AuthService);
-  isView = signal<boolean>(false);
-  isInsert = signal<boolean>(false);
-  isEdit = signal<boolean>(false);
-  isDelete = signal<boolean>(false);
-  filteredVendorList = signal<any[]>([]);
-  highlightedTr: number = -1;
-  selectedVendor: any;
 
-  private searchQuery$ = new BehaviorSubject<string>('');
-  isLoading$: Observable<any> | undefined;
-  hasError$: Observable<any> | undefined;
-  readonly inputRefs = viewChildren<ElementRef>('inputRef');
-  readonly searchInput = viewChild.required<ElementRef<HTMLInputElement>>('searchInput');
-  isSubmitted = false;
+  /* ---------------- SIGNAL STATE ---------------- */
+  vendors = signal<any[]>([]); // Replace 'any' with VendorM type
+  searchQuery = signal('');
 
-  form = this.fb.group({
-    name: ['', [Validators.required]],
-    address: [''],
-    mobile: [''],
-    remarks: [''],
-    postBy: [this.authService.getUser()?.username || '']
+  isView = signal(false);
+  isInsert = signal(false);
+  isEdit = signal(false);
+  isDelete = signal(false);
+  showList = signal(true);
+
+  filteredVendorList = computed(() => {
+    const query = this.searchQuery().toLowerCase();
+
+    return this.vendors()
+      .filter(data =>
+        String(data.name ?? '').toLowerCase().includes(query) ||
+        String(data.address ?? '').toLowerCase().includes(query) ||
+        String(data.mobile ?? '').toLowerCase().includes(query) ||
+        String(data.remarks ?? '').toLowerCase().includes(query)
+      )
   });
 
-  ngOnInit() {
-    this.onLoadVendors();
-    this.isView.set(this.checkPermission("Vendor Setup", "View"));
-    this.isInsert.set(this.checkPermission("Vendor Setup", "Insert"));
-    this.isEdit.set(this.checkPermission("Vendor Setup", "Edit"));
-    this.isDelete.set(this.checkPermission("Vendor Setup", "Delete"));
+  selected = signal<any | null>(null); // Replace 'any' with VendorM type
+  isLoading = signal(false);
+  hasError = signal(false);
+  isSubmitted = signal(false);
 
-    // Focus on the search input when the component is initialized
-    setTimeout(() => {
-      const inputs = this.inputRefs();
-      inputs[0]?.nativeElement.focus();
-    }, 10); // Delay to ensure the DOM is updated
+  /* ---------------- FORM MODEL ---------------- */
+  model = signal({
+    name: "",
+    address: "",
+    mobile: "",
+    remarks: "",
+    postBy: this.authService.getUser()?.username || ''
+  });
+
+  /* ---------------- SIGNAL FORM ---------------- */
+  form = form(this.model, (schemaPath) => {
+    required(schemaPath.name, { message: 'Vendor name is required' });
+    debounce(schemaPath.name, 300);
+
+    // Optional: Add validation for mobile
+    maxLength(schemaPath.mobile, 11, { message: 'Mobile cannot exceed 11 digits' });
+    debounce(schemaPath.mobile, 300);
+  });
+
+  /* ---------------- LIFECYCLE ---------------- */
+  ngOnInit(): void {
+    this.loadVendors();
+    this.loadPermissions();
   }
 
-  onLoadVendors() {
-    const { data$, isLoading$, hasError$ } = this.dataFetchService.fetchData(this.vendorService.getVendor(""));
-
-    this.isLoading$ = isLoading$;
-    this.hasError$ = hasError$;
-    // Combine the original data stream with the search query to create a filtered list
-    combineLatest([
-      data$,
-      this.searchQuery$
-    ]).pipe(
-      map(([data, query]) =>
-        data.filter((VendorData: any) =>
-          VendorData.name?.toLowerCase().includes(query) ||
-          VendorData.address?.toLowerCase().includes(query) ||
-          VendorData.mobile?.toString().includes(query) ||
-          VendorData.remarks?.toLowerCase().includes(query)
-        )
-      )
-    ).subscribe(filteredData => this.filteredVendorList.set(filteredData.reverse()));
+  /* ---------------- LOADERS ---------------- */
+  loadPermissions() {
+    this.isView.set(this.permissionService.hasPermission('Vendor Setup'));
+    this.isInsert.set(this.permissionService.hasPermission('Vendor Setup', 'create'));
+    this.isEdit.set(this.permissionService.hasPermission('Vendor Setup', 'edit'));
+    this.isDelete.set(this.permissionService.hasPermission('Vendor Setup', 'delete'));
   }
 
+  loadVendors() {
+    this.isLoading.set(true);
+    this.hasError.set(false);
 
-  checkPermission(moduleName: string, permission: string) {
-    const modulePermission = this.authService.getUser()?.userMenu?.find((module: any) => module?.menuName?.toLowerCase() === moduleName.toLowerCase());
-    if (modulePermission) {
-      const permissionValue = modulePermission.permissions.find((perm: any) => perm.toLowerCase() === permission.toLowerCase());
-      if (permissionValue) {
-        return true;
-      } else {
-        return false;
+    this.vendorService.getVendor("").subscribe({
+      next: (data) => {
+        this.vendors.set(data);
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.hasError.set(true);
+        this.isLoading.set(false);
       }
-    } else {
-      return false;
-    }
+    });
   }
 
-  // Method to filter Vendor list based on search query
-  onSearchVendor(event: Event) {
-    const query = (event.target as HTMLInputElement).value.toLowerCase();
-    this.searchQuery$.next(query);
+  /* ---------------- SEARCH ---------------- */
+  onSearch(event: Event) {
+    this.searchQuery.set((event.target as HTMLInputElement).value.trim());
   }
 
-  // Simplified method to get form controls
-  getControl(controlName: string): FormControl {
-    return this.form.get(controlName) as FormControl;
-  }
-
-
-  handleEnterKey(event: Event, currentIndex: number) {
-    const keyboardEvent = event as KeyboardEvent;
+  /* ---------------- SUBMIT ---------------- */
+  onSubmit(event: Event) {
     event.preventDefault();
-    const allInputs = this.inputRefs();
-    const inputs = allInputs.filter((i: any) => !i.nativeElement.disabled);
 
-    if (currentIndex + 1 < inputs.length) {
-      inputs[currentIndex + 1].nativeElement.focus();
-    } else {
-      this.onSubmit(keyboardEvent);
-    }
-  }
-
-  handleSearchKeyDown(event: KeyboardEvent) {
-    if (this.filteredVendorList().length === 0) {
-      return; // Exit if there are no items to navigate
+    if (!this.form().valid()) {
+      this.toast.warning('Form is Invalid!', 'bottom-right', 5000);
+      return;
     }
 
-    if (event.key === 'Tab') {
-      event.preventDefault();
-      const inputs = this.inputRefs();
-      inputs[0].nativeElement.focus();
-    } else if (event.key === 'ArrowDown') {
-      event.preventDefault(); // Prevent default scrolling behavior
-      this.highlightedTr = (this.highlightedTr + 1) % this.filteredVendorList().length;
-    } else if (event.key === 'ArrowUp') {
-      event.preventDefault(); // Prevent default scrolling behavior
-      this.highlightedTr =
-        (this.highlightedTr - 1 + this.filteredVendorList().length) % this.filteredVendorList().length;
-    } else if (event.key === 'Enter') {
-      event.preventDefault(); // Prevent form submission
+    this.isSubmitted.set(true);
 
-      // Call onUpdate for the currently highlighted item
-      if (this.highlightedTr !== -1) {
-        const selectedItem = this.filteredVendorList()[this.highlightedTr];
-        this.onUpdate(selectedItem);
-        this.highlightedTr = -1;
+    const payload = {
+      ...this.form().value(),
+      postBy: this.form().value().postBy || 'system' // Ensure postBy has a value
+    };
+
+    const request$ = this.selected()
+      ? this.vendorService.updateVendor(this.selected()!.id!, payload)
+      : this.vendorService.addVendor(payload);
+
+    request$.subscribe({
+      next: (response) => {
+        if (this.selected()) {
+          // Update the existing item in the list
+          this.vendors.update(list =>
+            list.map(item => item.id === response.id ? response : item)
+          );
+        } else {
+          // Add new item to the list
+          this.vendors.update(list => [response, ...list]);
+        }
+
+        this.onToggleList();
+        this.toast.success('Saved successfully!', 'bottom-right', 5000);
+      },
+      error: (error) => {
+        this.toast.danger('Save unsuccessful!', 'bottom-left', 3000);
+        console.error('Error submitting form:', error);
+        this.isSubmitted.set(false);
       }
-    }
+    });
   }
 
-  onSubmit(e: Event) {
-    this.isSubmitted = true;
-    if (this.form.valid) {
-      // console.log(this.form.value);
-      if (this.selectedVendor) {
-        this.vendorService.updateVendor(this.selectedVendor.id, this.form.value)
-          .subscribe({
-            next: (response) => {
-              if (response !== null && response !== undefined) {
-                this.toastService.showMessage('success', 'Successful', "Vendor successfully updated!");
-                const rest = this.filteredVendorList().filter(d => d.id !== response.id);
-                this.filteredVendorList.set([response, ...rest]);
-                this.isSubmitted = false;
-                this.selectedVendor = null;
-                this.formReset(e);
-              }
+  /* ---------------- UPDATE ---------------- */
+  onUpdate(data: any) { // Replace 'any' with VendorM type
+    this.selected.set(data);
 
-            },
-            error: (error) => {
-              console.error('Error register:', error);
-              this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message || error.error.title}`);
-            }
-          });
-      } else {
-        this.vendorService.addVendor(this.form.value)
-          .subscribe({
-            next: (response) => {
-              if (response !== null && response !== undefined) {
-                this.toastService.showMessage('success', 'Successful', "Vendor successfully added!");
-                this.filteredVendorList.set([response, ...this.filteredVendorList()])
-                this.isSubmitted = false;
-                this.formReset(e);
-              }
+    // Update form model
+    this.model.update(current => ({
+      ...current,
+      name: this.selected()?.name ?? "",
+      address: this.selected()?.address ?? "",
+      mobile: this.selected()?.mobile ?? "",
+      remarks: this.selected()?.remarks ?? "",
+      postBy: this.selected()?.postBy ?? "",
+    }));
 
-            },
-            error: (error) => {
-              console.error('Error register:', error);
-              this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message || error.error.title}`);
-            }
-          });
-      }
-    } else {
-      this.toastService.showMessage('warn', 'Warning', 'Form is invalid! Please Fill All Requirement Field.');
-    }
+    this.showList.set(false);
   }
 
-  onUpdate(data: any) {
-    this.selectedVendor = data;
-    this.form.patchValue({
-      name: data?.name,
-      address: data?.address,
-      mobile: data?.mobile,
-      remarks: data?.remarks,
-      postBy: data?.postBy
+  /* ---------------- DELETE ---------------- */
+  async onDelete(id: any) {
+    const ok = await this.confirm.confirm({
+      message: 'Are you sure you want to delete this vendor?',
+      confirmText: "Yes, I'm sure",
+      cancelText: 'No, cancel',
+      variant: 'danger',
     });
 
-    // Focus the 'Name' input field after patching the value
-    setTimeout(() => {
-      const inputs = this.inputRefs();
-      inputs[0].nativeElement.focus();
-    }, 0); // Delay to ensure the DOM is updated
-  }
-
-  onDelete(id: any) {
-    if (confirm("Are you sure you want to delete?")) {
-      this.vendorService.deleteVendor(id).subscribe(data => {
-        if (data.id) {
-          this.toastService.showMessage('success', 'Successful', "Vendor deleted successfully!");
-          this.filteredVendorList.set(this.filteredVendorList().filter(d => d.id !== id));
-        } else {
-          console.error('Error deleting Vendor:', data);
-          this.toastService.showMessage('error', 'Error', `Error deleting Vendor: ${data.message}`);
+    if (ok) {
+      this.vendorService.deleteVendor(id).subscribe({
+        next: (response) => {
+          if (response && response.id) {
+            this.vendors.update(list => list.filter(i => i.id !== id));
+            this.toast.success('Vendor deleted successfully!', 'bottom-right', 5000);
+          } else {
+            this.toast.danger('Delete unsuccessful!', 'bottom-left', 3000);
+          }
+        },
+        error: (error) => {
+          this.toast.danger('Delete unsuccessful!', 'bottom-left', 3000);
+          console.error('Error deleting vendor:', error);
         }
       });
     }
   }
 
-  formReset(e: Event): void {
-    e.preventDefault();
-    this.form.reset({
-      name: '',
-      address: '',
-      mobile: '',
-      remarks: '',
+  /* ---------------- RESET ---------------- */
+  formReset() {
+    this.model.set({
+      name: "",
+      address: "",
+      mobile: "",
+      remarks: "",
       postBy: this.authService.getUser()?.username || ''
     });
-    this.isSubmitted = false;
-    this.selectedVendor = null;
+
+    this.selected.set(null);
+    this.isSubmitted.set(false);
+    this.form().reset();
   }
 
+  onToggleList() {
+    this.showList.update(s => !s);
+    this.formReset();
+  }
 }

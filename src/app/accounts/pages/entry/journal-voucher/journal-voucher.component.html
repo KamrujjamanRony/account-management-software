@@ -13,7 +13,7 @@
                 #inputRef
                 type="date"
                 [formControl]="getControl('voucherDate')"
-                class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+                class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
                 [class.invalid]="
                   (getControl('voucherDate').invalid && getControl('voucherDate').touched) ||
                   isSubmitted
@@ -32,7 +32,7 @@
                 (change)="onTransactionTypeChange()"
                 placeholder=""
                 (keydown.enter)="handleEnterKey($event, 4)"
-                class="block py-2.5 px-2 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+                class="block py-2.5 px-2 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
                 [class.invalid]="
                   (getControl('transactionType').invalid &&
                     getControl('transactionType').touched) ||
@@ -54,7 +54,7 @@
                 #inputRef
                 type="text"
                 [formControl]="getControl('payTo')"
-                class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+                class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
                 placeholder=""
                 (keydown.enter)="handleEnterKey($event, 1)"
               />
@@ -98,7 +98,7 @@
                       #inputRef
                       formControlName="headId"
                       placeholder=""
-                      class="block py-2.5 px-2 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+                      class="block py-2.5 px-2 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
                       (input)="onHeadChanged($event, 'debit')"
                       (keydown.enter)="handleEnterKey($event, 8)"
                       required
@@ -120,7 +120,7 @@
                   <Field label="Head" class="w-1/2">
                     <select
                       placeholder=""
-                      class="block py-2.5 px-2 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+                      class="block py-2.5 px-2 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
                       disabled
                     >
                       <option value="" class="capitalize">Select Option</option>
@@ -135,7 +135,7 @@
                       #inputRef
                       formControlName="subHeadId"
                       placeholder=""
-                      class="block py-2.5 px-2 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+                      class="block py-2.5 px-2 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
                       (keydown.enter)="handleEnterKey($event, 9)"
                       [disabled]="debitSubHeadIdOption().length === 0"
                     >
@@ -151,7 +151,7 @@
                   <Field label="Sub Head" class="w-1/2">
                     <select
                       placeholder=""
-                      class="block py-2.5 px-2 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+                      class="block py-2.5 px-2 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
                       [disabled]="debitSubHeadIdOption().length === 0"
                     ></select>
                   </Field>
@@ -164,7 +164,7 @@
                   #inputRef
                   type="number"
                   formControlName="debitAmount"
-                  class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+                  class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
                   placeholder=""
                   (keydown.enter)="handleEnterKey($event, 10)"
                 />
@@ -176,7 +176,7 @@
                   #inputRef
                   type="text"
                   formControlName="remarks"
-                  class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+                  class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
                   placeholder=""
                   (keydown.enter)="handleEnterKey($event, 11)"
                 />
@@ -208,7 +208,7 @@
                       #inputRef
                       formControlName="headId"
                       placeholder=""
-                      class="block py-2.5 px-2 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+                      class="block py-2.5 px-2 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
                       (input)="onHeadChanged($event, 'credit')"
                       (keydown.enter)="handleEnterKey($event, 3)"
                       required
@@ -231,7 +231,7 @@
                   <Field label="Head" class="w-1/2">
                     <select
                       placeholder=""
-                      class="block py-2.5 px-2 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+                      class="block py-2.5 px-2 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
                       disabled
                     >
                       <option value="" class="capitalize">Select Option</option>
@@ -246,7 +246,7 @@
                       #inputRef
                       formControlName="subHeadId"
                       placeholder=""
-                      class="block py-2.5 px-2 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+                      class="block py-2.5 px-2 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
                       (keydown.enter)="handleEnterKey($event, 4)"
                       [disabled]="creditSubHeadIdOption().length === 0"
                     >
@@ -262,7 +262,7 @@
                   <Field label="Sub Head" class="w-1/2">
                     <select
                       placeholder=""
-                      class="block py-2.5 px-2 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+                      class="block py-2.5 px-2 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
                       [disabled]="creditSubHeadIdOption().length === 0"
                     ></select>
                   </Field>
@@ -275,7 +275,7 @@
                   #inputRef
                   type="number"
                   formControlName="creditAmount"
-                  class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+                  class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
                   placeholder=""
                   (keydown.enter)="handleEnterKey($event, 5)"
                 />
@@ -287,7 +287,7 @@
                   #inputRef
                   type="text"
                   formControlName="remarks"
-                  class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+                  class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
                   placeholder=""
                   (keydown.enter)="handleEnterKey($event, 6)"
                 />
@@ -327,7 +327,7 @@
         </h1>
 
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
-          <table class="w-full text-sm text-left rtl:text-right text-gray-950 mt-2">
+          <table class="w-full text-sm text-left rtl:text-right mt-2">
             <thead class="text-sm text-gray-50 capitalize bg-teal-800">
               <tr>
                 <th scope="col" class="p-1">head</th>
@@ -376,7 +376,7 @@
                 </tr>
               } @empty {
                 <tr>
-                  <td colspan="6" class="text-center text-gray-950">No data found</td>
+                  <td colspan="6" class="text-center">No data found</td>
                 </tr>
               }
               <tr
@@ -410,14 +410,14 @@
             id="fromDate"
             [(ngModel)]="fromDate"
             (change)="onTransactionTypeChange()"
-            class="border border-gray-500 text-gray-950 rounded-md px-5 py-2"
+            class="border border-gray-500 rounded-md px-5 py-2"
           />
           <input
             type="date"
             id="toDate"
             [(ngModel)]="toDate"
             (change)="onTransactionTypeChange()"
-            class="border border-gray-500 text-gray-950 rounded-md px-5 py-2"
+            class="border border-gray-500 rounded-md px-5 py-2"
           />
           <button
             class="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-heading rounded-base group bg-linear-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
@@ -440,7 +440,7 @@
           <p class="text-3xl font-bold text-center p-10 text-orange-600">Data is Empty.</p>
         } @else {
           <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
-            <table class="w-full text-sm text-left rtl:text-right text-gray-950 mt-2">
+            <table class="w-full text-sm text-left rtl:text-right mt-2">
               <thead class="text-sm text-gray-50 uppercase bg-teal-800">
                 <tr>
                   <th scope="col" class="p-1">voucherNo</th>

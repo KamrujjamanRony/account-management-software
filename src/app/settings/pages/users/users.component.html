@@ -13,7 +13,7 @@
                 #inputRef
                 type="text"
                 [formControl]="getControl('userName')"
-                class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+                class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
                 [class.invalid]="
                   (getControl('userName').invalid && getControl('userName').touched) || isSubmitted
                 "
@@ -29,7 +29,7 @@
                 #inputRef
                 type="password"
                 [formControl]="getControl('password')"
-                class="block py-2.5 px-0 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+                class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
                 [class.invalid]="
                   (getControl('password').invalid && getControl('password').touched) || isSubmitted
                 "
@@ -47,7 +47,7 @@
                 [formControl]="getControl('eId')"
                 placeholder=""
                 (keydown.enter)="handleEnterKey($event, 2)"
-                class="block py-2.5 px-2 w-full text-sm text-gray-950 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
+                class="block py-2.5 px-2 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
               >
                 <option value="null" class="capitalize">Select Employee</option>
                 @for (option of employeeOption(); track $index) {
@@ -71,9 +71,7 @@
                   name="isActive"
                   class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 focus:ring-green-500 focus:ring-2"
                 />
-                <label for="active-radio" class="ms-2 text-sm font-medium text-gray-950"
-                  >Activate</label
-                >
+                <label for="active-radio" class="ms-2 text-sm font-medium">Activate</label>
               </div>
               <div class="flex items-center me-4">
                 <input
@@ -84,9 +82,7 @@
                   name="isActive"
                   class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 focus:ring-red-500 focus:ring-2"
                 />
-                <label for="deactivate-radio" class="ms-2 text-sm font-medium text-gray-950"
-                  >Deactivate</label
-                >
+                <label for="deactivate-radio" class="ms-2 text-sm font-medium">Deactivate</label>
               </div>
             </div>
 
@@ -129,7 +125,7 @@
                   type="text"
                   id="table-search"
                   autocomplete="off"
-                  class="block ps-10 text-xs text-gray-950 border border-gray-300 rounded bg-teal-100 focus:ring-teal-500 focus:border-teal-500 w-full"
+                  class="block ps-10 text-xs border border-gray-300 rounded bg-teal-100 focus:ring-teal-500 focus:border-teal-500 w-full"
                   placeholder="Search"
                   (input)="onSearchUser($event)"
                   (keydown)="handleSearchKeyDown($event)"
@@ -147,7 +143,7 @@
           } @else if (filteredUserList().length === 0) {
             <p class="text-3xl font-bold text-center p-10 text-orange-600">Data is Empty.</p>
           } @else {
-            <table class="w-full text-sm text-left rtl:text-right text-gray-950 mt-2">
+            <table class="w-full text-sm text-left rtl:text-right mt-2">
               <thead class="text-sm text-gray-50 uppercase bg-gray-800">
                 <tr>
                   <th scope="col" class="p-1">user Name</th>

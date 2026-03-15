@@ -7,6 +7,8 @@ import { BankService } from '../../../services/bank.service';
 import { PermissionS } from '../../../../settings/services/permission-s';
 import { ToastService } from '../../../../utils/toast/toast.service';
 import { ConfirmService } from '../../../../utils/confirm/confirm.service';
+import { BankM } from '../../../models/Bank';
+import { AuthService } from '../../../../settings/services/auth.service';
 
 @Component({
   selector: 'app-bank',
@@ -25,11 +27,12 @@ export class Bank {
   private permissionService = inject(PermissionS);
   private toast = inject(ToastService);
   private confirm = inject(ConfirmService);
+  private authService = inject(AuthService);
 
 
 
   /* ---------------- SIGNAL STATE ---------------- */
-  supplier = signal<SupplierM[]>([]);
+  banks = signal<BankM[]>([]);
   searchQuery = signal('');
 
   isView = signal(false);
@@ -38,18 +41,17 @@ export class Bank {
   isDelete = signal(false);
   showList = signal(true);
 
-  filteredSupplierList = computed(() => {
+  filteredBankList = computed(() => {
     const query = this.searchQuery().toLowerCase();
 
-    return this.supplier()
+    return this.banks()
       .filter(data =>
         String(data.address ?? '').toLowerCase().includes(query) ||
-        String(data.name ?? '').toLowerCase().includes(query) ||
-        data.mobileNo?.toLowerCase().includes(query)
+        String(data.name ?? '').toLowerCase().includes(query)
       )
   });
 
-  selected = signal<SupplierM | null>(null);
+  selected = signal<BankM | null>(null);
   isLoading = signal(false);
   hasError = signal(false);
   isSubmitted = signal(false);
@@ -59,37 +61,31 @@ export class Bank {
   model = signal({
     name: "",
     address: "",
-    mobileNo: "",
-    valid: 0,
-    userName: "",
-    vatNo: "",
-    crNo: "",
-    image1: "",
-    image2: "",
-    pno: 0
+    remarks: "",
+    postBy: this.authService.getUser()?.username || ''
   });
 
   /* ---------------- SIGNAL FORM ---------------- */
   form = form(this.model, (schemaPath) => {
-    required(schemaPath.name, { message: 'Supplier name is required' });
+    required(schemaPath.name, { message: 'Bank name is required' });
     debounce(schemaPath.name, 300);
   });
 
   /* ---------------- LIFECYCLE ---------------- */
   ngOnInit(): void {
-    this.loadSupplier();
+    this.loadBank();
     this.loadPermissions();
   };
 
   /* ---------------- LOADERS ---------------- */
   loadPermissions() {
-    this.isView.set(this.permissionService.hasPermission('Suppliers'));
-    this.isInsert.set(this.permissionService.hasPermission('Suppliers', 'create'));
-    this.isEdit.set(this.permissionService.hasPermission('Suppliers', 'edit'));
-    this.isDelete.set(this.permissionService.hasPermission('Suppliers', 'delete'));
+    this.isView.set(this.permissionService.hasPermission('Bank Setup'));
+    this.isInsert.set(this.permissionService.hasPermission('Bank Setup', 'create'));
+    this.isEdit.set(this.permissionService.hasPermission('Bank Setup', 'edit'));
+    this.isDelete.set(this.permissionService.hasPermission('Bank Setup', 'delete'));
   }
 
-  loadSupplier() {
+  loadBank() {
     this.isLoading.set(true);
     this.hasError.set(false);
 
@@ -97,9 +93,9 @@ export class Bank {
       searchText: ""
     };
 
-    this.supplierService.search(params).subscribe({
+    this.bankService.search("").subscribe({
       next: (data) => {
-        this.supplier.set(data.map((d: SupplierM) => (d?.entryDate ? { ...d, entryDate: d?.entryDate.split("T")[0] } : { ...d })));
+        this.banks.set(data);
         this.isLoading.set(false);
       },
       error: () => {
@@ -128,12 +124,12 @@ export class Bank {
     const payload = this.form().value();
 
     const request$ = this.selected()
-      ? this.supplierService.update(this.selected()!.id!, payload)
-      : this.supplierService.add(payload);
+      ? this.bankService.update(this.selected()!.id!, payload)
+      : this.bankService.add(payload);
 
     request$.subscribe({
       next: () => {
-        this.loadSupplier();
+        this.loadBank();
         this.onToggleList();
         this.toast.success('Saved successfully!', 'bottom-right', 5000);
       },
@@ -146,7 +142,7 @@ export class Bank {
   }
 
   /* ---------------- UPDATE ---------------- */
-  onUpdate(data: SupplierM) {
+  onUpdate(data: BankM) {
     // this.form().reset();
     this.selected.set(data);
     // Update form model
@@ -154,37 +150,34 @@ export class Bank {
       ...current,
       name: this.selected()?.name ?? "",
       address: this.selected()?.address ?? "",
-      mobileNo: this.selected()?.mobileNo ?? "",
-      userName: this.selected()?.userName ?? "",
-      vatNo: this.selected()?.vatNo ?? "",
-      crNo: this.selected()?.crNo ?? "",
-      image1: this.selected()?.image1 ?? "",
-      image2: this.selected()?.image2 ?? "",
-      valid: this.selected()?.valid ?? 0,
-      pno: this.selected()?.pno ?? 0,
+      remarks: this.selected()?.remarks ?? "",
+      postBy: this.selected()?.postBy ?? "",
     }));
     this.showList.set(false);
   }
 
   /* ---------------- DELETE ---------------- */
   async onDelete(id: any) {
+    console.log(id);
     const ok = await this.confirm.confirm({
-      message: 'Are you sure you want to delete this Supplier?',
+      message: 'Are you sure you want to delete this bank?',
       confirmText: "Yes, I'm sure",
       cancelText: 'No, cancel',
       variant: 'danger',
     });
 
+    console.log(ok);
+
     if (ok) {
-      // Delete Supplier
-      this.supplierService.delete(id).subscribe({
+      // Delete bank
+      this.bankService.delete(id).subscribe({
         next: () => {
-          this.supplier.update(list => list.filter(i => i.id !== id));
-          this.toast.success('Supplier deleted successfully!', 'bottom-right', 5000);
+          this.banks.update(list => list.filter(i => i.id !== id));
+          this.toast.success('Bank deleted successfully!', 'bottom-right', 5000);
         },
         error: (error) => {
-        this.toast.danger('Supplier deleted unsuccessful!', 'bottom-left', 3000);
-          console.error('Error deleting Supplier:', error);
+        this.toast.danger('Bank deleted unsuccessful!', 'bottom-left', 3000);
+          console.error('Error deleting bank:', error);
         }
       });
     }
@@ -195,14 +188,8 @@ export class Bank {
     this.model.set({
       name: "",
       address: "",
-      mobileNo: "",
-      valid: 0,
-      userName: "",
-      vatNo: "",
-      crNo: "",
-      image1: "",
-      image2: "",
-      pno: 0
+      remarks: "",
+      postBy: this.authService.getUser()?.username || ''
     });
 
     this.selected.set(null);
