@@ -1,354 +1,411 @@
-import { Component, ElementRef, inject, signal, viewChildren, viewChild } from '@angular/core';
-import { FormControl, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
-import { SearchComponent } from "../../../../shared/components/svg/search/search.component";
+import { Component, computed, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FieldComponent } from "../../../../shared/components/field/field.component";
+import { FormsModule } from '@angular/forms';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { 
+  faPencil, 
+  faXmark, 
+  faMagnifyingGlass,
+  faGrin,
+  faTree 
+} from '@fortawesome/free-solid-svg-icons';
+import { form, required, validate, debounce, FormField } from '@angular/forms/signals';
 import { BankService } from '../../../services/bank.service';
 import { AccountListService } from '../../../services/account-list.service';
-import { DataFetchService } from '../../../../shared/services/useDataFetch';
-import { ToastService } from '../../../../shared/components/primeng/toast/toast.service';
+import { PermissionS } from '../../../../settings/services/permission-s';
+import { ToastService } from '../../../../utils/toast/toast.service';
+import { ConfirmService } from '../../../../utils/confirm/confirm.service';
+import { TreeNodeComponent } from './tree-node';
 import { AuthService } from '../../../../settings/services/auth.service';
-import { AllSvgComponent } from "../../../../shared/components/svg/all-svg/all-svg.component";
 
 @Component({
   selector: 'app-account-list-entry',
-  imports: [SearchComponent, CommonModule, ReactiveFormsModule, FieldComponent, AllSvgComponent],
+  standalone: true,
+  imports: [CommonModule, FormsModule, FormField, FontAwesomeModule, TreeNodeComponent],
   templateUrl: './account-list-entry.component.html',
-  styleUrl: './account-list-entry.component.css'
+  styleUrls: ['./account-list-entry.component.css']
 })
 export class AccountListEntryComponent {
-  fb = inject(NonNullableFormBuilder);
+  // Icons
+  faPencil = faPencil;
+  faXmark = faXmark;
+  faMagnifyingGlass = faMagnifyingGlass;
+  faGrin = faGrin;
+  faTree = faTree;
+  
+  @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
+
+  /* ---------------- DI ---------------- */
   private bankService = inject(BankService);
   private accountListService = inject(AccountListService);
-  private dataFetchService = inject(DataFetchService);
-  private toastService = inject(ToastService);
+  private permissionService = inject(PermissionS);
+  private toast = inject(ToastService);
+  private confirm = inject(ConfirmService);
   private authService = inject(AuthService);
-  isView = signal<boolean>(false);
-  isInsert = signal<boolean>(false);
-  isEdit = signal<boolean>(false);
-  isDelete = signal<boolean>(false);
-  filteredAccountList = signal<any[]>([]);
-  show = signal<boolean>(false);
-  highlightedTr: number = -1;
-  selectedAccount = signal<any>(null);
-  isGrid = signal<boolean>(false);
 
+  /* ---------------- SIGNAL STATE ---------------- */
+  accounts = signal<any[]>([]);
+  searchQuery = signal('');
+
+  isView = signal(false);
+  isInsert = signal(false);
+  isEdit = signal(false);
+  isDelete = signal(false);
+  showList = signal(true);
+  
+  // UI State
+  show = signal(false);
+  isGrid = signal(true);
+  isCollapsed = signal<{ [key: number]: boolean }>({});
+
+  // Dropdown Options
   controlHeadOption = signal<any[]>([]);
   bankOption = signal<any[]>([]);
-  accountGroupOption = signal<any[]>(["Current Asset", "NonCurrent/Fixed Asset", "Current Liability", "NonCurrent Liability", "Equity", "Income", "Expenses", "Assets", "Liability"]);
-  coaMapOption = signal<any[]>(["Cash", "Bank"]);
+  accountGroupOption = signal<string[]>([
+    "Current Asset", "NonCurrent/Fixed Asset", "Current Liability", 
+    "NonCurrent Liability", "Equity", "Income", "Expenses", 
+    "Assets", "Liability"
+  ]);
+  coaMapOption = signal<string[]>(["Cash", "Bank"]);
 
+  // Tree Data
   treeData = signal<any[]>([]);
-  isLoadingTree$: Observable<boolean> | undefined;
-  hasErrorTree$: Observable<any> | undefined;
+  isLoadingTree = signal(false);
+  hasErrorTree = signal(false);
 
-  // Initially set all nodes to collapsed
-  isCollapsed: { [key: number]: boolean } = {};
+  filteredAccountList = computed(() => {
+    const query = this.searchQuery().toLowerCase();
 
-  private searchQuery$ = new BehaviorSubject<string>('');
-  isLoading$: Observable<any> | undefined;
-  hasError$: Observable<any> | undefined;
-  readonly inputRefs = viewChildren<ElementRef>('inputRef');
-  readonly searchInput = viewChild.required<ElementRef<HTMLInputElement>>('searchInput');
-  isSubmitted = false;
-
-  form = this.fb.group({
-    controlHeadId: [{ value: '', disabled: false }, [Validators.required]],
-    accountCode: [''],
-    accountGroup: ['', [Validators.required]],
-    subHead: ['', [Validators.required]],
-    coaMap: [''],
-    bankId: [0],
-    accountNo: [''],
-    openingBalance: [0],
-    remarks: [''],
-    postBy: [this.authService.getUser()?.username || '']
+    return this.accounts()
+      .filter(data =>
+        String(data.accountCode ?? '').toLowerCase().includes(query) ||
+        String(data.subHead ?? '').toLowerCase().includes(query) ||
+        String(data.accountGroup ?? '').toLowerCase().includes(query) ||
+        String(data.coaMap ?? '').toLowerCase().includes(query) ||
+        String(data.accountNo ?? '').toLowerCase().includes(query) ||
+        String(data.remarks ?? '').toLowerCase().includes(query)
+      )
   });
 
-  ngOnInit() {
-    this.onLoadAccountList();
-    this.onLoadBanks();
-    this.onLoadAccountTree();
-    this.isView.set(this.checkPermission("Chart Of Account", "View"));
-    this.isInsert.set(this.checkPermission("Chart Of Account", "Insert"));
-    this.isEdit.set(this.checkPermission("Chart Of Account", "Edit"));
-    this.isDelete.set(this.checkPermission("Chart Of Account", "Delete"));
+  selected = signal<any | null>(null);
+  isLoading = signal(false);
+  hasError = signal(false);
+  isSubmitted = signal(false);
 
-    // Focus on the search input when the component is initialized
-    setTimeout(() => {
-      const inputs = this.inputRefs();
-      inputs[0]?.nativeElement.focus();
-    }, 10); // Delay to ensure the DOM is updated
+  /* ---------------- FORM MODEL ---------------- */
+  // Use primitive values only (strings)
+  model = signal({
+    controlHeadId: '',
+    accountCode: '',
+    accountGroup: '',
+    subHead: '',
+    coaMap: '',
+    bankId: '0',
+    accountNo: '',
+    openingBalance: '0',
+    remarks: '',
+    postBy: this.authService.getUser()?.username || ''
+  });
+
+  /* ---------------- SIGNAL FORM ---------------- */
+  form = form(this.model, (schemaPath) => {
+    required(schemaPath.subHead, { message: 'Sub head is required' });
+    required(schemaPath.controlHeadId, { message: 'Control head is required' });
+    required(schemaPath.accountGroup, { message: 'Account group is required' });
+    debounce(schemaPath.subHead, 300);
+    
+    // Custom validation for opening balance
+    validate(schemaPath.openingBalance, (field) => {
+      const openingBalance = field.value();
+
+      if (openingBalance && Number.isNaN(Number(openingBalance))) {
+        return { kind: 'openingBalance', message: 'Opening balance must be a number' };
+      }
+
+      return null;
+    });
+  });
+
+  /* ---------------- LIFECYCLE ---------------- */
+  ngOnInit(): void {
+    this.loadPermissions();
+    this.loadAccounts();
+    this.loadBanks();
+    this.loadAccountTree();
   }
 
-  onLoadAccountList() {
-    const { data$, isLoading$, hasError$ } = this.dataFetchService.fetchData(this.accountListService.getAccountList({
-      "headId": null,
-      "allbyheadId": 1,
-      "search": null,
-      "coaMap": [],
-      "accountGroup": []
-    }));
-
-    data$.subscribe(data => this.controlHeadOption.set(data.map((c: any) => ({ id: c.id, text: c.subHead }))));
-
-    this.isLoading$ = isLoading$;
-    this.hasError$ = hasError$;
-    // Combine the original data stream with the search query to create a filtered list
-    combineLatest([
-      data$,
-      this.searchQuery$
-    ]).pipe(
-      map(([data, query]) =>
-        data.filter((accountData: any) =>
-          accountData.accountCode?.toLowerCase().includes(query) ||
-          accountData.accountGroup?.toLowerCase().includes(query) ||
-          accountData.subHead?.toLowerCase().includes(query) ||
-          accountData.coaMap?.toLowerCase().includes(query) ||
-          accountData.accountNo?.toLowerCase().includes(query) ||
-          accountData.remarks?.toLowerCase().includes(query)
-        )
-      )
-    ).subscribe(filteredData => this.filteredAccountList.set(filteredData.reverse()));
+  /* ---------------- LOADERS ---------------- */
+  loadPermissions() {
+    this.isView.set(this.permissionService.hasPermission('Chart Of Account'));
+    this.isInsert.set(this.permissionService.hasPermission('Chart Of Account', 'insert'));
+    this.isEdit.set(this.permissionService.hasPermission('Chart Of Account', 'edit'));
+    this.isDelete.set(this.permissionService.hasPermission('Chart Of Account', 'delete'));
+    
+    console.log('Insert permission:', this.isInsert()); // Debug log
   }
 
-  onLoadBanks() {
-    const { data$ } = this.dataFetchService.fetchData(this.bankService.search(''));
+  loadAccounts() {
+    this.isLoading.set(true);
+    this.hasError.set(false);
 
-    data$.subscribe(data => this.bankOption.set(data.map((b: any) => ({ id: b.id, text: b.name }))));
+    const params = {
+      headId: null,
+      allbyheadId: 1,
+      search: null,
+      coaMap: [],
+      accountGroup: []
+    };
+
+    this.accountListService.getAccountList(params).subscribe({
+      next: (data) => {
+        this.accounts.set(data);
+        const heads = data.map((c: any) => ({ id: c.id, text: c.subHead }));
+        this.controlHeadOption.set(heads);
+        this.isLoading.set(false);
+      },
+      error: (error) => {
+        console.error('Error loading accounts:', error);
+        this.hasError.set(true);
+        this.isLoading.set(false);
+      }
+    });
   }
 
-  // Method to filter Account list based on search query
-  onSearchAccount(event: Event) {
-    const query = (event.target as HTMLInputElement).value;
-    this.searchQuery$.next(query);
+  loadBanks() {
+    this.bankService.search('').subscribe({
+      next: (data) => {
+        this.bankOption.set(data.map((b: any) => ({ id: b.id, text: b.name })));
+      },
+      error: (error) => {
+        console.error('Error loading banks:', error);
+      }
+    });
   }
 
-  // Simplified method to get form controls
-  getControl(controlName: string): FormControl {
-    return this.form.get(controlName) as FormControl;
+  loadAccountTree() {
+    this.isLoadingTree.set(true);
+    this.hasErrorTree.set(false);
+
+    this.accountListService.getTreeView().subscribe({
+      next: (data) => {
+        console.log('Tree data:', data[0]); // Debug log
+        this.treeData.set(data);
+        this.initializeCollapseState(this.treeData());
+        this.isLoadingTree.set(false);
+      },
+      error: (error) => {
+        console.error('Error loading tree:', error);
+        this.hasErrorTree.set(true);
+        this.isLoadingTree.set(false);
+      }
+    });
   }
 
+  /* ---------------- SEARCH ---------------- */
+  onSearch(event: Event) {
+    this.searchQuery.set((event.target as HTMLInputElement).value.trim());
+  }
 
-  handleEnterKey(event: Event, currentIndex: number) {
-    const keyboardEvent = event as KeyboardEvent;
+  /* ---------------- SUBMIT ---------------- */
+  onSubmit(event: Event) {
     event.preventDefault();
-    const allInputs = this.inputRefs();
-    const inputs = allInputs.filter((i: any) => !i.nativeElement.disabled);
 
-    if (currentIndex + 1 < inputs.length) {
-      inputs[currentIndex + 1].nativeElement.focus();
-    } else {
-      this.onSubmit(keyboardEvent);
-    }
-  }
-
-  handleSearchKeyDown(event: KeyboardEvent) {
-    if (this.filteredAccountList().length === 0) {
-      return; // Exit if there are no items to navigate
+    if (!this.form().valid()) {
+      this.toast.warning('Form is Invalid!', 'bottom-right', 5000);
+      return;
     }
 
-    if (event.key === 'Tab') {
-      event.preventDefault();
-      const inputs = this.inputRefs();
-      inputs[0].nativeElement.focus();
-    } else if (event.key === 'ArrowDown') {
-      event.preventDefault(); // Prevent default scrolling behavior
-      this.highlightedTr = (this.highlightedTr + 1) % this.filteredAccountList().length;
-    } else if (event.key === 'ArrowUp') {
-      event.preventDefault(); // Prevent default scrolling behavior
-      this.highlightedTr =
-        (this.highlightedTr - 1 + this.filteredAccountList().length) % this.filteredAccountList().length;
-    } else if (event.key === 'Enter') {
-      event.preventDefault(); // Prevent form submission
+    this.isSubmitted.set(true);
 
-      // Call onUpdate for the currently highlighted item
-      if (this.highlightedTr !== -1) {
-        const selectedItem = this.filteredAccountList()[this.highlightedTr];
-        this.onUpdate(selectedItem);
-        this.highlightedTr = -1;
+    const formValue = this.form().value();
+    
+    // Prepare payload for API
+    const payload = {
+      controlHeadId: formValue.controlHeadId ? Number(formValue.controlHeadId) : null,
+      accountCode: formValue.accountCode || '',
+      accountGroup: formValue.accountGroup || '',
+      subHead: formValue.subHead || '',
+      coaMap: formValue.coaMap || '',
+      bankId: formValue.bankId ? Number(formValue.bankId) : 0,
+      accountNo: formValue.accountNo || '',
+      openingBalance: formValue.openingBalance ? Number(formValue.openingBalance) : 0,
+      remarks: formValue.remarks || '',
+      postBy: formValue.postBy || this.authService.getUser()?.username || 'system'
+    };
+
+    const request$ = this.selected()
+      ? this.accountListService.updateAccountList(this.selected()!.id, payload)
+      : this.accountListService.addAccountList(payload);
+
+    request$.subscribe({
+      next: (response) => {
+        if (this.selected()) {
+          // Update the existing item in the list
+          this.accounts.update(list => 
+            list.map(item => item.id === response.id ? response : item)
+          );
+        } else {
+          // Add new item to the list
+          this.accounts.update(list => [response, ...list]);
+        }
+        
+        // Refresh tree data
+        this.loadAccountTree();
+        this.onToggleList();
+        this.toast.success('Saved successfully!', 'bottom-right', 5000);
+        this.isSubmitted.set(false);
+      },
+      error: (error) => {
+        this.toast.danger(error.error?.message || 'Save unsuccessful!', 'bottom-left', 3000);
+        console.error('Error submitting form:', error);
+        this.isSubmitted.set(false);
       }
-    }
+    });
   }
 
-  onSubmit(e: Event) {
-    this.isSubmitted = true;
-    // console.log(this.form.value);
-    if (this.form.valid) {
-      this.form.get('controlHeadId')?.enable();
-      this.form.get('accountGroup')?.enable();
-      const requestData = { ...this.form.value, openingBalance: Number(this.form.value.openingBalance) };
-      if (this.selectedAccount()) {
-        this.accountListService.updateAccountList(this.selectedAccount()?.id, requestData)
-          .subscribe({
-            next: (response) => {
-              if (response !== null && response !== undefined) {
-                this.toastService.showMessage('success', 'Successful', "ChartofAccount successfully updated!");
-                const rest = this.filteredAccountList().filter(d => d.id !== response.id);
-                this.filteredAccountList.set([response, ...rest]);
-                this.isSubmitted = false;
-                this.selectedAccount.set(null);
-                this.formReset(e);
-              }
-
-            },
-            error: (error) => {
-              console.error('Error register:', error);
-              this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message || error.error.title}`);
-            }
-          });
-      } else {
-        this.accountListService.addAccountList(requestData)
-          .subscribe({
-            next: (response) => {
-              // console.log(response)
-              if (response !== null && response !== undefined) {
-                this.toastService.showMessage('success', 'Successful', "ChartofAccount successfully added!");
-                this.filteredAccountList.set([response, ...this.filteredAccountList()])
-                this.isSubmitted = false;
-                this.formReset(e);
-                this.onLoadAccountTree()
-              }
-
-            },
-            error: (error) => {
-              console.error('Error Adding Account:', error);
-              this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message || error.error.title}`);
-            }
-          });
-      }
-    } else {
-      this.toastService.showMessage('warn', 'Warning', 'Form is invalid! Please Fill All Requirement Field.');
-    }
-  }
-
+  /* ---------------- UPDATE ---------------- */
   onUpdate(data: any) {
-    this.selectedAccount.set(data);
-    this.form.patchValue({
-      controlHeadId: data?.controlHeadId,
-      accountCode: data?.accountCode,
-      accountGroup: data?.accountGroup,
-      subHead: data?.subHead,
-      coaMap: data?.coaMap,
-      bankId: data?.bankId,
-      accountNo: data?.accountNo,
-      openingBalance: data?.openingBalance,
-      remarks: data?.remarks,
-      postBy: data?.postBy
+    this.selected.set(data);
+    
+    // Update form model with string values
+    this.model.update(current => ({
+      ...current,
+      controlHeadId: String(data?.controlHeadId ?? ''),
+      accountCode: data?.accountCode ?? '',
+      accountGroup: data?.accountGroup ?? '',
+      subHead: data?.subHead ?? '',
+      coaMap: data?.coaMap ?? '',
+      bankId: String(data?.bankId ?? '0'),
+      accountNo: data?.accountNo ?? '',
+      openingBalance: String(data?.openingBalance ?? '0'),
+      remarks: data?.remarks ?? '',
+      postBy: data?.postBy ?? '',
+    }));
+    
+    this.showList.set(false);
+  }
+
+  /* ---------------- DELETE ---------------- */
+  async onDelete(id: any) {
+    const ok = await this.confirm.confirm({
+      message: 'Are you sure you want to delete this account?',
+      confirmText: "Yes, I'm sure",
+      cancelText: 'No, cancel',
+      variant: 'danger',
     });
 
-    this.form.get('controlHeadId')?.disable();
-
-    // Focus the 'Name' input field after patching the value
-    setTimeout(() => {
-      const inputs = this.inputRefs();
-      inputs[0].nativeElement.focus();
-    }, 0); // Delay to ensure the DOM is updated
-  }
-
-  onDelete(id: any) {
-    if (confirm("Are you sure you want to delete?")) {
-      this.accountListService.deleteAccountList(id).subscribe(data => {
-        if (data.id) {
-          this.toastService.showMessage('success', 'Successful', 'ChartOfAccount deleted successfully!');
-          this.filteredAccountList.set(this.filteredAccountList().filter(d => d.id !== id));
-          this.onLoadAccountTree();
-        } else {
-          console.error('Error deleting ChartOfAccount:', data);
-          this.toastService.showMessage('error', 'Error', `Error deleting ChartOfAccount:  ${data.message}`);
+    if (ok) {
+      this.accountListService.deleteAccountList(id).subscribe({
+        next: (response) => {
+          if (response && response.id) {
+            this.accounts.update(list => list.filter(i => i.id !== id));
+            this.loadAccountTree(); // Refresh tree data
+            this.toast.success('Account deleted successfully!', 'bottom-right', 5000);
+          } else {
+            this.toast.danger('Delete unsuccessful!', 'bottom-left', 3000);
+          }
+        },
+        error: (error) => {
+          this.toast.danger(error.error?.message || 'Delete unsuccessful!', 'bottom-left', 3000);
+          console.error('Error deleting account:', error);
         }
       });
     }
   }
 
-  formReset(e: Event): void {
-    e.preventDefault();
-    this.form.get('controlHeadId')?.enable();
-    this.form.reset();
-    this.form.patchValue({
+  /* ---------------- RESET ---------------- */
+  formReset() {
+    this.model.set({
+      controlHeadId: '',
+      accountCode: '',
+      accountGroup: '',
+      subHead: '',
+      coaMap: '',
+      bankId: '0',
+      accountNo: '',
+      openingBalance: '0',
+      remarks: '',
       postBy: this.authService.getUser()?.username || ''
     });
-    this.isSubmitted = false;
-    this.selectedAccount.set(null);
+
+    this.selected.set(null);
+    this.isSubmitted.set(false);
+    this.form().reset();
   }
 
-
-
-
-  //------ Start Tree Functions --------------------------------
-
-  onLoadAccountTree() {
-    const { data$, isLoading$, hasError$ } = this.dataFetchService.fetchData(
-      this.accountListService.getTreeView()
-    );
-
-    data$.subscribe(data => {
-      this.treeData.set(data);
-      this.initializeCollapseState(this.treeData());
-    });
-
-    this.isLoadingTree$ = isLoading$;
-    this.hasErrorTree$ = hasError$;
+  onToggleList() {
+    this.showList.update(s => !s);
+    this.formReset();
   }
 
+  onToggleShow(e: Event) {
+    e.preventDefault();
+    this.show.update(s => !s);
+  }
 
-
-  // Initialize all nodes to be collapsed
+  /* ---------------- TREE FUNCTIONS ---------------- */
   initializeCollapseState(nodes: any[]) {
-    nodes.forEach(node => {
-      this.isCollapsed[node.id] = true;
-      if (node.children && node.children.length > 0) {
-        this.initializeCollapseState(node.children);
-      }
-    });
+    const newCollapsed: { [key: number]: boolean } = {};
+    
+    const setCollapsed = (nodeList: any[]) => {
+      nodeList.forEach(node => {
+        newCollapsed[node.id] = true;
+        if (node.children && node.children.length > 0) {
+          setCollapsed(node.children);
+        }
+      });
+    };
+    
+    setCollapsed(nodes);
+    this.isCollapsed.set(newCollapsed);
   }
 
-  toggleNode(id: number, length: any) {
+  toggleNode(id: number, length: number) {
     if (length > 0) {
-      this.isCollapsed[id] = !this.isCollapsed[id];
+      this.isCollapsed.update(state => ({
+        ...state,
+        [id]: !state[id]
+      }));
     }
   }
 
-  onAdd(data: any) {
-    const findData = this.filteredAccountList().find((d: any) => d.id == data.id);
-    this.form.patchValue({
-      controlHeadId: data?.id,
-      accountGroup: findData?.accountGroup,
-    });
-
-    this.form.get('accountGroup')?.disable();
-    this.form.get('controlHeadId')?.disable();
-  }
-  //------ End Tree Functions --------------------------------
-
-
-
-
-  // ----------Utility function start---------------------------------------------------------------------------------
-  onToggleShow(e: any) {
-    e.preventDefault();
-    this.show.set(!this.show())
+  onAdd(node: any) {
+    console.log('Adding child to node:', node); // Debug log
+    
+    // Find the account data for this node
+    const findData = this.accounts().find((d: any) => d.id == node.id);
+    
+    // Update form model
+    this.model.update(current => ({
+      ...current,
+      controlHeadId: String(node?.id ?? ''),
+      accountGroup: findData?.accountGroup ?? '',
+    }));
+    
+    this.showList.set(false);
+    
+    // Show warning toast
+    this.toast.warning(`Adding child under: ${node.subHead}`, 'bottom-right', 3000);
   }
 
-  displayHead(id: any) {
-    return this.controlHeadOption().find((option: any) => option.id == id)?.text ?? "";
+  /* ---------------- UTILITY FUNCTIONS ---------------- */
+  displayHead(id: any): string {
+    if (!id) return '-';
+    const found = this.controlHeadOption().find((option: any) => option.id == id);
+    return found?.text ?? '-';
   }
-
 
   checkPermission(moduleName: string, permission: string) {
-    const modulePermission = this.authService.getUser()?.userMenu?.find((module: any) => module?.menuName?.toLowerCase() === moduleName.toLowerCase());
+    const modulePermission = this.authService.getUser()?.userMenu?.find(
+      (module: any) => module?.menuName?.toLowerCase() === moduleName.toLowerCase()
+    );
+    
     if (modulePermission) {
-      const permissionValue = modulePermission.permissions.find((perm: any) => perm.toLowerCase() === permission.toLowerCase());
-      if (permissionValue) {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      return false;
+      const permissionValue = modulePermission.permissions.find(
+        (perm: any) => perm.toLowerCase() === permission.toLowerCase()
+      );
+      return !!permissionValue;
     }
+    return false;
   }
-  // ----------Utility function end---------------------------------------------------------------------------------
-
 }

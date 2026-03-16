@@ -1,444 +1,448 @@
 @if (isView()) {
-  <section class="flex flex-col xl:flex-row gap-1 md:gap-5">
-    @if (isInsert()) {
-      <div class="w-full xl:max-w-md border mb-10">
-        <h1 class="text-xl md:text-3xl font-bold text-teal-500 underline text-center mb-5">
-          Account Form
-        </h1>
-        <form [formGroup]="form" (ngSubmit)="onSubmit($event)" class="min-w-[400px] mx-auto px-2">
-          <!-- subHead -->
-          <Field label="Sub Head">
-            <input
-              #inputRef
-              type="text"
-              maxlength="255"
-              [formControl]="getControl('subHead')"
-              class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
-              [class.invalid]="
-                (getControl('subHead').invalid && getControl('subHead').touched) || isSubmitted
-              "
-              placeholder=""
-              (keydown.enter)="handleEnterKey($event, 3)"
-            />
-          </Field>
-          <!-- controlHeadId -->
-          <div class="gap-2 relative">
-            <Field label="Control Head">
-              <select
-                #inputRef
-                name="controlHeadId"
-                [formControl]="getControl('controlHeadId')"
-                placeholder=""
-                (keydown.enter)="handleEnterKey($event, 2)"
-                class="block py-2.5 px-2 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
-                [class.invalid]="
-                  (getControl('controlHeadId').invalid && getControl('controlHeadId').touched) ||
-                  isSubmitted
-                "
-              >
-                <option value="" class="capitalize">Select Option</option>
-                @for (option of controlHeadOption(); track $index) {
-                  <option [value]="option?.id" class="capitalize">
-                    {{ option?.text }}
-                  </option>
-                }
-              </select>
-            </Field>
-          </div>
-
-          <!-- accountCode -->
-          <!-- <Field label="Account Code">
-        <input
-          #inputRef
-          type="text"
-          maxlength="64"
-          [formControl]="getControl('accountCode')"
-          class="block py-2.5 px-0 w-full text-sm  bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
-          placeholder=""
-          (keydown.enter)="handleEnterKey($event, 1)"
-        />
-      </Field> -->
-
-          <!-- accountGroup -->
-          <Field label="Account Group">
-            <select
-              #inputRef
-              name="accountGroup"
-              [formControl]="getControl('accountGroup')"
-              placeholder=""
-              (keydown.enter)="handleEnterKey($event, 2)"
-              class="block py-2.5 px-2 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
-              [class.invalid]="
-                (getControl('accountGroup').invalid && getControl('accountGroup').touched) ||
-                isSubmitted
-              "
-            >
-              <option value="" class="capitalize">Select Option</option>
-              @for (option of accountGroupOption(); track $index) {
-                <option [value]="option" class="capitalize">
-                  {{ option }}
-                </option>
-              }
-            </select>
-          </Field>
-          <!-- remarks -->
-          <Field label="Remarks">
-            <input
-              #inputRef
-              type="text"
-              [formControl]="getControl('remarks')"
-              class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
-              placeholder=""
-              (keydown.enter)="handleEnterKey($event, 8)"
-            />
-          </Field>
-
-          @if (show()) {
-            <!-- coaMap -->
-            <Field label="COA Map">
-              <select
-                #inputRef
-                name="coaMap"
-                [formControl]="getControl('coaMap')"
-                placeholder=""
-                (keydown.enter)="handleEnterKey($event, 4)"
-                class="block py-2.5 px-2 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
-              >
-                <option value="" class="capitalize">Select Option</option>
-                @for (option of coaMapOption(); track $index) {
-                  <option [value]="option" class="capitalize">
-                    {{ option }}
-                  </option>
-                }
-              </select>
-            </Field>
-            <!-- bankId -->
-            <Field label="Bank">
-              <select
-                #inputRef
-                name="bankId"
-                [formControl]="getControl('bankId')"
-                placeholder=""
-                (keydown.enter)="handleEnterKey($event, 5)"
-                class="block py-2.5 px-2 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
-              >
-                <option value="0" class="capitalize">Select Option</option>
-                @for (option of bankOption(); track $index) {
-                  <option [value]="option?.id" class="capitalize">
-                    {{ option?.text }}
-                  </option>
-                }
-              </select>
-            </Field>
-            <!-- accountNo -->
-            <Field label="Bank Account No">
-              <input
-                #inputRef
-                type="text"
-                maxlength="255"
-                [formControl]="getControl('accountNo')"
-                class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
-                placeholder=""
-                (keydown.enter)="handleEnterKey($event, 6)"
-              />
-            </Field>
-            <!-- openingBalance -->
-            <Field label="Opening Balance">
-              <input
-                #inputRef
-                type="number"
-                maxlength="64"
-                [formControl]="getControl('openingBalance')"
-                class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
-                placeholder=""
-                (keydown.enter)="handleEnterKey($event, 7)"
-              />
-            </Field>
-          }
-
-          <button
-            (click)="onToggleShow($event)"
-            class="btn btn-small uppercase px-2 py-1 rounded bg-purple-600 text-gray-50 mb-2"
-          >
-            {{ show() ? 'hide' : 'show' }}
-          </button>
-
-          <div class="flex gap-2">
-            <!-- Save -->
-            <input
-              #inputRef
-              type="submit"
-              [value]="selectedAccount() ? 'Update' : 'Save'"
-              class="text-gray-50 bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-linear-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 shadow-lg shadow-teal-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
-              (keydown.enter)="handleEnterKey($event, 9)"
-            />
-
-            <button
-              (click)="formReset($event)"
-              class="text-gray-50 bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-linear-to-br focus:ring-1 focus:outline-none focus:ring-red-300 shadow-lg shadow-red-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10"
-            >
-              Clear
-            </button>
-          </div>
-        </form>
-      </div>
-    }
-
-    <div class="w-full border mb-10 px-3 max-h-[98vh] overflow-scroll">
-      <h1 class="text-xl md:text-3xl font-bold text-teal-500 underline text-center">
-        Chart Of Account
-      </h1>
-
-      <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
-        <div class="flex items-end justify-between gap-2 flex-col md:flex-row px-2">
-          <div class="w-full max-w-lg">
-            <label for="table-search" class="sr-only">Search</label>
-            <div class="relative mt-1">
-              <div
-                class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none"
-              >
-                <app-search></app-search>
+  @if (showList()) {
+    <div class="max-w-8xl mx-auto relative mt-5">
+      <div class="w-full mb-10 px-3">
+        <div
+          class="relative overflow-x-auto bg-neutral-primary dark:bg-gray-800-soft shadow-xs rounded-base border border-default"
+        >
+          <div class="flex justify-between p-4">
+            <div class="w-full">
+              <label for="search" class="sr-only">Search</label>
+              <div class="relative">
+                <div
+                  class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none text-gray-600 dark:text-gray-400"
+                >
+                  <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
+                </div>
+                <input
+                  #searchInput
+                  autocomplete="off"
+                  (input)="onSearch($event)"
+                  type="text"
+                  id="search"
+                  class="block w-full max-w-xl ps-9 pe-3 bg-neutral-secondary-medium border border-default-medium text-sm rounded-base focus:ring-brand focus:border-brand px-3 py-2.5 shadow-xs placeholder:text-body"
+                  placeholder="Search by Account Code, Sub Head or Remarks"
+                />
               </div>
-              <input
-                #searchInput
-                type="text"
-                id="table-search"
-                autocomplete="off"
-                class="block ps-10 text-xs border border-gray-300 rounded bg-teal-100 focus:ring-teal-500 focus:border-teal-500 w-full"
-                placeholder="Search"
-                (input)="onSearchAccount($event)"
-                (keydown)="handleSearchKeyDown($event)"
-              />
             </div>
-          </div>
-
-          <div class="flex gap-1">
-            <button
-              (click)="isGrid.set(true)"
-              [ngClass]="isGrid() ? 'bg-teal-700 text-gray-50' : 'bg-teal-200 '"
-              class="px-3 py-1.5 rounded flex items-center gap-2"
+            <h1
+              class="text-xl md:text-3xl font-bold text-teal-500 underline text-center mb-1 w-full"
             >
-              <svg
-                [ngClass]="isGrid() ? 'fill-gray-100' : 'fill-gray-700'"
-                width="20px"
-                height="20px"
-                viewBox="0 0 52 52"
-                data-name="Layer 1"
-                id="Layer_1"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                <g id="SVGRepo_iconCarrier">
-                  <path
-                    d="M14,16H2a2,2,0,0,1-2-2V2A2,2,0,0,1,2,0H14a2,2,0,0,1,2,2V14A2,2,0,0,1,14,16ZM4,12h8V4H4Z"
-                  ></path>
-                  <path
-                    d="M14,34H2a2,2,0,0,1-2-2V20a2,2,0,0,1,2-2H14a2,2,0,0,1,2,2V32A2,2,0,0,1,14,34ZM4,30h8V22H4Z"
-                  ></path>
-                  <path
-                    d="M14,52H2a2,2,0,0,1-2-2V38a2,2,0,0,1,2-2H14a2,2,0,0,1,2,2V50A2,2,0,0,1,14,52ZM4,48h8V40H4Z"
-                  ></path>
-                  <path
-                    d="M32,16H20a2,2,0,0,1-2-2V2a2,2,0,0,1,2-2H32a2,2,0,0,1,2,2V14A2,2,0,0,1,32,16ZM22,12h8V4H22Z"
-                  ></path>
-                  <path
-                    d="M32,34H20a2,2,0,0,1-2-2V20a2,2,0,0,1,2-2H32a2,2,0,0,1,2,2V32A2,2,0,0,1,32,34ZM22,30h8V22H22Z"
-                  ></path>
-                  <path
-                    d="M32,52H20a2,2,0,0,1-2-2V38a2,2,0,0,1,2-2H32a2,2,0,0,1,2,2V50A2,2,0,0,1,32,52ZM22,48h8V40H22Z"
-                  ></path>
-                  <path
-                    d="M50,16H38a2,2,0,0,1-2-2V2a2,2,0,0,1,2-2H50a2,2,0,0,1,2,2V14A2,2,0,0,1,50,16ZM40,12h8V4H40Z"
-                  ></path>
-                  <path
-                    d="M50,34H38a2,2,0,0,1-2-2V20a2,2,0,0,1,2-2H50a2,2,0,0,1,2,2V32A2,2,0,0,1,50,34ZM40,30h8V22H40Z"
-                  ></path>
-                  <path
-                    d="M50,52H38a2,2,0,0,1-2-2V38a2,2,0,0,1,2-2H50a2,2,0,0,1,2,2V50A2,2,0,0,1,50,52ZM40,48h8V40H40Z"
-                  ></path>
-                </g></svg
-              >Grid
-            </button>
-            <button
-              (click)="isGrid.set(false)"
-              [ngClass]="!isGrid() ? 'bg-teal-700 text-gray-50' : 'bg-teal-200 '"
-              class="px-3 py-1.5 rounded flex items-center gap-2"
-            >
-              <svg
-                [ngClass]="!isGrid() ? 'fill-gray-100' : 'fill-gray-700'"
-                class="hover:fill-gray-100"
-                height="20px"
-                width="20px"
-                version="1.1"
-                id="Capa_1"
-                xmlns="http://www.w3.org/2000/svg"
-                xmlns:xlink="http://www.w3.org/1999/xlink"
-                viewBox="0 0 14.069 14.069"
-                xml:space="preserve"
-              >
-                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                <g id="SVGRepo_iconCarrier">
-                  <g>
-                    <polygon
-                      points="14.069,5.304 14.069,0.16 8.926,0.16 8.926,2.533 5.143,4.861 5.143,4.064 0,4.064 0,9.208 5.143,9.208 5.143,8.26 8.926,11.069 8.926,13.91 14.069,13.91 14.069,8.766 8.926,8.766 8.926,9.939 5.143,7.128 5.143,5.927 8.926,3.599 8.926,5.304 "
-                    ></polygon>
-                  </g>
-                </g></svg
-              >Tree
-            </button>
-          </div>
-        </div>
-
-        @if (isGrid()) {
-          @if (isLoading$ | async) {
-            <p class="text-3xl font-bold text-center p-10 text-teal-600">Loading ...</p>
-          } @else if (hasError$ | async) {
-            <p class="text-3xl font-bold text-center p-10 text-red-600">
-              There was an error loading data.
-            </p>
-          } @else if (filteredAccountList().length === 0) {
-            <p class="text-3xl font-bold text-center p-10 text-orange-600">Data is Empty.</p>
-          } @else {
-            <table class="w-full text-sm text-left rtl:text-right mt-2">
-              <thead class="text-sm text-gray-50 capitalize bg-teal-800">
-                <tr>
-                  <th scope="col" class="p-1">controlHead</th>
-                  <!-- <th scope="col" class="p-1">accountCode</th> -->
-                  <th scope="col" class="p-1">accountGroup</th>
-                  <th scope="col" class="p-1">subHead</th>
-                  <th scope="col" class="p-1">coaMap</th>
-                  <!-- <th scope="col" class="p-1">bankId</th>
-            <th scope="col" class="p-1">accountNo</th>
-            <th scope="col" class="p-1">openingBalance</th> -->
-                  <th scope="col" class="p-1">remarks</th>
-                  <th scope="col" class="p-1">PostBy</th>
-                  @if (isEdit() || isDelete()) {
-                    <th scope="col" class="px-1">Action</th>
-                  }
-                </tr>
-              </thead>
-              <tbody>
-                @for (item of filteredAccountList().slice(0, 50); track item?.id || $index) {
-                  <tr
-                    id="row-{{ $index }}"
-                    class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
+              Chart of Accounts
+            </h1>
+            @if (isInsert()) {
+              <div class="w-full flex justify-end gap-2">
+                <!-- View Toggle Buttons -->
+                <div class="flex gap-1 mr-2">
+                  <button
+                    (click)="isGrid.set(true)"
+                    [class.bg-teal-600]="isGrid()"
+                    [class.text-white]="isGrid()"
+                    [class.bg-teal-100]="!isGrid()"
+                    [class.text-gray-700]="!isGrid()"
+                    class="px-3 py-1.5 rounded-l flex items-center gap-2 transition-colors"
                   >
-                    <td scope="row" class="p-1">
-                      {{ displayHead(item?.controlHeadId) }}
-                    </td>
-                    <!-- <td class="p-1">
-              {{ item?.accountCode }}
-            </td> -->
-                    <td class="p-1">
-                      {{ item?.accountGroup }}
-                    </td>
-                    <td class="p-1">
-                      {{ item?.subHead }}
-                    </td>
-                    <td class="p-1">
-                      {{ item?.coaMap }}
-                    </td>
-                    <!-- <td class="p-1">
-              {{ item?.bankId }}
-            </td>
-            <td class="p-1">
-              {{ item?.accountNo }}
-            </td>
-            <td class="p-1">
-              {{ item?.openingBalance }}
-            </td> -->
-                    <td class="p-1">
-                      {{ item?.remarks }}
-                    </td>
-                    <td class="p-1">
-                      {{ item?.postBy }}
-                    </td>
-                    <td class="flex gap-1">
-                      @if (isEdit()) {
-                        <button
-                          class="text-orange-50 bg-orange-400 hover:bg-orange-500 p-1 rounded"
-                          (click)="onUpdate(item)"
-                        >
-                          <app-all-svg icon="pencil" />
-                        </button>
-                      }
-                      @if (isDelete()) {
-                        <button
-                          class="text-rose-50 bg-rose-600 hover:bg-rose-700 px-2 py-[1px] rounded"
-                          (click)="onDelete(item?.id)"
-                        >
-                          X
-                        </button>
-                      }
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          }
-        } @else {
-          <section class="px-2 py-3">
-            <h2>Collapsible Tree Structure</h2>
-
-            <!-- Loading State -->
-            @if (isLoading$ | async) {
-              <div class="loading">Loading...</div>
-            }
-            <!-- Error State -->
-            @else if (hasError$ | async) {
-              <div class="error">Error loading data.</div>
-            }
-            <!-- Tree Data Available -->
-            @else if (treeData().length > 0) {
-              <div class="tree-container">
-                <ul>
-                  @for (node of treeData(); track $index) {
-                    <ng-container
-                      *ngTemplateOutlet="treeTemplate; context: { $implicit: node }"
-                    ></ng-container>
-                  }
-                </ul>
+                    <fa-icon [icon]="faGrin"></fa-icon>
+                    Grid
+                  </button>
+                  <button
+                    (click)="isGrid.set(false)"
+                    [class.bg-teal-600]="!isGrid()"
+                    [class.text-white]="!isGrid()"
+                    [class.bg-teal-100]="isGrid()"
+                    [class.text-gray-700]="isGrid()"
+                    class="px-3 py-1.5 rounded-r flex items-center gap-2 transition-colors"
+                  >
+                    <fa-icon [icon]="faTree"></fa-icon>
+                    Tree
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  (click)="showList.set(false)"
+                  class="text-white bg-linear-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-linear-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 font-medium rounded-base text-sm px-4 py-2.5 text-center leading-5 cursor-pointer"
+                >
+                  Add
+                </button>
               </div>
             }
-            <!-- No Data Available -->
-            @else {
-              <div class="no-data">No data available.</div>
+          </div>
+
+          @if (isGrid()) {
+            <!-- Loading State -->
+            @if (isLoading()) {
+              <p class="text-3xl font-bold text-center p-10 text-teal-600">Loading ...</p>
             }
 
-            <ng-template #treeTemplate let-node>
-              <li class="node" [class.collapsed]="isCollapsed[node.id]">
-                <span class="toggle-btn" (click)="toggleNode(node.id, node.children.length)">
-                  {{ isCollapsed[node.id] ? '▶' : '▼' }}
-                </span>
-                {{ node.subHead }}
-                @if (node.children?.length > 0 && !isCollapsed[node.id]) {
-                  <ul>
-                    @for (child of node.children; track $index) {
-                      <ng-container
-                        *ngTemplateOutlet="treeTemplate; context: { $implicit: child }"
-                      ></ng-container>
+            <!-- Error State -->
+            @else if (hasError()) {
+              <p class="text-3xl font-bold text-center p-10 text-red-600">
+                There was an error loading data.
+              </p>
+            }
+
+            <!-- Empty State -->
+            @else if (filteredAccountList().length === 0) {
+              <p class="text-3xl font-bold text-center p-10 text-orange-600">No Items found.</p>
+            }
+
+            <!-- Table -->
+            @else {
+              <table class="w-full text-sm text-left rtl:text-right text-body overflow-scroll">
+                <thead
+                  class="text-sm text-body bg-neutral-secondary-medium border-b border-t border-default-medium"
+                >
+                  <tr>
+                    <th scope="col" class="px-6 py-3 font-medium capitalize">control head</th>
+                    <th scope="col" class="px-6 py-3 font-medium capitalize">account group</th>
+                    <th scope="col" class="px-6 py-3 font-medium capitalize">sub head</th>
+                    <th scope="col" class="px-6 py-3 font-medium capitalize">coa map</th>
+                    <th scope="col" class="px-6 py-3 font-medium capitalize">remarks</th>
+                    <th scope="col" class="px-6 py-3 font-medium capitalize">post by</th>
+                    @if (isEdit() || isDelete()) {
+                      <th scope="col" class="px-6 py-3 font-medium capitalize">Actions</th>
+                    }
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (item of filteredAccountList(); track item?.id || $index) {
+                    <tr
+                      class="bg-neutral-primary border-b border-default hover:bg-yellow-100 odd:bg-gray-100 even:bg-gray-300 dark:odd:bg-gray-800 dark:even:bg-gray-900 dark:border-gray-950 dark:hover:bg-yellow-200 transition-colors cursor-pointer"
+                      [class.bg-blue-50]="selected()?.id === item.id"
+                    >
+                      <td class="px-6 py-4 font-medium">{{ displayHead(item?.controlHeadId) }}</td>
+                      <td class="px-6 py-4">{{ item?.accountGroup || '-' }}</td>
+                      <td class="px-6 py-4 max-w-xs truncate">{{ item?.subHead || '-' }}</td>
+                      <td class="px-6 py-4">{{ item?.coaMap || '-' }}</td>
+                      <td class="px-6 py-4">{{ item?.remarks || '-' }}</td>
+                      <td class="px-6 py-4">{{ item?.postBy || '-' }}</td>
+                      <td class="px-6 py-4">
+                        @if (isEdit()) {
+                          <button
+                            class="text-orange-50 bg-orange-400 hover:bg-orange-500 px-2 py-1 rounded cursor-pointer mr-1 transition-colors"
+                            (click)="onUpdate(item)"
+                            title="Edit"
+                          >
+                            <fa-icon [icon]="faPencil"></fa-icon>
+                          </button>
+                        }
+                        @if (isDelete()) {
+                          <button
+                            class="text-rose-50 bg-rose-600 hover:bg-rose-700 px-2 py-1 rounded cursor-pointer transition-colors"
+                            (click)="onDelete(item?.id)"
+                            title="Delete"
+                          >
+                            <fa-icon [icon]="faXmark"></fa-icon>
+                          </button>
+                        }
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            }
+          } @else {
+            <!-- Tree View -->
+<div class="p-6">
+  <!-- Tree Loading State -->
+  @if (isLoadingTree()) {
+    <p class="text-3xl font-bold text-center p-10 text-teal-600">Loading Tree ...</p>
+  }
+  <!-- Tree Error State -->
+  @else if (hasErrorTree()) {
+    <p class="text-3xl font-bold text-center p-10 text-red-600">
+      There was an error loading tree data.
+    </p>
+  }
+  <!-- Tree Data Available -->
+  @else if (treeData().length > 0) {
+    <div class="tree-container">
+      <ul class="list-none">
+        @for (node of treeData(); track node.id) {
+          <app-tree-node
+            [node]="node"
+            [isCollapsed]="isCollapsed()"
+            [isInsert]="isInsert()"
+            (toggleNode)="toggleNode($event.id, $event.hasChildren ? 1 : 0)"
+            (addNode)="onAdd($event)"
+          />
+        }
+      </ul>
+    </div>
+  }
+  <!-- No Tree Data -->
+  @else {
+    <p class="text-3xl font-bold text-center p-10 text-orange-600">
+      No tree data available.
+    </p>
+  }
+</div>
+          }
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div class="max-w-8xl mx-auto relative">
+      <!-- Account Form -->
+      <div
+        class="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-950 transition-all"
+      >
+        <!-- Form Header -->
+        <div class="bg-teal-300 dark:bg-teal-800 h-2 rounded-t-lg transition-all"></div>
+        <div class="p-6">
+          <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-50 transition-all">
+              Account Form
+            </h2>
+            <button
+              class="text-rose-50 bg-rose-600 hover:bg-rose-700 px-1 py-0.5 rounded cursor-pointer"
+              (click)="onToggleList()"
+            >
+              <fa-icon [icon]="faXmark"></fa-icon>
+            </button>
+          </div>
+
+          <!-- Form Fields -->
+          <form class="space-y-6" (submit)="onSubmit($event)">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
+              <!-- Sub Head -->
+              <div class="lg:col-span-2">
+                @let subHead = form.subHead();
+                @let subHeadError = form.subHead().invalid() && form.subHead().touched();
+                <div class="relative pb-2">
+                  <input
+                    id="subHead"
+                    type="text"
+                    [formField]="form.subHead"
+                    autocomplete="off"
+                    class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-teal-500 peer dark:text-gray-50!"
+                    placeholder=""
+                  />
+                  <label
+                    for="subHead"
+                    class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-neutral-primary dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                    >Sub Head <span class="text-red-500">*</span></label
+                  >
+                </div>
+                @if (subHeadError) {
+                  <ul class="-mt-2 mb-2">
+                    @for (error of subHead.errors(); track error) {
+                      <li class="text-sm text-red-600">{{ error.message }}</li>
                     }
                   </ul>
                 }
-                @if (node.subHead.toLowerCase() !== 'root' && isCollapsed[node.id]) {
-                  @if (isInsert()) {
-                    <button
-                      (click)="onAdd(node)"
-                      class="bg-blue-500 text-xs py-1 px-2 rounded text-gray-50"
-                    >
-                      Add
-                    </button>
-                  }
+              </div>
+
+              <!-- Control Head -->
+              <div>
+                @let controlHeadId = form.controlHeadId();
+                @let controlHeadError =
+                  form.controlHeadId().invalid() && form.controlHeadId().touched();
+                <div class="relative pb-2">
+                  <select
+                    id="controlHeadId"
+                    [formField]="form.controlHeadId"
+                    class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-teal-500 peer dark:text-gray-50!"
+                  >
+                    <option value="" class="capitalize">Select Option</option>
+                    @for (option of controlHeadOption(); track option.id) {
+                      <option [value]="option.id" class="capitalize">
+                        {{ option.text }}
+                      </option>
+                    }
+                  </select>
+                  <label
+                    for="controlHeadId"
+                    class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-neutral-primary dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                    >Control Head <span class="text-red-500">*</span></label
+                  >
+                </div>
+                @if (controlHeadError) {
+                  <ul class="-mt-2 mb-2">
+                    @for (error of controlHeadId.errors(); track error) {
+                      <li class="text-sm text-red-600">{{ error.message }}</li>
+                    }
+                  </ul>
                 }
-              </li>
-            </ng-template>
-          </section>
-        }
+              </div>
+
+              <!-- Account Group -->
+              <div>
+                @let accountGroup = form.accountGroup();
+                @let accountGroupError =
+                  form.accountGroup().invalid() && form.accountGroup().touched();
+                <div class="relative pb-2">
+                  <select
+                    id="accountGroup"
+                    [formField]="form.accountGroup"
+                    class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-teal-500 peer dark:text-gray-50!"
+                  >
+                    <option value="" class="capitalize">Select Option</option>
+                    @for (option of accountGroupOption(); track option) {
+                      <option [value]="option" class="capitalize">
+                        {{ option }}
+                      </option>
+                    }
+                  </select>
+                  <label
+                    for="accountGroup"
+                    class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-neutral-primary dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                    >Account Group <span class="text-red-500">*</span></label
+                  >
+                </div>
+                @if (accountGroupError) {
+                  <ul class="-mt-2 mb-2">
+                    @for (error of accountGroup.errors(); track error) {
+                      <li class="text-sm text-red-600">{{ error.message }}</li>
+                    }
+                  </ul>
+                }
+              </div>
+
+              <!-- Toggle Button for Additional Fields -->
+              <div class="lg:col-span-2">
+                <button
+                  type="button"
+                  (click)="show.set(!show())"
+                  class="btn btn-small uppercase px-4 py-2 rounded bg-purple-600 text-gray-50 mb-2 transition-colors hover:bg-purple-700"
+                >
+                  {{ show() ? 'Hide' : 'Show' }} Bank Details
+                </button>
+              </div>
+
+              @if (show()) {
+                <!-- COA Map -->
+                <div>
+                  @let coaMap = form.coaMap();
+                  <div class="relative pb-2">
+                    <select
+                      id="coaMap"
+                      [formField]="form.coaMap"
+                      class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-teal-500 peer dark:text-gray-50!"
+                    >
+                      <option value="" class="capitalize">Select Option</option>
+                      @for (option of coaMapOption(); track option) {
+                        <option [value]="option" class="capitalize">
+                          {{ option }}
+                        </option>
+                      }
+                    </select>
+                    <label
+                      for="coaMap"
+                      class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-neutral-primary dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                      >COA Map</label
+                    >
+                  </div>
+                </div>
+
+                <!-- Bank -->
+                <div>
+                  @let bankId = form.bankId();
+                  <div class="relative pb-2">
+                    <select
+                      id="bankId"
+                      [formField]="form.bankId"
+                      class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-teal-500 peer dark:text-gray-50!"
+                    >
+                      <option value="0" class="capitalize">Select Option</option>
+                      @for (option of bankOption(); track option.id) {
+                        <option [value]="option.id" class="capitalize">
+                          {{ option.text }}
+                        </option>
+                      }
+                    </select>
+                    <label
+                      for="bankId"
+                      class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-neutral-primary dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                      >Bank</label
+                    >
+                  </div>
+                </div>
+
+                <!-- Account No -->
+                <div>
+                  @let accountNo = form.accountNo();
+                  <div class="relative pb-2">
+                    <input
+                      id="accountNo"
+                      type="text"
+                      [formField]="form.accountNo"
+                      autocomplete="off"
+                      class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-teal-500 peer dark:text-gray-50!"
+                      placeholder=""
+                    />
+                    <label
+                      for="accountNo"
+                      class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-neutral-primary dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                      >Bank Account No</label
+                    >
+                  </div>
+                </div>
+
+                <!-- Opening Balance -->
+                <div>
+                  @let openingBalance = form.openingBalance();
+                  <div class="relative pb-2">
+                    <input
+                      id="openingBalance"
+                      type="number"
+                      [formField]="form.openingBalance"
+                      autocomplete="off"
+                      class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-teal-500 peer dark:text-gray-50!"
+                      placeholder=""
+                    />
+                    <label
+                      for="openingBalance"
+                      class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-neutral-primary dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                      >Opening Balance</label
+                    >
+                  </div>
+                </div>
+              }
+
+              <!-- Remarks -->
+              <div class="lg:col-span-2">
+                @let remarks = form.remarks();
+                <div class="relative pb-2">
+                  <textarea
+                    id="remarks"
+                    [formField]="form.remarks"
+                    rows="3"
+                    class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-teal-500 peer dark:text-gray-50"
+                    placeholder=""
+                  ></textarea>
+                  <label
+                    for="remarks"
+                    class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-neutral-primary dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                    >Remarks</label
+                  >
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="flex gap-2 lg:col-span-2">
+                <!-- Save/Update -->
+                <input
+                  type="submit"
+                  [value]="isSubmitted() ? 'Submitting ...' : selected() ? 'Update' : 'Save'"
+                  [disabled]="form().invalid() || isSubmitted()"
+                  class="text-gray-50 bg-linear-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-linear-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 shadow-lg shadow-teal-500/50 font-medium rounded text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full disabled:cursor-not-allowed disabled:opacity-50"
+                />
+
+                <button
+                  type="button"
+                  (click)="onToggleList()"
+                  class="text-gray-50 bg-linear-to-r from-red-400 via-red-500 to-red-600 hover:bg-linear-to-br focus:ring-1 focus:outline-none focus:ring-red-300 shadow-lg shadow-red-500/50 font-medium rounded text-sm px-5 py-2.5 text-center me-2 mb-2 h-10"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
-  </section>
+  }
 } @else {
   <p class="text-3xl font-bold text-center p-10 text-red-600">
     You don't have permission to view this page.

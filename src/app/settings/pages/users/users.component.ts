@@ -119,7 +119,7 @@ export class UsersComponent {
         )
       )
     ).subscribe(filteredData => {
-      filteredData.shift();                   // todo: remove first element of user list
+      // filteredData.shift();                   // todo: remove first element of user list
       this.filteredUserList.set(filteredData)
     });
   }
