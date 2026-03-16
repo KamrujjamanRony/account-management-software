@@ -77,4 +77,10 @@ export class Sidebar {
   setSidebarHover(state: boolean) {
     this.sidebarHovered.set(state);
   }
+
+  onLogOut() {
+    this.auth.deleteUser();
+    window.location.href = '/login'; // Optionally, navigate to login page or show a message
+    // Optionally, navigate to login page or show a message
+  }
 }

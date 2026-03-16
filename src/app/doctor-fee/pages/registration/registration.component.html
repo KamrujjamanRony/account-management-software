@@ -1,11 +1,11 @@
 @if (isView()) {
   <section class="flex flex-col lg:flex-row gap-5">
     @if (isInsert()) {
-      <div class="border mb-10">
-        <h1 class="text-xl md:text-3xl font-bold text-teal-500 underline text-center mb-5">
+      <div class="border mb-10 dark:border-gray-600">
+        <h1 class="text-xl md:text-3xl font-bold text-teal-500 underline text-center mb-5 dark:text-teal-400">
           Patient Form
         </h1>
-        <form [formGroup]="form" (ngSubmit)="onSubmit($event)" class="min-w-[500px] mx-auto px-2">
+        <form [formGroup]="form" (ngSubmit)="onSubmit($event)" class="min-w-125 mx-auto px-2">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
             <!-- contactNo -->
             <Field label="contact No.">
@@ -68,7 +68,7 @@
                 class="block py-2.5 px-2 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
               >
                 @for (option of options; track $index) {
-                  <option [value]="option.id" class="capitalize">
+                  <option [value]="option.id" class="capitalize dark:bg-gray-700">
                     {{ option.name }}
                   </option>
                 }
@@ -191,7 +191,7 @@
       </h1>
 
       <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
-        <div class="pb-4 bg-teal-50 ml-2">
+        <div class="pb-4 ml-2">
           <label for="table-search" class="sr-only">Search</label>
           <div class="relative mt-1">
             <div
@@ -204,7 +204,7 @@
               type="text"
               id="table-search"
               autocomplete="off"
-              class="block pt-2 ps-10 text-sm border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-teal-500 focus:border-teal-500"
+              class="block pt-2 ps-10 text-sm border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-teal-500 focus:border-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-teal-500 dark:focus:border-teal-500"
               placeholder="Search"
               (input)="onSearchPatient($event)"
               (keydown)="handleSearchKeyDown($event)"

@@ -1,11 +1,11 @@
 @if (isView()) {
   <section class="flex flex-col lg:flex-row gap-5">
     @if (isInsert()) {
-      <div class="border mb-10">
-        <h1 class="text-xl md:text-3xl font-bold text-teal-500 underline text-center mb-5">
+      <div class="border mb-10 dark:border-gray-600">
+        <h1 class="text-xl md:text-3xl font-bold text-teal-500 underline text-center mb-5 dark:text-teal-400">
           Doctor Form
         </h1>
-        <form [formGroup]="form" (ngSubmit)="onSubmit($event)" class="min-w-[400px] mx-auto px-2">
+        <form [formGroup]="form" (ngSubmit)="onSubmit($event)" class="min-w-100 mx-auto px-2">
           <!-- Name -->
           <Field label="name">
             <input
@@ -27,7 +27,7 @@
               #inputRef
               type="text"
               [formControl]="getControl('address')"
-              class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+              class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer dark:border-gray-600 dark:text-white dark:focus:border-teal-500"
               placeholder=""
               (keydown.enter)="handleEnterKey($event, 1)"
             />
@@ -39,7 +39,7 @@
                 #inputRef
                 type="text"
                 [formControl]="getControl('contactNo')"
-                class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+                class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer dark:border-gray-600 dark:text-white dark:focus:border-teal-500"
                 placeholder=""
                 (keydown.enter)="handleEnterKey($event, 2)"
               />
@@ -50,7 +50,7 @@
                 #inputRef
                 type="number"
                 [formControl]="getControl('drFee')"
-                class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+                class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer dark:border-gray-600 dark:text-white dark:focus:border-teal-500"
                 placeholder=""
                 (keydown.enter)="handleEnterKey($event, 3)"
               />
@@ -66,10 +66,10 @@
                 [formControl]="getControl('takeCom')"
                 placeholder=""
                 (keydown.enter)="handleEnterKey($event, 4)"
-                class="block py-2.5 px-2 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+                class="block py-2.5 px-2 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer dark:border-gray-600 dark:text-white dark:focus:border-teal-500"
               >
                 @for (option of takeComOptions; track $index) {
-                  <option [value]="option.id" class="capitalize">
+                  <option [value]="option.id" class="capitalize dark:bg-gray-700">
                     {{ option.name }}
                   </option>
                 }
@@ -83,10 +83,10 @@
                 [formControl]="getControl('isChamberDoctor')"
                 placeholder=""
                 (keydown.enter)="handleEnterKey($event, 5)"
-                class="block py-2.5 px-2 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+                class="block py-2.5 px-2 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer dark:border-gray-600 dark:text-white dark:focus:border-teal-500"
               >
                 @for (option of isChamberOptions; track $index) {
-                  <option [value]="option.id" class="capitalize">
+                  <option [value]="option.id" class="capitalize dark:bg-gray-700">
                     {{ option.name }}
                   </option>
                 }
@@ -140,7 +140,7 @@
                 type="text"
                 id="table-search"
                 autocomplete="off"
-                class="block ps-10 text-xs border border-gray-300 rounded bg-teal-100 focus:ring-teal-500 focus:border-teal-500 w-full"
+                class="block ps-10 text-xs border border-gray-300 rounded bg-teal-100 focus:ring-teal-500 focus:border-teal-500 w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-teal-500 dark:focus:border-teal-500"
                 placeholder="Search"
                 (input)="onSearchDoctor($event)"
                 (keydown)="handleSearchKeyDown($event)"
@@ -155,7 +155,7 @@
               name="isChamber"
               [(ngModel)]="isChamber"
               (change)="onLoadDoctors()"
-              class="bg-gray-50 border border-gray-300 text-sm rounded focus:ring-teal-500 focus:border-teal-500 block w-full px-2 py-1.5"
+              class="bg-gray-50 border border-gray-300 text-sm rounded focus:ring-teal-500 focus:border-teal-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-teal-500 dark:focus:border-teal-500"
             >
               @for (item of isChamberOptions; track item.id) {
                 <option [value]="item.id">{{ item.name }}</option>
@@ -170,7 +170,7 @@
               name="takeCom"
               [(ngModel)]="takeCom"
               (change)="onLoadDoctors()"
-              class="bg-gray-50 border border-gray-300 text-sm rounded focus:ring-teal-500 focus:border-teal-500 block w-full px-2 py-1.5"
+              class="bg-gray-50 border border-gray-300 text-sm rounded focus:ring-teal-500 focus:border-teal-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-teal-500 dark:focus:border-teal-500"
             >
               @for (item of takeComOptions; track item.id) {
                 <option [value]="item.id">{{ item.name }}</option>
