@@ -46,9 +46,9 @@
                 (keydown.enter)="handleEnterKey($event, 2)"
                 class="block py-2.5 px-2 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
               >
-                <option value="" class="capitalize" disabled>Select Option</option>
+                <option value="" class="capitalize dark:bg-gray-900" disabled>Select Option</option>
                 @for (option of vendorIdOption(); track $index) {
-                  <option [value]="option?.id" class="capitalize">
+                  <option [value]="option?.id" class="capitalize dark:bg-gray-900">
                     {{ option?.text }}
                   </option>
                 }
@@ -70,9 +70,9 @@
                 "
                 required
               >
-                <option value="" class="capitalize" disabled>Select Option</option>
+                <option value="" class="capitalize dark:bg-gray-900" disabled>Select Option</option>
                 @for (option of accountBankCashIdOption(); track $index) {
-                  <option [value]="option?.id" class="capitalize">
+                  <option [value]="option?.id" class="capitalize dark:bg-gray-900">
                     {{ option?.text }}
                   </option>
                 }
@@ -141,9 +141,9 @@
                   (keydown.enter)="handleEnterKey($event, 5)"
                   required
                 >
-                  <option value="" class="capitalize">Select Option</option>
+                  <option value="" class="capitalize dark:bg-gray-900">Select Option</option>
                   @for (option of headIdOption(); track $index) {
-                    <option [value]="option?.id" class="capitalize">
+                    <option [value]="option?.id" class="capitalize dark:bg-gray-900">
                       {{ option?.text }}
                     </option>
                   }
@@ -160,9 +160,9 @@
                     (keydown.enter)="handleEnterKey($event, 6)"
                     [disabled]="subHeadIdOption().length === 0"
                   >
-                    <option value="" class="capitalize">Select Option</option>
+                    <option value="" class="capitalize dark:bg-gray-900">Select Option</option>
                     @for (option of subHeadIdOption(); track $index) {
-                      <option [value]="option?.id" class="capitalize">
+                      <option [value]="option?.id" class="capitalize dark:bg-gray-900">
                         {{ option?.text }}
                       </option>
                     }

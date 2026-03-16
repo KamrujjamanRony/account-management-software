@@ -5,12 +5,12 @@
   (mouseleave)="setSidebarHover(false)"
   aria-label="Sidebar"
 >
-  <div class="h-full pl-2 py-4 overflow-hidden bg-teal-300">
+  <div class="h-full pl-2 py-4 overflow-hidden bg-teal-300 dark:bg-teal-800">
     <ul class="space-y-2 font-medium" id="accordion-collapse">
       <!-- Logo -->
       <li class="cursor-pointer">
-        <a routerLink="/" class="flex items-center p-2 rounded-lg hover:bg-gray-100">
-          <span class="ms-12 text-xl font-bold text-teal-700">SuperSoft</span>
+        <a routerLink="/" class="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+          <span class="ms-12 text-xl font-bold text-teal-700 dark:text-teal-300">SuperSoft</span>
         </a>
       </li>
 
@@ -20,7 +20,7 @@
           @if (item?.menu) {
             <button
               type="button"
-              class="flex items-center w-full py-2 px-3 -ml-1 transition duration-75 rounded-lg hover:bg-gray-100"
+              class="flex items-center w-full py-2 px-3 -ml-1 transition duration-75 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
               [attr.aria-controls]="item.label"
               [attr.data-accordion-target]="'#' + item?.label"
               aria-expanded="menuState()[item.id]"
@@ -40,13 +40,13 @@
               [id]="item?.label"
               [attr.aria-labelledby]="item?.label"
               [class.hidden]="!menuState()[item.id] || !sidebarHovered()"
-              class="py-2 w-[97%] mx-auto bg-teal-200 rounded-lg"
+              class="py-2 w-[97%] mx-auto bg-teal-200 rounded-lg dark:bg-teal-700"
             >
               @for (subItem of item.menu; track subItem?.route) {
                 <li class="cursor-pointer">
                   <a
                     [routerLink]="subItem?.route"
-                    class="flex items-center w-full p-2 transition duration-75 rounded-lg pl-10 hover:bg-gray-100"
+                    class="flex items-center w-full p-2 transition duration-75 rounded-lg pl-10 dark:hover:bg-gray-700"
                   >
                     {{ subItem.label }}
                   </a>
@@ -58,7 +58,7 @@
             <a
               [routerLink]="item?.route"
               type="button"
-              class="flex items-center w-full p-2 text-base transition duration-75 rounded-lg hover:bg-gray-100"
+              class="flex items-center w-full p-2 text-base transition duration-75 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
             >
               <app-all-svg [icon]="item.icon"></app-all-svg>
               <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">{{

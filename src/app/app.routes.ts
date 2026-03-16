@@ -37,6 +37,12 @@ export const routes: Routes = [
                         data: { preload: true },
                     },
                     {
+                        path: 'setup/asset-type',
+                        loadComponent: () =>
+                            import('./accounts/pages/setup/asset-type/asset-type').then(m => m.AssetType),
+                        data: { preload: true },
+                    },
+                    {
                         path: 'setup/account-chart',
                         loadComponent: () =>
                             import('./accounts/pages/setup/account-list-entry/account-list-entry.component').then(m => m.AccountListEntryComponent),
@@ -63,7 +69,7 @@ export const routes: Routes = [
                     {
                         path: 'entry/fixed-asset-description',
                         loadComponent: () =>
-                            import('./accounts/pages/entry/fixed-asset-description/fixed-asset-description.component').then(m => m.FixedAssetDescriptionComponent),
+                            import('./accounts/pages/entry/asset-description/asset-description').then(m => m.AssetDescription),
                         data: { preload: true },
                     },
                     {

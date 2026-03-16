@@ -1,7 +1,7 @@
 <div class="w-full relative max-w-md min-w-96">
   <div
     (click)="toggleDropdown()"
-    class="border border-gray-500 rounded-md px-5 py-2 flex justify-between cursor-pointer"
+    class="border border-gray-500 rounded-md px-5 py-2 flex justify-between cursor-pointer dark:bg-gray-900 dark:border-gray-600 dark:text-gray-200"
     [ngClass]="{ '': !selected() }"
   >
     <span>
@@ -17,7 +17,7 @@
   </div>
 
   <ul
-    class="mt-1 overflow-y-auto rounded-md w-full bg-teal-50"
+    class="mt-1 overflow-y-auto rounded-md w-full bg-teal-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 z-50"
     [ngClass]="{
       'max-h-96 border absolute top-10 z-50': open,
       hidden: !open,
@@ -29,7 +29,7 @@
         type="text"
         [(ngModel)]="inputValue"
         placeholder="Search"
-        class="placeholder: text-xs rounded-md px-2 pl-8 outline-none w-full my-1"
+        class="placeholder: text-xs rounded-md px-2 pl-8 outline-none w-full my-1 bg-gray-100 dark:bg-gray-800 dark:text-gray-50 dark:placeholder-gray-400"
       />
     </div>
     <li

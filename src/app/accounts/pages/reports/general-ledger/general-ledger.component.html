@@ -1,6 +1,6 @@
 @if (isView()) {
   <div class="w-full border mb-10 px-3 max-h-[98vh] overflow-scroll">
-    <h1 class="text-xl md:text-3xl font-bold text-teal-500 underline text-center">
+    <h1 class="text-xl md:text-3xl font-bold text-teal-500 underline text-center dark:text-teal-400">
       General Transaction
     </h1>
 
@@ -19,38 +19,40 @@
               type="text"
               id="table-search"
               autocomplete="off"
-              class="block ps-10 text-xs border border-gray-300 rounded bg-teal-100 focus:ring-teal-500 focus:border-teal-500 w-full"
+              class="block ps-10 text-xs border border-gray-300 rounded bg-teal-100 focus:ring-teal-500 focus:border-teal-500 w-full dark:bg-teal-500 dark:border-gray-600 dark:placeholder-gray-200 dark:text-gray-50 dark:focus:ring-teal-500 dark:focus:border-teal-500"
               placeholder="Search"
               (input)="onSearchBank($event)"
             />
           </div>
         </div>
       </div>
+      @if (accountBankCashIdOption().length > 0) {
       <select
         id="transactionType"
         [(ngModel)]="selectedId"
         (change)="onLoadReport()"
-        class="border border-gray-500 rounded-md px-5 py-2"
+        class="border border-gray-500 rounded-md px-5 py-2 dark:bg-gray-900 dark:border-gray-600 dark:text-gray-200"
       >
         @for (item of accountBankCashIdOption(); track $index) {
-          <option [value]="item.id">
+          <option [value]="item.id" class="dark:bg-gray-900">
             {{ item?.text }}
           </option>
         }
       </select>
+      }
       <input
         type="date"
         id="fromDate"
         [(ngModel)]="fromDate"
         (change)="onLoadReport()"
-        class="border border-gray-500 rounded-md px-5 py-2"
+        class="border border-gray-500 rounded-md px-5 py-2 dark:bg-gray-900 dark:border-gray-600 dark:text-gray-200"
       />
       <input
         type="date"
         id="toDate"
         [(ngModel)]="toDate"
         (change)="onLoadReport()"
-        class="border border-gray-500 rounded-md px-5 py-2"
+        class="border border-gray-500 rounded-md px-5 py-2 dark:bg-gray-900 dark:border-gray-600 dark:text-gray-200"
       />
       <button
         class="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-heading rounded-base group bg-linear-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
@@ -73,8 +75,8 @@
       <p class="text-3xl font-bold text-center p-10 text-orange-600">Data is Empty.</p>
     } @else {
       <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
-        <table class="w-full text-sm text-left rtl:text-right mt-2">
-          <thead class="text-sm text-gray-50 uppercase bg-teal-800">
+        <table class="w-full text-sm text-left rtl:text-right mt-2 dark:text-gray-200">
+          <thead class="text-sm text-gray-50 uppercase bg-teal-800 dark:bg-teal-700">
             <tr>
               <th scope="col" class="p-1">voucherDate</th>
               <th scope="col" class="p-1">voucherNo</th>
@@ -93,7 +95,7 @@
                   'bg-red-500 text-gray-50': item?.balance < 0,
                   'bg-teal-50': item?.balance >= 0,
                 }"
-                class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
+                class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer dark:bg-teal-950 dark:hover:bg-teal-800 dark:hover:text-gray-200"
               >
                 <td class="p-1 capitalize">
                   {{ transform(item?.voucherDate) }}
@@ -118,7 +120,7 @@
                 </td>
               </tr>
             }
-            <tr class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer">
+            <tr class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer dark:bg-teal-950 dark:hover:bg-teal-800 dark:hover:text-gray-200">
               <td class="p-1 capitalize">Total:</td>
               <td class="p-1 capitalize"></td>
               <td class="p-1 capitalize"></td>

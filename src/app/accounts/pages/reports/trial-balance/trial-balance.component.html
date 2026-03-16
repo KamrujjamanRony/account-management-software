@@ -1,6 +1,6 @@
 @if (isView()) {
   <div class="w-full border mb-10 px-3 max-h-[98vh] overflow-scroll">
-    <h1 class="text-xl md:text-3xl font-bold text-teal-500 underline text-center">Trail Balance</h1>
+    <h1 class="text-xl md:text-3xl font-bold text-teal-500 underline text-center dark:text-teal-400">Trail Balance</h1>
 
     <div class="flex justify-end gap-1">
       <input
@@ -8,14 +8,14 @@
         id="fromDate"
         [(ngModel)]="fromDate"
         (change)="onLoadReport()"
-        class="border border-gray-500 rounded-md px-5 py-2"
+        class="border border-gray-500 rounded-md px-5 py-2 dark:bg-gray-900 dark:border-gray-600 dark:text-gray-200"
       />
       <input
         type="date"
         id="toDate"
         [(ngModel)]="toDate"
         (change)="onLoadReport()"
-        class="border border-gray-500 rounded-md px-5 py-2"
+        class="border border-gray-500 rounded-md px-5 py-2 dark:bg-gray-900 dark:border-gray-600 dark:text-gray-200"
       />
       <button
         class="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-heading rounded-base group bg-linear-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
@@ -59,7 +59,7 @@
             @for (item of filteredReports()?.currentAsset; track $index) {
               <tr
                 id="row-{{ $index }}"
-                class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
+                class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer dark:bg-teal-950 dark:hover:bg-teal-800 dark:hover:text-gray-200"
               >
                 <td class="p-1 capitalize">
                   {{ item?.subHead }}
@@ -81,7 +81,7 @@
             @for (item of filteredReports()?.nonCurrentAsset; track $index) {
               <tr
                 id="row-{{ $index }}"
-                class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
+                class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer dark:bg-teal-950 dark:hover:bg-teal-800 dark:hover:text-gray-200"
               >
                 <td class="p-1 capitalize">
                   {{ item?.subHead }}
@@ -125,7 +125,7 @@
             @for (item of filteredReports()?.nonCurrentLiability; track $index) {
               <tr
                 id="row-{{ $index }}"
-                class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
+                class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer dark:bg-teal-950 dark:hover:bg-teal-800 dark:hover:text-gray-200"
               >
                 <td class="p-1 capitalize">
                   {{ item?.subHead }}
@@ -147,7 +147,7 @@
             @for (item of filteredReports()?.income; track $index) {
               <tr
                 id="row-{{ $index }}"
-                class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
+                class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer dark:bg-teal-950 dark:hover:bg-teal-800 dark:hover:text-gray-200"
               >
                 <td class="p-1 capitalize">
                   {{ item?.subHead }}
@@ -169,7 +169,7 @@
             @for (item of filteredReports()?.expense; track $index) {
               <tr
                 id="row-{{ $index }}"
-                class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
+                class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer dark:bg-teal-950 dark:hover:bg-teal-800 dark:hover:text-gray-200"
               >
                 <td class="p-1 capitalize">
                   {{ item?.subHead }}
@@ -188,7 +188,7 @@
                 </td>
               </tr>
             }
-            <tr class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer">
+            <tr class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer dark:bg-teal-950 dark:hover:bg-teal-800 dark:hover:text-gray-200">
               <td class="p-1 capitalize">Total:</td>
               <td class="p-1 capitalize"></td>
               <td class="p-1">

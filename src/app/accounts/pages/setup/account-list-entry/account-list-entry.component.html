@@ -244,9 +244,9 @@
                     [formField]="form.controlHeadId"
                     class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-teal-500 peer dark:text-gray-50!"
                   >
-                    <option value="" class="capitalize">Select Option</option>
+                    <option value="" class="capitalize dark:bg-gray-900">Select Option</option>
                     @for (option of controlHeadOption(); track option.id) {
-                      <option [value]="option.id" class="capitalize">
+                      <option [value]="option.id" class="capitalize dark:bg-gray-900">
                         {{ option.text }}
                       </option>
                     }
@@ -277,9 +277,9 @@
                     [formField]="form.accountGroup"
                     class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-teal-500 peer dark:text-gray-50!"
                   >
-                    <option value="" class="capitalize">Select Option</option>
+                    <option value="" class="capitalize dark:bg-gray-900">Select Option</option>
                     @for (option of accountGroupOption(); track option) {
-                      <option [value]="option" class="capitalize">
+                      <option [value]="option" class="capitalize dark:bg-gray-900">
                         {{ option }}
                       </option>
                     }
@@ -320,9 +320,9 @@
                       [formField]="form.coaMap"
                       class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-teal-500 peer dark:text-gray-50!"
                     >
-                      <option value="" class="capitalize">Select Option</option>
+                      <option value="" class="capitalize dark:bg-gray-900">Select Option</option>
                       @for (option of coaMapOption(); track option) {
-                        <option [value]="option" class="capitalize">
+                        <option [value]="option" class="capitalize dark:bg-gray-900">
                           {{ option }}
                         </option>
                       }
@@ -344,9 +344,9 @@
                       [formField]="form.bankId"
                       class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-teal-500 peer dark:text-gray-50!"
                     >
-                      <option value="0" class="capitalize">Select Option</option>
+                      <option value="0" class="capitalize dark:bg-gray-900">Select Option</option>
                       @for (option of bankOption(); track option.id) {
-                        <option [value]="option.id" class="capitalize">
+                        <option [value]="option.id" class="capitalize dark:bg-gray-900">
                           {{ option.text }}
                         </option>
                       }

@@ -1,0 +1,634 @@
+@if (isView()) {
+  @if (showList()) {
+    <div class="max-w-8xl mx-auto relative mt-5">
+      <div class="w-full mb-10 px-3">
+        <div
+          class="relative overflow-x-auto bg-neutral-primary dark:bg-gray-800-soft shadow-xs rounded-base border border-default"
+        >
+          <div class="flex justify-between p-4">
+            <div class="w-full">
+              <label for="search" class="sr-only">Search</label>
+              <div class="relative">
+                <div
+                  class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none text-gray-600 dark:text-gray-400"
+                >
+                  <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
+                </div>
+                <input
+                  #searchInput
+                  autocomplete="off"
+                  (input)="onSearch($event)"
+                  type="text"
+                  id="search"
+                  class="block w-full max-w-xl ps-9 pe-3 bg-neutral-secondary-medium border border-default-medium text-sm rounded-base focus:ring-brand focus:border-brand px-3 py-2.5 shadow-xs placeholder:text-body"
+                  placeholder="Search by Asset Name, Code or Vendor"
+                />
+              </div>
+            </div>
+
+
+
+            <h1
+              class="text-xl md:text-3xl font-bold text-emerald-500 underline text-center mb-1 w-full"
+            >
+              Asset List
+            </h1>
+
+            
+
+      <!-- Date Range Filters -->
+      <div class="flex flex-col sm:flex-row gap-2 items-end sm:items-center w-full lg:w-2/3">
+        <div class="flex flex-col justify-center sm:flex-row gap-2 items-end sm:items-center w-full">
+          <div class="w-full sm:w-40">
+            <div class="relative">
+              <div class="absolute inset-y-0 start-0 flex items-center ps-2 pointer-events-none text-gray-600 dark:text-gray-400">
+                <fa-icon [icon]="faCalendar" size="xs"></fa-icon>
+              </div>
+              <input
+                type="date"
+                [ngModel]="fromDate()"
+                (ngModelChange)="fromDate.set($event)"
+                class="block w-full ps-8 pe-2 bg-neutral-secondary-medium border border-default-medium text-sm rounded-base focus:ring-brand focus:border-brand px-3 py-2 shadow-xs"
+              />
+            </div>
+          </div>
+
+          <div>to</div>
+
+          <div class="w-full sm:w-40">
+            <div class="relative">
+              <div class="absolute inset-y-0 start-0 flex items-center ps-2 pointer-events-none text-gray-600 dark:text-gray-400">
+                <fa-icon [icon]="faCalendar" size="xs"></fa-icon>
+              </div>
+              <input
+                type="date"
+                [ngModel]="toDate()"
+                (ngModelChange)="toDate.set($event)"
+                class="block w-full ps-8 pe-2 bg-neutral-secondary-medium border border-default-medium text-sm rounded-base focus:ring-brand focus:border-brand px-3 py-2 shadow-xs"
+              />
+            </div>
+          </div>
+
+          <div class="flex gap-2 w-full sm:w-auto">
+            <button
+              type="button"
+              (click)="loadAssetDescriptions()"
+              class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-base text-sm px-4 py-2 text-center inline-flex items-center gap-2"
+            >
+              <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
+              <span class="hidden sm:inline">Search</span>
+            </button>
+            
+            <button
+              type="button"
+              (click)="resetDateFilters()"
+              class="text-gray-700 bg-gray-200 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-base text-sm px-4 py-2 text-center inline-flex items-center gap-2"
+              title="Reset to today"
+            >
+              <fa-icon [icon]="faRotateLeft"></fa-icon>
+              <span class="hidden sm:inline">Reset</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+            @if (isInsert()) {
+              <div class="w-full flex justify-end">
+                <button
+                  type="button"
+                  (click)="showList.set(false)"
+                  class="text-white bg-linear-to-r from-green-400 via-green-500 to-green-600 hover:bg-linear-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-base text-sm px-4 py-2.5 text-center leading-5 cursor-pointer"
+                >
+                  Add
+                </button>
+              </div>
+            }
+          </div>
+
+          <!-- Loading State -->
+          @if (isLoading()) {
+            <p class="text-3xl font-bold text-center p-10 text-emerald-600">Loading ...</p>
+          }
+
+          <!-- Error State -->
+          @else if (hasError()) {
+            <p class="text-3xl font-bold text-center p-10 text-red-600">
+              There was an error loading data.
+            </p>
+          }
+
+          <!-- Empty State -->
+          @else if (filteredAssetList().length === 0) {
+            <p class="text-3xl font-bold text-center p-10 text-orange-600">No Items found.</p>
+          }
+
+          <!-- Table -->
+          @else {
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm text-left rtl:text-right text-body">
+                <thead
+                  class="text-sm text-body bg-neutral-secondary-medium border-b border-t border-default-medium"
+                >
+                  <tr>
+                    <th scope="col" class="px-6 py-3 font-medium capitalize">Asset Name</th>
+                    <th scope="col" class="px-6 py-3 font-medium capitalize">Code</th>
+                    <th scope="col" class="px-6 py-3 font-medium capitalize">Type</th>
+                    <th scope="col" class="px-6 py-3 font-medium capitalize">QTY</th>
+                    <th scope="col" class="px-6 py-3 font-medium capitalize">Vendor</th>
+                    <th scope="col" class="px-6 py-3 font-medium capitalize">Pur. Price</th>
+                    <th scope="col" class="px-6 py-3 font-medium capitalize">WDV</th>
+                    <th scope="col" class="px-6 py-3 font-medium capitalize">Status</th>
+                    <th scope="col" class="px-6 py-3 font-medium capitalize">Location</th>
+                    @if (isEdit() || isDelete()) {
+                      <th scope="col" class="px-6 py-3 font-medium capitalize">Actions</th>
+                    }
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (item of filteredAssetList(); track item?.id || $index) {
+                    <tr
+                      class="bg-neutral-primary border-b border-default hover:bg-yellow-100 odd:bg-gray-100 even:bg-gray-300 dark:odd:bg-gray-800 dark:even:bg-gray-900 dark:border-gray-950 dark:hover:bg-yellow-200 transition-colors cursor-pointer"
+                      [class.bg-blue-50]="selected()?.id === item.id"
+                    >
+                      <td class="px-6 py-4 font-medium">{{ item?.assetName }}</td>
+                      <td class="px-6 py-4">{{ item?.assetCode || '-' }}</td>
+                      <td class="px-6 py-4">{{ item?.assetTypeName || '-' }}</td>
+                      <td class="px-6 py-4">{{ item?.qty || '-' }}</td>
+                      <td class="px-6 py-4">{{ item?.vendorName || '-' }}</td>
+                      <td class="px-6 py-4">
+                        {{ item?.purPrice | currency: 'BDT' : 'symbol' : '1.0-0' }}
+                      </td>
+                      <td class="px-6 py-4">
+                        {{ item?.wdv | currency: 'BDT' : 'symbol' : '1.0-0' }}
+                      </td>
+                      <td class="px-6 py-4">
+                        <span
+                          class="px-2 py-1 rounded text-xs"
+                          [class.bg-green-100]="item?.assetStatus == 1"
+                          [class.bg-red-100]="item?.assetStatus == 2"
+                          [class.bg-gray-100]="item?.assetStatus == 3"
+                          [class.bg-yellow-100]="item?.assetStatus == 4"
+                        >
+                          {{ getAssetStatusLabel(item.assetStatus) }}
+                        </span>
+                      </td>
+                      <td class="px-6 py-4">{{ item?.location || '-' }}</td>
+                      <td class="px-6 py-4">
+                        @if (isEdit()) {
+                          <button
+                            class="text-orange-50 bg-orange-400 hover:bg-orange-500 px-2 py-1 rounded cursor-pointer mr-1 transition-colors"
+                            (click)="onUpdate(item)"
+                            title="Edit"
+                          >
+                            <fa-icon [icon]="faPencil"></fa-icon>
+                          </button>
+                        }
+                        @if (isDelete()) {
+                          <button
+                            class="text-rose-50 bg-rose-600 hover:bg-rose-700 px-2 py-1 rounded cursor-pointer transition-colors"
+                            (click)="onDelete(item?.id)"
+                            title="Delete"
+                          >
+                            <fa-icon [icon]="faXmark"></fa-icon>
+                          </button>
+                        }
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div class="max-w-8xl mx-auto relative">
+      <!-- Asset Description Form -->
+      <div
+        class="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-950 transition-all"
+      >
+        <!-- Form Header -->
+        <div class="bg-blue-300 dark:bg-blue-800 h-2 rounded-t-lg transition-all"></div>
+        <div class="p-6">
+          <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-50 transition-all">
+              Asset Form
+            </h2>
+            <button
+              class="text-rose-50 bg-rose-600 hover:bg-rose-700 px-1 py-0.5 rounded cursor-pointer"
+              (click)="onToggleList()"
+            >
+              <fa-icon [icon]="faXmark"></fa-icon>
+            </button>
+          </div>
+
+          <!-- Form Fields -->
+          <form class="space-y-6" (submit)="onSubmit($event)">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+              <!-- Asset Name -->
+              <div class="lg:col-span-1">
+                @let name = form.assetName();
+                @let nameError = form.assetName().invalid() && form.assetName().touched();
+                <div class="relative pb-2">
+                  <input
+                    id="assetName"
+                    type="text"
+                    [formField]="form.assetName"
+                    autocomplete="off"
+                    class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer dark:text-gray-50!"
+                    placeholder=""
+                  />
+                  <label
+                    for="assetName"
+                    class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-neutral-primary dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                    >Asset Name *</label
+                  >
+                </div>
+                @if (nameError) {
+                  <ul class="-mt-2 mb-2">
+                    @for (error of name.errors(); track error) {
+                      <li class="text-sm text-red-600">{{ error.message }}</li>
+                    }
+                  </ul>
+                }
+              </div>
+
+              <!-- Asset Code -->
+              <div class="lg:col-span-1">
+                <div class="relative pb-2">
+                  <input
+                    id="assetCode"
+                    type="text"
+                    [formField]="form.assetCode"
+                    autocomplete="off"
+                    class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer dark:text-gray-50!"
+                    placeholder=""
+                  />
+                  <label
+                    for="assetCode"
+                    class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-neutral-primary dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                    >Asset Code</label
+                  >
+                </div>
+              </div>
+
+              <!-- Quantity -->
+              <div class="lg:col-span-1">
+                <div class="relative pb-2">
+                  <input
+                    id="qty"
+                    type="text"
+                    [formField]="form.qty"
+                    autocomplete="off"
+                    class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer dark:text-gray-50!"
+                    placeholder=""
+                  />
+                  <label
+                    for="qty"
+                    class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-neutral-primary dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                    >Quantity</label
+                  >
+                </div>
+              </div>
+
+              <!-- Asset Type -->
+              <div class="lg:col-span-1">
+                @let type = form.assetTypeId();
+                @let typeError = form.assetTypeId().invalid() && form.assetTypeId().touched();
+                <div class="relative pb-2">
+                  <select
+                    id="assetTypeId"
+                    [formField]="form.assetTypeId"
+                    class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer dark:text-gray-50!"
+                  >
+                    <option value="0" disabled selected class="dark:bg-gray-900">Select Asset Type</option>
+                    @for (type of assetTypes(); track type.id) {
+                      <option [value]="type.id" class="dark:bg-gray-900">{{ type.assetTypeName }}</option>
+                    }
+                  </select>
+                  <label
+                    for="assetTypeId"
+                    class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-neutral-primary dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                    >Asset Type *</label
+                  >
+                </div>
+                @if (typeError) {
+                  <ul class="-mt-2 mb-2">
+                    @for (error of type.errors(); track error) {
+                      <li class="text-sm text-red-600">{{ error.message }}</li>
+                    }
+                  </ul>
+                }
+              </div>
+
+              <!-- Vendor Name -->
+              <div class="lg:col-span-1">
+                <div class="relative pb-2">
+                  <input
+                    id="vendorName"
+                    type="text"
+                    [formField]="form.vendorName"
+                    autocomplete="off"
+                    class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer dark:text-gray-50!"
+                    placeholder=""
+                  />
+                  <label
+                    for="vendorName"
+                    class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-neutral-primary dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                    >Vendor Name</label
+                  >
+                </div>
+              </div>
+
+              <!-- Purchase Invoice No -->
+              <div class="lg:col-span-1">
+                <div class="relative pb-2">
+                  <input
+                    id="purInvNO"
+                    type="text"
+                    [formField]="form.purInvNO"
+                    autocomplete="off"
+                    class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer dark:text-gray-50!"
+                    placeholder=""
+                  />
+                  <label
+                    for="purInvNO"
+                    class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-neutral-primary dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                    >Purchase Invoice No</label
+                  >
+                </div>
+              </div>
+
+              <!-- Purchase Date -->
+              <div class="lg:col-span-1">
+                <div class="relative pb-2">
+                  <input
+                    id="purDate"
+                    type="date"
+                    [formField]="form.purDate"
+                    class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer dark:text-gray-50!"
+                  />
+                  <label
+                    for="purDate"
+                    class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-neutral-primary dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                    >Purchase Date</label
+                  >
+                </div>
+              </div>
+
+              <!-- Purchase Price -->
+              <div class="lg:col-span-1">
+                @let price = form.purPrice();
+                @let priceError = form.purPrice().invalid() && form.purPrice().touched();
+                <div class="relative pb-2">
+                  <div
+                    class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none text-gray-600 dark:text-gray-400 z-10"
+                  >
+                    <fa-icon [icon]="faDollarSign"></fa-icon>
+                  </div>
+                  <input
+                    id="purPrice"
+                    type="number"
+                    step="0.01"
+                    [formField]="form.purPrice"
+                    class="block w-full ps-9 pb-2.5 pt-4 text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer dark:text-gray-50!"
+                    placeholder=""
+                  />
+                  <label
+                    for="purPrice"
+                    class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-neutral-primary dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                    >Purchase Price *</label
+                  >
+                </div>
+                @if (priceError) {
+                  <ul class="-mt-2 mb-2">
+                    @for (error of price.errors(); track error) {
+                      <li class="text-sm text-red-600">{{ error.message }}</li>
+                    }
+                  </ul>
+                }
+              </div>
+
+              <!-- Depreciation Calculation Date -->
+              <div class="lg:col-span-1">
+                <div class="relative pb-2">
+                  <input
+                    id="depCalDate"
+                    type="date"
+                    [formField]="form.depCalDate"
+                    class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer dark:text-gray-50!"
+                  />
+                  <label
+                    for="depCalDate"
+                    class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-neutral-primary dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                    >Depreciation Start Date</label
+                  >
+                </div>
+              </div>
+
+              <!-- Depreciation Percentage -->
+              <div class="lg:col-span-1">
+                <div class="relative pb-2">
+                  <div
+                    class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none text-gray-600 dark:text-gray-400 z-10"
+                  >
+                    <fa-icon [icon]="faPercentage"></fa-icon>
+                  </div>
+                  <input
+                    id="deprePercentage"
+                    type="number"
+                    step="0.01"
+                    [formField]="form.deprePercentage"
+                    class="block w-full ps-9 pb-2.5 pt-4 text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer dark:text-gray-50!"
+                    placeholder=""
+                  />
+                  <label
+                    for="deprePercentage"
+                    class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-neutral-primary dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                    >Depreciation %</label
+                  >
+                </div>
+              </div>
+
+              <!-- Location -->
+              <div class="lg:col-span-1">
+                <div class="relative pb-2">
+                  <input
+                    id="location"
+                    type="text"
+                    [formField]="form.location"
+                    autocomplete="off"
+                    class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer dark:text-gray-50!"
+                    placeholder=""
+                  />
+                  <label
+                    for="location"
+                    class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-neutral-primary dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                    >Location</label
+                  >
+                </div>
+              </div>
+
+              <!-- Warranty End Date -->
+              <div class="lg:col-span-1">
+                <div class="relative pb-2">
+                  <input
+                    id="warrEndDate"
+                    type="date"
+                    [formField]="form.warrEndDate"
+                    class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer dark:text-gray-50!"
+                  />
+                  <label
+                    for="warrEndDate"
+                    class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-neutral-primary dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                    >Warranty End Date</label
+                  >
+                </div>
+              </div>
+
+              <!-- File Link -->
+              <div class="lg:col-span-1">
+                <div class="relative pb-2">
+                  <div
+                    class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none text-gray-600 dark:text-gray-400 z-10"
+                  >
+                    <fa-icon [icon]="faFile"></fa-icon>
+                  </div>
+                  <input
+                    id="fileLink"
+                    type="text"
+                    [formField]="form.fileLink"
+                    autocomplete="off"
+                    class="block w-full ps-9 pb-2.5 pt-4 text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer dark:text-gray-50!"
+                    placeholder=""
+                  />
+                  <label
+                    for="fileLink"
+                    class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-neutral-primary dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                    >File Link</label
+                  >
+                </div>
+              </div>
+
+              <!-- Asset Status -->
+              <div class="lg:col-span-1">
+                <div class="relative pb-2">
+                  <select
+                    id="assetStatus"
+                    [formField]="form.assetStatus"
+                    class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer dark:text-gray-50!"
+                  >
+                    @for (option of assetStatusOptions; track option.value) {
+                      <option [value]="option.value" class="dark:bg-gray-900">{{ option.label }}</option>
+                    }
+                  </select>
+                  <label
+                    for="assetStatus"
+                    class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-neutral-primary dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                    >Asset Status</label
+                  >
+                </div>
+              </div>
+
+              <!-- Remarks -->
+              <div class="lg:col-span-3">
+                <div class="relative pb-2">
+                  <textarea
+                    id="remarks"
+                    [formField]="form.remarks"
+                    rows="3"
+                    class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer dark:text-gray-50"
+                    placeholder=""
+                  ></textarea>
+                  <label
+                    for="remarks"
+                    class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-neutral-primary dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                    >Remarks</label
+                  >
+                </div>
+              </div>
+
+              <!-- Others Fields (Optional) -->
+              <div class="lg:col-span-1">
+                <div class="relative pb-2">
+                  <input
+                    id="others1"
+                    type="text"
+                    [formField]="form.others1"
+                    autocomplete="off"
+                    class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer dark:text-gray-50!"
+                    placeholder=""
+                  />
+                  <label
+                    for="others1"
+                    class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-neutral-primary dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                    >Others 1</label
+                  >
+                </div>
+              </div>
+
+              <div class="lg:col-span-1">
+                <div class="relative pb-2">
+                  <input
+                    id="others2"
+                    type="text"
+                    [formField]="form.others2"
+                    autocomplete="off"
+                    class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer dark:text-gray-50!"
+                    placeholder=""
+                  />
+                  <label
+                    for="others2"
+                    class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-neutral-primary dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                    >Others 2</label
+                  >
+                </div>
+              </div>
+
+              <div class="lg:col-span-1">
+                <div class="relative pb-2">
+                  <input
+                    id="others3"
+                    type="text"
+                    [formField]="form.others3"
+                    autocomplete="off"
+                    class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer dark:text-gray-50!"
+                    placeholder=""
+                  />
+                  <label
+                    for="others3"
+                    class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-neutral-primary dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                    >Others 3</label
+                  >
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="flex gap-2 lg:col-span-3">
+                <input
+                  type="submit"
+                  [value]="isSubmitted() ? 'Submitting ...' : selected() ? 'Update' : 'Save'"
+                  [disabled]="form().invalid() || isSubmitted()"
+                  class="text-gray-50 bg-linear-to-r from-emerald-400 via-emerald-500 to-emerald-600 hover:bg-linear-to-br focus:ring-1 focus:outline-none focus:ring-emerald-300 shadow-lg shadow-emerald-500/50 font-medium rounded text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full disabled:cursor-not-allowed disabled:opacity-50"
+                />
+
+                <button
+                  type="button"
+                  (click)="onToggleList()"
+                  class="text-gray-50 bg-linear-to-r from-red-400 via-red-500 to-red-600 hover:bg-linear-to-br focus:ring-1 focus:outline-none focus:ring-red-300 shadow-lg shadow-red-500/50 font-medium rounded text-sm px-5 py-2.5 text-center me-2 mb-2 h-10"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  }
+} @else {
+  <p class="text-3xl font-bold text-center p-10 text-red-600">
+    You don't have permission to view this page.
+  </p>
+}
