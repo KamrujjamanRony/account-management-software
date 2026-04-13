@@ -1,46 +1,72 @@
-import { Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, signal, ViewChild } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { FormsModule } from '@angular/forms';
-import { SearchComponent } from '../../../../shared/components/svg/search/search.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { PatientService } from '../../../services/patient.service';
 import { DoctorService } from '../../../services/doctor.service';
-import { DataFetchService } from '../../../../shared/services/useDataFetch';
 import { DoctorFeeService } from '../../../services/doctor-fee.service';
 import { DataService } from '../../../../shared/services/data.service';
-import { AuthService } from '../../../../settings/services/auth.service';
+import { PermissionS } from '../../../../settings/services/permission-s';
 
 @Component({
   selector: 'app-doctor-fee-report',
-  standalone: true,
-  imports: [SearchComponent, CommonModule, FormsModule],
+  imports: [FormsModule, FontAwesomeModule],
   templateUrl: './doctor-fee-report.component.html',
-  styleUrl: './doctor-fee-report.component.css'
+  styleUrl: './doctor-fee-report.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DoctorFeeReportComponent {
   private patientService = inject(PatientService);
   private doctorService = inject(DoctorService);
   private doctorFeeService = inject(DoctorFeeService);
   private dataService = inject(DataService);
-  private authService = inject(AuthService);
-  dataFetchService = inject(DataFetchService);
-  filteredPatientList = signal<any[]>([]);
-  filteredDoctorList = signal<any[]>([]);
-  filteredDoctorFeeList = signal<any[]>([]);
-  DoctorFeeList = signal<any[]>([]);
-  filteredDoctorOptions = signal<any[]>([]);
-  query: any = '';
-  fromDate: any;
-  toDate: any;
-  nextFollowDate: any;
-  selectedDoctor: any = '';
+  private permissionS = inject(PermissionS);
+
+  faMagnifyingGlass = faMagnifyingGlass;
+  allPatients = signal<any[]>([]);
+  allDoctors = signal<any[]>([]);
+  doctorFees = signal<any[]>([]);
+  searchQuery = signal('');
+  selectedDoctorFilter = signal('');
+  query = '';
+  fromDate = '';
+  toDate = '';
+  nextFollowDate = '';
+  selectedDoctor = '';
   header = signal<any>(null);
-  isView = signal<boolean>(false);
-  private searchQuery$ = new BehaviorSubject<string>('');
-  isLoading$: Observable<any> | undefined;
-  hasError$: Observable<any> | undefined;
+  isView = signal(false);
+  isLoading = signal(false);
+  hasError = signal(false);
+
+  filteredDoctorOptions = computed(() => {
+    const data = this.doctorFees();
+    return Array.from(
+      new Map(data.map((d: any) => [d.doctorId, { id: d.doctorId, name: d.doctorName }])).values()
+    );
+  });
+
+  filteredDoctorFeeList = computed(() => {
+    let fees = this.doctorFees();
+    const doctor = this.selectedDoctorFilter();
+    if (doctor.trim()) {
+      fees = fees.filter((fee: any) => fee.doctorId == doctor);
+    }
+    const query = this.searchQuery();
+    if (!query.trim()) return fees;
+    return fees.filter((mainData: any) =>
+      mainData.regNo?.toLowerCase()?.includes(query) ||
+      mainData.patientName?.toLowerCase()?.includes(query) ||
+      mainData.contactNo?.toLowerCase()?.includes(query) ||
+      mainData.remarks?.toLowerCase()?.includes(query) ||
+      mainData.postBy?.toLowerCase()?.includes(query) ||
+      mainData.patientType?.toLowerCase()?.includes(query) ||
+      mainData.doctorName?.toLowerCase()?.includes(query)
+    );
+  });
+
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
 
   transform(value: any, args: any = 'dd/MM/yyyy'): any {
@@ -51,158 +77,78 @@ export class DoctorFeeReportComponent {
 
   ngOnInit() {
     this.dataService.getHeader().subscribe(data => this.header.set(data));
-    this.isView.set(this.checkPermission("Doctor Fee Report", "View"));
+    this.isView.set(this.permissionS.hasPermission('Doctor Fee Report', 'View'));
     const today = new Date();
     this.fromDate = today.toISOString().split('T')[0];
-    // this.toDate = today.toISOString().split('T')[0];
     this.onLoadPatients();
     this.onLoadDoctors();
     this.onFilterData();
 
-    // Focus on the search input when the component is initialized
     setTimeout(() => {
       this.searchInput?.nativeElement.focus();
     }, 500);
   }
 
-
-  checkPermission(moduleName: string, permission: string) {
-    const modulePermission = this.authService.getUser()?.userMenu?.find((module: any) => module?.menuName?.toLowerCase() === moduleName.toLowerCase());
-    if (modulePermission) {
-      const permissionValue = modulePermission.permissions.find((perm: any) => perm.toLowerCase() === permission.toLowerCase());
-      if (permissionValue) {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      return false;
-    }
-  }
-
   onLoadPatients() {
-    const { data$, isLoading$, hasError$ } = this.dataFetchService.fetchData(this.patientService.getAllPatients());
-    data$.subscribe(data => {
-      this.filteredPatientList.set(data);
+    this.patientService.getAllPatients().subscribe(data => {
+      this.allPatients.set(data);
     });
   }
 
   onLoadDoctors() {
-    const { data$, isLoading$, hasError$ } = this.dataFetchService.fetchData(this.doctorService.getAllDoctors());
-    data$.subscribe(data => {
-      this.filteredDoctorList.set(data.sort((a: any, b: any) => a.name - b.name));
+    this.doctorService.getAllDoctors().subscribe(data => {
+      this.allDoctors.set(data.sort((a: any, b: any) => a.name - b.name));
     });
   }
-
-  // onLoadDoctorFees() {
-  //   const { data$, isLoading$, hasError$ } = this.dataFetchService.fetchData(this.doctorFeeService.getAllDoctorFees());
-  //   data$.subscribe(data => {
-  //     this.DoctorFeeList.set(data);
-  //     this.filteredDoctorFeeList.set(data);
-  //   });
-  //   this.isLoading$ = isLoading$;
-  //   this.hasError$ = hasError$;
-  //   combineLatest([data$, this.searchQuery$]).pipe(
-  //     map(([data, query]) => {
-  //       console.log(query)
-  //       if (!query.trim()) {
-  //         return data;
-  //       }
-  //       return data.filter((mainData: any) => {
-  //         return (
-  //           mainData.regNo?.toLowerCase()?.includes(query) ||
-  //           mainData.patientName?.toLowerCase()?.includes(query) ||
-  //           mainData.contactNo?.toLowerCase()?.includes(query) ||
-  //           mainData.remarks?.toLowerCase()?.includes(query) ||
-  //           mainData.postBy?.toLowerCase()?.includes(query) ||
-  //           mainData.patientType?.toLowerCase()?.includes(query) ||
-  //           mainData.doctorName?.toLowerCase()?.includes(query)
-  //         );
-  //       });
-  //     })
-  //   ).subscribe(filteredData => {
-  //     this.filteredDoctorFeeList.set(filteredData);
-  //     this.DoctorFeeList.set(filteredData);
-  //     const uniqueDoctors = Array.from(new Map(filteredData.map((d: any) => [d.doctorId, { id: d.doctorId, name: d.doctorName }])).values());
-  //     this.filteredDoctorOptions.set(uniqueDoctors);
-  //   });
-  // }
 
   onFilterData() {
     if (this.nextFollowDate) {
-      this.fromDate = "";
-      this.toDate = "";
+      this.fromDate = '';
+      this.toDate = '';
     }
-    const { data$, isLoading$, hasError$ } = this.dataFetchService.fetchData(this.doctorFeeService.getFilteredDoctorFee(this.fromDate, this.toDate, this.nextFollowDate));
-    data$.subscribe(data => {
-      this.DoctorFeeList.set(data);
-      this.filteredDoctorFeeList.set(data.sort((a: any, b: any) => a.sl - b.sl));
-      // Create a unique list of doctor options
-      const uniqueDoctors = Array.from(new Map(data.map((d: any) => [d.doctorId, { id: d.doctorId, name: d.doctorName }])).values());
-      // Set unique doctor options
-      this.filteredDoctorOptions.set(uniqueDoctors);
-    });
-    this.isLoading$ = isLoading$;
-    this.hasError$ = hasError$;
-    combineLatest([data$, this.searchQuery$]).pipe(
-      map(([data, query]) => {
-        if (!query.trim()) {
-          return data;
-        }
-        return data.filter((mainData: any) => {
-          return (
-            mainData.regNo?.toLowerCase()?.includes(query) ||
-            mainData.patientName?.toLowerCase()?.includes(query) ||
-            mainData.contactNo?.toLowerCase()?.includes(query) ||
-            mainData.remarks?.toLowerCase()?.includes(query) ||
-            mainData.postBy?.toLowerCase()?.includes(query) ||
-            mainData.patientType?.toLowerCase()?.includes(query) ||
-            mainData.doctorName?.toLowerCase()?.includes(query)
-          );
-        });
-      })
-    ).subscribe(filteredData => {
-      this.filteredDoctorFeeList.set(filteredData.sort((a: any, b: any) => a.sl - b.sl));
-      this.DoctorFeeList.set(filteredData);
-      const uniqueDoctors = Array.from(new Map(filteredData.map((d: any) => [d.doctorId, { id: d.doctorId, name: d.doctorName }])).values());
-      this.filteredDoctorOptions.set(uniqueDoctors);
+    this.isLoading.set(true);
+    this.hasError.set(false);
+    this.doctorFeeService.getFilteredDoctorFee(this.fromDate, this.toDate, this.nextFollowDate).subscribe({
+      next: (data: any) => {
+        this.doctorFees.set(data.sort((a: any, b: any) => a.sl - b.sl));
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.hasError.set(true);
+        this.isLoading.set(false);
+      },
     });
   }
 
-  onSelectInputChange(): void {
-    this.filteredDoctorFeeList.set(this.DoctorFeeList().sort((a: any, b: any) => a.sl - b.sl));
-    if (!this.selectedDoctor.trim()) {
-      return;
-    }
-    const filteredDoctorFees = this.filteredDoctorFeeList().filter(fee => fee.doctorId == this.selectedDoctor);
-    this.filteredDoctorFeeList.set(filteredDoctorFees.sort((a: any, b: any) => a.sl - b.sl));
+  onSelectInputChange() {
+    this.selectedDoctorFilter.set(this.selectedDoctor);
   }
 
-  // Method to filter DoctorFee list based on search query
-  onSearchDoctorFee(event: Event) {
+  onSearch(event: Event) {
     this.query = (event.target as HTMLInputElement).value.toLowerCase();
-    this.searchQuery$.next(this.query);
+    this.searchQuery.set(this.query);
   }
 
   getPatientName(id: any) {
-    const patient = this.filteredPatientList().find(p => p.id == id);
+    const patient = this.allPatients().find(p => p.id == id);
     return patient?.name ?? '';
   }
 
   getDoctorName(id: any) {
-    const doctor = this.filteredDoctorList().find(p => p.id == id);
+    const doctor = this.allDoctors().find(p => p.id == id);
     return doctor?.name ?? '';
   }
 
   handleClearFilter() {
-    this.searchQuery$.next("");
-    this.searchInput.nativeElement.value = "";
+    this.searchQuery.set('');
+    this.selectedDoctorFilter.set('');
+    this.searchInput.nativeElement.value = '';
     const today = new Date();
     this.fromDate = today.toISOString().split('T')[0];
     this.toDate = '';
     this.nextFollowDate = '';
     this.selectedDoctor = '';
-    this.onFilterData()
+    this.onFilterData();
   }
 
   generatePDF() {
