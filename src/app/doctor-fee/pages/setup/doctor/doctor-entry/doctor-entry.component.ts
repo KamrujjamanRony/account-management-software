@@ -1,354 +1,259 @@
-import { Component, ElementRef, inject, QueryList, signal, ViewChild, ViewChildren } from '@angular/core';
-import { FormControl, FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CommonModule, DatePipe } from '@angular/common';
-import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
-import { SearchComponent } from '../../../../../shared/components/svg/search/search.component';
-import { ToastSuccessComponent } from '../../../../../shared/components/toasts/toast-success/toast-success.component';
-import { FieldComponent } from '../../../../../shared/components/field/field.component';
+import { Component, computed, ElementRef, inject, signal, ViewChild, ViewChildren, QueryList } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { DatePipe } from '@angular/common';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faPencil, faXmark, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { form, required, FormField } from '@angular/forms/signals';
 import { DoctorService } from '../../../../services/doctor.service';
-import { DataFetchService } from '../../../../../shared/services/useDataFetch';
+import { PermissionS } from '../../../../../settings/services/permission-s';
+import { ToastService } from '../../../../../utils/toast/toast.service';
+import { ConfirmService } from '../../../../../utils/confirm/confirm.service';
 import { AuthService } from '../../../../../settings/services/auth.service';
-import { AllSvgComponent } from "../../../../../shared/components/svg/all-svg/all-svg.component";
 
 @Component({
   selector: 'app-doctor-entry',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, SearchComponent, ToastSuccessComponent, FieldComponent, AllSvgComponent],
+  imports: [FormsModule, FormField, FontAwesomeModule],
   templateUrl: './doctor-entry.component.html',
   styleUrl: './doctor-entry.component.css'
 })
 export class DoctorEntryComponent {
-  fb = inject(NonNullableFormBuilder);
-  private doctorService = inject(DoctorService);
-  private dataFetchService = inject(DataFetchService);
-  private authService = inject(AuthService);
-  filteredDoctorList = signal<any[]>([]);
-  isSubmitting = signal<boolean>(false);
-  isView = signal<boolean>(false);
-  isInsert = signal<boolean>(false);
-  isEdit = signal<boolean>(false);
-  isDelete = signal<boolean>(false);
+  faPencil = faPencil;
+  faXmark = faXmark;
+  faMagnifyingGlass = faMagnifyingGlass;
+  @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
+  @ViewChildren('inputRef') inputRefs!: QueryList<ElementRef>;
 
-  isChamberOptions: any[] = [{ id: "", name: 'Select' }, { id: -1, name: 'No' }, { id: 1, name: 'Yes' }];
-  takeComOptions: any[] = [{ id: "", name: 'Select' }, { id: 0, name: 'No' }, { id: 1, name: 'Yes' }];
-  selectedDoctor: any;
-  newMpo: string = '';
-  highlightedTr: number = -1;
-  success = signal<any>("");
+  /* ---------------- DI ---------------- */
+  private doctorService = inject(DoctorService);
+  private permissionService = inject(PermissionS);
+  private toast = inject(ToastService);
+  private confirm = inject(ConfirmService);
+  private authService = inject(AuthService);
+
+  /* ---------------- SIGNAL STATE ---------------- */
+  doctors = signal<any[]>([]);
+  searchQuery = signal('');
+
+  isView = signal(false);
+  isInsert = signal(false);
+  isEdit = signal(false);
+  isDelete = signal(false);
+  showList = signal(true);
+
+  isChamberOptions: any[] = [{ id: '', name: 'Select' }, { id: '-1', name: 'No' }, { id: '1', name: 'Yes' }];
+  takeComOptions: any[] = [{ id: '', name: 'Select' }, { id: '0', name: 'No' }, { id: '1', name: 'Yes' }];
 
   isChamber: any = "";
   takeCom: any = "";
 
-  private searchQuery$ = new BehaviorSubject<string>('');
-  today = new Date();
-  isLoading$: Observable<any> | undefined;
-  hasError$: Observable<any> | undefined;
-  @ViewChildren('inputRef') inputRefs!: QueryList<ElementRef>;
-  @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
-  isSubmitted = false;
-  form = this.fb.group({
-    name: ['', [Validators.required]],
-    address: [''],
-    contactNo: [''],
-    takeCom: [0],
-    isChamberDoctor: [-1],
-    mpoId: [0],
-    userName: ['superSoft', [Validators.required]],
-    valid: [0],
-    entryDate: [this.today],
-    reportUserName: ['superSoft', [Validators.required]],
-    drFee: [0],
-    code: [null],
-    postBy: [this.authService.getUser()?.username || ''],
+  filteredDoctorList = computed(() => {
+    const query = this.searchQuery().toLowerCase();
+    return this.doctors()
+      .filter(d =>
+        String(d.name ?? '').toLowerCase().includes(query) ||
+        String(d.contactNo ?? '').toLowerCase().includes(query) ||
+        String(d.regNo ?? '').toLowerCase().includes(query)
+      );
   });
+
+  selected = signal<any>(null);
+  isLoading = signal(false);
+  hasError = signal(false);
+  isSubmitted = signal(false);
+
+  /* ---------------- FORM MODEL ---------------- */
+  model = signal({
+    name: '',
+    address: '',
+    contactNo: '',
+    takeCom: '0',
+    isChamberDoctor: '-1',
+    mpoId: 0,
+    userName: 'superSoft',
+    valid: 0,
+    entryDate: new Date().toISOString(),
+    reportUserName: 'superSoft',
+    drFee: 0,
+    code: null as any,
+    postBy: this.authService.getUser()?.username || '',
+  });
+
+  /* ---------------- SIGNAL FORM ---------------- */
+  form = form(this.model, (s) => {
+    required(s.name, { message: 'Doctor name is required' });
+  });
+
+  /* ---------------- LIFECYCLE ---------------- */
+  ngOnInit(): void {
+    this.loadDoctors();
+    this.loadPermissions();
+    setTimeout(() => this.searchInput?.nativeElement.focus(), 0);
+  }
+
+  /* ---------------- LOADERS ---------------- */
+  loadPermissions() {
+    this.isView.set(this.permissionService.hasPermission('Doctor Entry'));
+    this.isInsert.set(this.permissionService.hasPermission('Doctor Entry', 'Insert'));
+    this.isEdit.set(this.permissionService.hasPermission('Doctor Entry', 'Edit'));
+    this.isDelete.set(this.permissionService.hasPermission('Doctor Entry', 'Delete'));
+  }
+
+  loadDoctors() {
+    this.isLoading.set(true);
+    this.hasError.set(false);
+    this.doctorService.getFilterDoctors(this.isChamber, this.takeCom).subscribe({
+      next: (data) => {
+        this.doctors.set(data.sort((a: any, b: any) => {
+          const dateA = new Date(a.entryDate).getTime();
+          const dateB = new Date(b.entryDate).getTime();
+          return dateB - dateA;
+        }));
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.hasError.set(true);
+        this.isLoading.set(false);
+      },
+    });
+  }
 
   transform(value: any, args?: any): any {
     if (!value) return null;
     const datePipe = new DatePipe('en-US');
-    return datePipe.transform(value, 'dd/MM/yyyy');
+    return datePipe.transform(value, args || 'dd/MM/yyyy');
   }
 
   is(value: any) {
-    return value == 1 ? "Yes" : "No";
+    return value == 1 ? 'Yes' : 'No';
   }
 
-  ngOnInit() {
-    this.onLoadDoctors();
-    this.isView.set(this.checkPermission("Doctor Entry", "View"));
-    this.isInsert.set(this.checkPermission("Doctor Entry", "Insert"));
-    this.isEdit.set(this.checkPermission("Doctor Entry", "Edit"));
-    this.isDelete.set(this.checkPermission("Doctor Entry", "Delete"));
-
-    // Focus on the search input when the component is initialized
-    setTimeout(() => {
-      this.searchInput.nativeElement.focus();
-    }, 0); // Use setTimeout to ensure the DOM is ready
+  /* ---------------- SEARCH ---------------- */
+  onSearch(event: Event) {
+    this.searchQuery.set((event.target as HTMLInputElement).value.trim());
   }
 
-
-  checkPermission(moduleName: string, permission: string) {
-    const modulePermission = this.authService.getUser()?.userMenu?.find((module: any) => module?.menuName?.toLowerCase() === moduleName.toLowerCase());
-    if (modulePermission) {
-      const permissionValue = modulePermission.permissions.find((perm: any) => perm.toLowerCase() === permission.toLowerCase());
-      if (permissionValue) {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      return false;
-    }
-  }
-
-  onLoadDoctors() {
-    const { data$, isLoading$, hasError$ } = this.dataFetchService.fetchData(this.doctorService.getFilterDoctors(this.isChamber, this.takeCom));
-    data$.subscribe(data => {
-      this.filteredDoctorList.set(data.sort((a: any, b: any) => {
-        const dateA = new Date(a.entryDate).getTime();
-        const dateB = new Date(b.entryDate).getTime();
-        return dateB - dateA;
-      }));
-    });
-    this.isLoading$ = isLoading$;
-    this.hasError$ = hasError$;
-    // Combine the original data stream with the search query to create a filtered list
-    combineLatest([
-      data$,
-      this.searchQuery$
-    ]).pipe(
-      map(([data, query]) =>
-        data.filter((doctorData: any) =>
-          doctorData.name?.toLowerCase().includes(query) ||
-          doctorData.contactNo?.includes(query) ||
-          doctorData.regNo?.includes(query)
-        )
-      )
-    ).subscribe(filteredData => this.filteredDoctorList.set(filteredData));
-  }
-
-  // Method to filter Doctor list based on search query
-  onSearchDoctor(event: Event) {
-    const query = (event.target as HTMLInputElement).value.toLowerCase();
-    this.searchQuery$.next(query);
-  }
-
-  // Simplified method to get form controls
-  getControl(controlName: string): FormControl {
-    return this.form.get(controlName) as FormControl;
-  }
-
-
+  /* ---------------- ENTER KEY NAV ---------------- */
   handleEnterKey(event: Event, currentIndex: number) {
-    const keyboardEvent = event as KeyboardEvent;
     event.preventDefault();
     const allInputs = this.inputRefs.toArray();
     const inputs = allInputs.filter((i: any) => !i.nativeElement.disabled);
-
     if (currentIndex + 1 < inputs.length) {
       inputs[currentIndex + 1].nativeElement.focus();
     } else {
-      this.onSubmit(keyboardEvent);
+      this.onSubmit(event);
     }
   }
 
-  handleSearchKeyDown(event: KeyboardEvent) {
-    if (this.filteredDoctorList().length === 0) {
-      return; // Exit if there are no items to navigate
+  /* ---------------- SUBMIT ---------------- */
+  onSubmit(event: Event) {
+    event.preventDefault();
+    if (!this.form().valid()) {
+      this.toast.warning('Form is Invalid! Please fill Name field.', 'bottom-right', 5000);
+      return;
     }
+    this.isSubmitted.set(true);
+    const payload: any = { ...this.form().value() };
+    payload.drFee = payload.drFee || 0;
+    payload.takeCom = Number(payload.takeCom);
+    payload.isChamberDoctor = Number(payload.isChamberDoctor);
 
-    if (event.key === 'Tab') {
-      event.preventDefault();
-      const inputs = this.inputRefs.toArray();
-      inputs[0].nativeElement.focus();
-    } else if (event.key === 'ArrowDown') {
-      event.preventDefault(); // Prevent default scrolling behavior
-      this.highlightedTr = (this.highlightedTr + 1) % this.filteredDoctorList().length;
-    } else if (event.key === 'ArrowUp') {
-      event.preventDefault(); // Prevent default scrolling behavior
-      this.highlightedTr =
-        (this.highlightedTr - 1 + this.filteredDoctorList().length) % this.filteredDoctorList().length;
-    } else if (event.key === 'Enter') {
-      event.preventDefault(); // Prevent form submission
+    const request$ = this.selected()
+      ? this.doctorService.updateDoctor(this.selected().id, payload)
+      : this.doctorService.addDoctor(payload);
 
-      // Call onUpdate for the currently highlighted item
-      if (this.highlightedTr !== -1) {
-        const selectedItem = this.filteredDoctorList()[this.highlightedTr];
-        this.onUpdate(selectedItem);
-        this.highlightedTr = -1;
-      }
-    }
-  }
-
-  onSelectInputChange(): void {
-    console.log(this.isChamber)
-  }
-
-  onSubmit(e: Event) {
-    this.isSubmitted = true;
-    this.isSubmitting.set(true);
-    if (this.form.valid) {
-      !this.form.value.drFee ? this.form.patchValue({ drFee: 0, takeCom: Number(this.form.value.takeCom), isChamberDoctor: Number(this.form.value.isChamberDoctor) }) : this.form.patchValue({ takeCom: Number(this.form.value.takeCom), isChamberDoctor: Number(this.form.value.isChamberDoctor) });
-      // console.log(this.form.value);
-      if (this.selectedDoctor) {
-        this.doctorService.updateDoctor(this.selectedDoctor.id, this.form.value)
-          .subscribe({
-            next: (response) => {
-              if (response !== null && response !== undefined) {
-                this.success.set("Doctor successfully updated!");
-                const rest = this.filteredDoctorList().filter(d => d.id !== response.id);
-                this.filteredDoctorList.set([response, ...rest]);
-                this.isSubmitted = false;
-                this.selectedDoctor = null;
-                this.formReset(e);
-                setTimeout(() => {
-                  this.success.set("");
-                }, 3000);
-              }
-
-            },
-            error: (error) => {
-              console.error('Error register:', error);
-            }
-          });
-      } else {
-        this.doctorService.addDoctor(this.form.value)
-          .subscribe({
-            next: (response) => {
-              if (response !== null && response !== undefined) {
-                this.success.set("Doctor successfully added!");
-                this.filteredDoctorList.set([response, ...this.filteredDoctorList()])
-                this.isSubmitted = false;
-                this.formReset(e);
-                setTimeout(() => {
-                  this.success.set("");
-                }, 3000);
-              }
-
-            },
-            error: (error) => {
-              console.error('Error register:', error);
-            }
-          });
-      }
-    } else {
-      alert('Form is invalid! Please Fill Name Field.');
-    }
-    this.isSubmitting.set(false);
-  }
-
-  onUpdate(data: any) {
-    this.selectedDoctor = data;
-    this.form.patchValue({
-      name: data?.name,
-      address: data?.address,
-      contactNo: data?.contactNo,
-      takeCom: data?.takeCom,
-      isChamberDoctor: data?.isChamberDoctor,
-      mpoId: data?.mpoId,
-      userName: data?.userName,
-      valid: data?.valid,
-      entryDate: data?.entryDate,
-      reportUserName: data?.reportUserName,
-      code: data?.code,
-      postBy: data?.postBy,
-      drFee: data?.drFee || 0,
+    request$.subscribe({
+      next: (response) => {
+        if (response) {
+          if (this.selected()) {
+            const rest = this.doctors().filter(d => d.id !== response.id);
+            this.doctors.set([response, ...rest]);
+          } else {
+            this.doctors.set([response, ...this.doctors()]);
+          }
+          this.onToggleList();
+          this.toast.success('Saved successfully!', 'bottom-right', 5000);
+        }
+      },
+      error: (error) => {
+        this.toast.danger('Save unsuccessful!', 'bottom-left', 3000);
+        console.error('Error submitting:', error);
+        this.isSubmitted.set(false);
+      },
     });
+  }
 
-    // Focus the 'Name' input field after patching the value
+  /* ---------------- UPDATE ---------------- */
+  onUpdate(data: any) {
+    this.selected.set(data);
+    this.model.update(current => ({
+      ...current,
+      name: data?.name ?? '',
+      address: data?.address ?? '',
+      contactNo: data?.contactNo ?? '',
+      takeCom: String(data?.takeCom ?? '0'),
+      isChamberDoctor: String(data?.isChamberDoctor ?? '-1'),
+      mpoId: data?.mpoId ?? 0,
+      userName: data?.userName ?? 'superSoft',
+      valid: data?.valid ?? 0,
+      entryDate: data?.entryDate ?? '',
+      reportUserName: data?.reportUserName ?? 'superSoft',
+      drFee: data?.drFee || 0,
+      code: data?.code ?? null,
+      postBy: data?.postBy ?? '',
+    }));
+    this.showList.set(false);
     setTimeout(() => {
       const inputs = this.inputRefs.toArray();
-      inputs[0].nativeElement.focus();
-    }, 0); // Delay to ensure the DOM is updated
+      inputs[0]?.nativeElement.focus();
+    }, 0);
   }
 
-  onDelete(id: any) {
-    if (confirm("Are you sure you want to delete?")) {
-      this.doctorService.deleteDoctor(id).subscribe(data => {
-        if (data.id) {
-          this.success.set("Doctor deleted successfully!");
-          this.filteredDoctorList.set(this.filteredDoctorList().filter(d => d.id !== id));
-          setTimeout(() => {
-            this.success.set("");
-          }, 3000);
-        } else {
-          console.error('Error deleting doctor fee:', data);
-        }
+  /* ---------------- DELETE ---------------- */
+  async onDelete(id: any) {
+    const ok = await this.confirm.confirm({
+      message: 'Are you sure you want to delete this doctor?',
+      confirmText: "Yes, I'm sure",
+      cancelText: 'No, cancel',
+      variant: 'danger',
+    });
+    if (ok) {
+      this.doctorService.deleteDoctor(id).subscribe({
+        next: () => {
+          this.doctors.update(list => list.filter(d => d.id !== id));
+          this.toast.success('Doctor deleted successfully!', 'bottom-right', 5000);
+        },
+        error: (error) => {
+          this.toast.danger('Doctor delete unsuccessful!', 'bottom-left', 3000);
+          console.error('Error deleting doctor:', error);
+        },
       });
     }
   }
 
-  formReset(e: Event): void {
-    e.preventDefault();
-    this.form.reset({
+  /* ---------------- RESET ---------------- */
+  formReset() {
+    this.model.set({
       name: '',
       address: '',
       contactNo: '',
-      takeCom: 0,
-      isChamberDoctor: -1,
+      takeCom: '0',
+      isChamberDoctor: '-1',
       mpoId: 0,
       userName: 'superSoft',
       valid: 0,
-      entryDate: this.today,
+      entryDate: new Date().toISOString(),
       reportUserName: 'superSoft',
       drFee: 0,
       code: null,
       postBy: this.authService.getUser()?.username || '',
     });
-    this.isSubmitted = false;
-    this.selectedDoctor = null;
+    this.selected.set(null);
+    this.isSubmitted.set(false);
+    this.form().reset();
   }
 
-  // ----------Mpo---------------------------------------------------------------------------------
-  // mpoOptions: string[] = [];
-  // isDropdownOpen: boolean = false;
-  // highlightedIndex: number = -1;
-
-  // addMpo(e: Event) {
-  //   e.preventDefault();
-  //   const currentValue = this.getControl('mpoId').value;
-  //   if (currentValue && !this.mpoOptions.includes(currentValue)) {
-  //     this.mpoOptions.push(currentValue);
-  //     this.getControl('mpoId').setValue('');
-  //     this.isDropdownOpen = false;
-  //   }
-  // }
-
-  // toggleDropdown(e: any) {
-  //   e.preventDefault();
-  //   this.isDropdownOpen = !this.isDropdownOpen;
-  //   this.highlightedIndex = -1;
-  // }
-
-  // selectMpo(option: string) {
-  //   this.getControl('mpoId').setValue(option);
-  //   this.isDropdownOpen = false;
-  //   this.highlightedIndex = -1;
-  // }
-
-  // handleMpoKeyDown(event: KeyboardEvent) {
-  //   if (event.key === 'ArrowDown') {
-  //     this.isDropdownOpen = true;
-  //     event.preventDefault();
-  //   }
-
-  //   if (this.isDropdownOpen && this.mpoOptions.length > 0) {
-  //     if (event.key === 'ArrowDown') {
-  //       this.highlightedIndex =
-  //         (this.highlightedIndex + 1) % this.mpoOptions.length;
-  //       event.preventDefault();
-  //     } else if (event.key === 'ArrowUp') {
-  //       this.highlightedIndex =
-  //         (this.highlightedIndex - 1 + this.mpoOptions.length) %
-  //         this.mpoOptions.length;
-  //       event.preventDefault();
-  //     } else if (event.key === 'Enter') {
-  //       if (this.highlightedIndex !== -1) {
-  //         this.selectMpo(this.mpoOptions[this.highlightedIndex]);
-  //         this.isDropdownOpen = false;
-  //       }
-  //     }
-  //   }
-  // }
-  // ----------Mpo End---------------------------------------------------------------------------------
-
+  onToggleList() {
+    this.showList.update(s => !s);
+    this.formReset();
+  }
 }

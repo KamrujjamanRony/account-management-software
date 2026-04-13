@@ -1,246 +1,329 @@
 @if (isView()) {
-  <section class="flex flex-col lg:flex-row gap-5">
-    @if (isInsert()) {
-      <div class="border mb-10 dark:border-gray-600">
-        <h1 class="text-xl md:text-3xl font-bold text-teal-500 underline text-center mb-5 dark:text-teal-400">
-          Doctor Form
-        </h1>
-        <form [formGroup]="form" (ngSubmit)="onSubmit($event)" class="min-w-100 mx-auto px-2">
-          <!-- Name -->
-          <Field label="name">
-            <input
-              #inputRef
-              type="text"
-              [formControl]="getControl('name')"
-              class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
-              [class.invalid]="
-                (getControl('name').invalid && getControl('name').touched) || isSubmitted
-              "
-              placeholder=""
-              (keydown.enter)="handleEnterKey($event, 0)"
-              required
-            />
-          </Field>
-          <!-- Address -->
-          <Field label="address">
-            <input
-              #inputRef
-              type="text"
-              [formControl]="getControl('address')"
-              class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer dark:border-gray-600 dark:text-white dark:focus:border-teal-500"
-              placeholder=""
-              (keydown.enter)="handleEnterKey($event, 1)"
-            />
-          </Field>
-          <div class="grid grid-cols-2 gap-2">
-            <!-- ContactNo -->
-            <Field label="contact No.">
-              <input
-                #inputRef
-                type="text"
-                [formControl]="getControl('contactNo')"
-                class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer dark:border-gray-600 dark:text-white dark:focus:border-teal-500"
-                placeholder=""
-                (keydown.enter)="handleEnterKey($event, 2)"
-              />
-            </Field>
-            <!-- DrFee -->
-            <Field label="doctor Fee">
-              <input
-                #inputRef
-                type="number"
-                [formControl]="getControl('drFee')"
-                class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer dark:border-gray-600 dark:text-white dark:focus:border-teal-500"
-                placeholder=""
-                (keydown.enter)="handleEnterKey($event, 3)"
-              />
-            </Field>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2">
-            <!-- TakeCom -->
-            <Field label="Take Commission" [isInvalid]="false">
-              <select
-                #inputRef
-                name="takeCom"
-                [formControl]="getControl('takeCom')"
-                placeholder=""
-                (keydown.enter)="handleEnterKey($event, 4)"
-                class="block py-2.5 px-2 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer dark:border-gray-600 dark:text-white dark:focus:border-teal-500"
-              >
-                @for (option of takeComOptions; track $index) {
-                  <option [value]="option.id" class="capitalize dark:bg-gray-700">
-                    {{ option.name }}
-                  </option>
-                }
-              </select>
-            </Field>
-            <!-- IsChamberDoctor -->
-            <Field label="is Chamber Doctor" [isInvalid]="false">
-              <select
-                #inputRef
-                name="isChamberDoctor"
-                [formControl]="getControl('isChamberDoctor')"
-                placeholder=""
-                (keydown.enter)="handleEnterKey($event, 5)"
-                class="block py-2.5 px-2 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer dark:border-gray-600 dark:text-white dark:focus:border-teal-500"
-              >
-                @for (option of isChamberOptions; track $index) {
-                  <option [value]="option.id" class="capitalize dark:bg-gray-700">
-                    {{ option.name }}
-                  </option>
-                }
-              </select>
-            </Field>
-          </div>
-          <div class="flex gap-2">
-            <!-- Save -->
-            @if (!isSubmitting()) {
-              <input
-                #inputRef
-                type="submit"
-                [value]="selectedDoctor ? 'Update' : 'Save'"
-                class="text-gray-50 bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-linear-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 shadow-lg shadow-teal-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
-                (keydown.enter)="handleEnterKey($event, 6)"
-              />
-            } @else {
-              <button
-                class="text-gray-50 bg-gradient-to-r from-rose-400 via-rose-500 to-rose-600 hover:bg-linear-to-br focus:ring-1 focus:outline-none focus:ring-rose-300 shadow-lg shadow-rose-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
-              >
-                Submitting...
-              </button>
-            }
-
-            <button
-              (click)="formReset($event)"
-              class="text-gray-50 bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-linear-to-br focus:ring-1 focus:outline-none focus:ring-red-300 shadow-lg shadow-red-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10"
-            >
-              Clear
-            </button>
-          </div>
-        </form>
-      </div>
-    }
-
-    <div class="w-full border mb-10 px-3 max-h-[98vh] overflow-scroll">
-      <h1 class="text-xl md:text-3xl font-bold text-teal-500 underline text-center">Doctor List</h1>
-
-      <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
-        <div class="flex items-end gap-2 flex-col md:flex-row px-2">
-          <div class="w-full max-w-lg">
-            <label for="table-search" class="sr-only">Search</label>
-            <div class="relative mt-1">
-              <div
-                class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none"
-              >
-                <app-search></app-search>
+  @if (showList()) {
+    <div class="max-w-8xl mx-auto relative mt-5">
+      <div class="w-full mb-10 px-3">
+        <div
+          class="relative overflow-x-auto bg-neutral-primary dark:bg-gray-800-soft shadow-xs rounded-base border border-default"
+        >
+          <div class="flex justify-between p-4">
+            <div class="w-full">
+              <label for="search" class="sr-only">Search</label>
+              <div class="relative">
+                <div
+                  class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none text-gray-600 dark:text-gray-400"
+                >
+                  <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
+                </div>
+                <input
+                  #searchInput
+                  autocomplete="off"
+                  (input)="onSearch($event)"
+                  type="text"
+                  id="search"
+                  class="block w-full max-w-xl ps-9 pe-3 bg-neutral-secondary-medium border border-default-medium text-sm rounded-base focus:ring-brand focus:border-brand px-3 py-2.5 shadow-xs placeholder:text-body"
+                  placeholder="Search by Name or Contact"
+                />
               </div>
-              <input
-                #searchInput
-                type="text"
-                id="table-search"
-                autocomplete="off"
-                class="block ps-10 text-xs border border-gray-300 rounded bg-teal-100 focus:ring-teal-500 focus:border-teal-500 w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-teal-500 dark:focus:border-teal-500"
-                placeholder="Search"
-                (input)="onSearchDoctor($event)"
-                (keydown)="handleSearchKeyDown($event)"
-              />
+            </div>
+            <h1
+              class="text-xl md:text-3xl font-bold text-emerald-500 underline text-center mb-1 w-full"
+            >
+              Doctor List
+            </h1>
+            <div class="w-full flex justify-end items-center gap-2">
+              <!-- Filters -->
+              <select
+                id="isChamber"
+                name="isChamber"
+                [(ngModel)]="isChamber"
+                (change)="loadDoctors()"
+                class="bg-neutral-secondary-medium border border-default-medium text-sm rounded-base focus:ring-brand focus:border-brand px-3 py-2.5 shadow-xs"
+              >
+                @for (item of isChamberOptions; track item.id) {
+                  <option [value]="item.id">
+                    {{ item.name === 'Select' ? 'Chamber' : item.name }}
+                  </option>
+                }
+              </select>
+              <select
+                id="takeCom"
+                name="takeCom"
+                [(ngModel)]="takeCom"
+                (change)="loadDoctors()"
+                class="bg-neutral-secondary-medium border border-default-medium text-sm rounded-base focus:ring-brand focus:border-brand px-3 py-2.5 shadow-xs"
+              >
+                @for (item of takeComOptions; track item.id) {
+                  <option [value]="item.id">
+                    {{ item.name === 'Select' ? 'Commission' : item.name }}
+                  </option>
+                }
+              </select>
+              @if (!isInsert()) {
+                <button
+                  type="button"
+                  (click)="showList.set(false)"
+                  class="text-white bg-linear-to-r from-green-400 via-green-500 to-green-600 hover:bg-linear-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-base text-sm px-4 py-2.5 text-center leading-5 cursor-pointer"
+                >
+                  Add
+                </button>
+              }
             </div>
           </div>
 
-          <div class="w-full max-w-lg">
-            <label for="isChamber" class="block text-sm font-medium">Is Chamber Doctor</label>
-            <select
-              id="isChamber"
-              name="isChamber"
-              [(ngModel)]="isChamber"
-              (change)="onLoadDoctors()"
-              class="bg-gray-50 border border-gray-300 text-sm rounded focus:ring-teal-500 focus:border-teal-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-teal-500 dark:focus:border-teal-500"
-            >
-              @for (item of isChamberOptions; track item.id) {
-                <option [value]="item.id">{{ item.name }}</option>
-              }
-            </select>
-          </div>
+          <!-- Loading State -->
+          @if (isLoading()) {
+            <p class="text-3xl font-bold text-center p-10 text-emerald-600">Loading ...</p>
+          }
 
-          <div class="w-full max-w-lg">
-            <label for="takeCom" class="block text-sm font-medium">Is Take Commission</label>
-            <select
-              id="takeCom"
-              name="takeCom"
-              [(ngModel)]="takeCom"
-              (change)="onLoadDoctors()"
-              class="bg-gray-50 border border-gray-300 text-sm rounded focus:ring-teal-500 focus:border-teal-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-teal-500 dark:focus:border-teal-500"
-            >
-              @for (item of takeComOptions; track item.id) {
-                <option [value]="item.id">{{ item.name }}</option>
-              }
-            </select>
-          </div>
-        </div>
+          <!-- Error State -->
+          @else if (hasError()) {
+            <p class="text-3xl font-bold text-center p-10 text-red-600">
+              There was an error loading data.
+            </p>
+          }
 
-        @if (isLoading$ | async) {
-          <p class="text-3xl font-bold text-center p-10 text-teal-600">Loading ...</p>
-        } @else if (hasError$ | async) {
-          <p class="text-3xl font-bold text-center p-10 text-red-600">
-            There was an error loading data.
-          </p>
-        } @else if (filteredDoctorList().length === 0) {
-          <p class="text-3xl font-bold text-center p-10 text-orange-600">Data is Empty.</p>
-        } @else {
-          <table class="w-full text-xs text-left rtl:text-right">
-            <thead class="text-xs uppercase bg-gray-50">
-              <tr>
-                <th scope="col" class="p-1">name</th>
-                <th scope="col" class="p-1">Contact</th>
-                @if (isEdit() || isDelete()) {
-                  <th scope="col" class="px-1">Action</th>
-                }
-              </tr>
-            </thead>
-            <tbody>
-              @for (item of filteredDoctorList().slice(0, 40); track item?.id || $index) {
-                <tr
-                  id="row-{{ $index }}"
-                  class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
-                >
-                  <td scope="row" class="p-1">
-                    {{ item?.name }}
-                  </td>
-                  <td class="p-1">
-                    {{ item?.contactNo }}
-                  </td>
-                  <td class="flex gap-1">
-                    @if (isEdit()) {
-                      <button
-                        class="text-orange-50 bg-orange-400 hover:bg-orange-500 p-1 rounded"
-                        (click)="onUpdate(item)"
-                      >
-                        <app-all-svg icon="pencil" />
-                      </button>
-                    }
-                    @if (isDelete()) {
-                      <button
-                        class="text-rose-50 bg-rose-600 hover:bg-rose-700 px-2 py-[1px] rounded"
-                        (click)="onDelete(item?.id)"
-                      >
-                        X
-                      </button>
-                    }
-                  </td>
+          <!-- Empty State -->
+          @else if (filteredDoctorList().length === 0) {
+            <p class="text-3xl font-bold text-center p-10 text-orange-600">No Items found.</p>
+          }
+
+          <!-- Table -->
+          @else {
+            <table class="w-full text-sm text-left rtl:text-right text-body overflow-scroll">
+              <thead
+                class="text-sm text-body bg-neutral-secondary-medium border-b border-t border-default-medium"
+              >
+                <tr>
+                  <th scope="col" class="px-6 py-3 font-medium capitalize">Name</th>
+                  <th scope="col" class="px-6 py-3 font-medium capitalize">Contact</th>
+                  <th scope="col" class="px-6 py-3 font-medium capitalize">Doctor Fee</th>
+                  <th scope="col" class="px-6 py-3 font-medium capitalize">Chamber</th>
+                  <th scope="col" class="px-6 py-3 font-medium capitalize">Commission</th>
+                  @if (isEdit() || isDelete()) {
+                    <th scope="col" class="px-6 py-3 font-medium capitalize">Actions</th>
+                  }
                 </tr>
-              }
-            </tbody>
-          </table>
-        }
+              </thead>
+              <tbody>
+                @for (item of filteredDoctorList().slice(0, 40); track item?.id || $index) {
+                  <tr
+                    class="bg-neutral-primary border-b border-default hover:bg-yellow-100 odd:bg-gray-100 even:bg-gray-300 dark:odd:bg-gray-800 dark:even:bg-gray-900 dark:border-gray-950 dark:hover:bg-yellow-200 transition-colors cursor-pointer"
+                    [class.bg-blue-50]="selected()?.id === item.id"
+                  >
+                    <td class="px-6 py-4 font-medium">{{ item?.name }}</td>
+                    <td class="px-6 py-4">{{ item?.contactNo || '-' }}</td>
+                    <td class="px-6 py-4">{{ item?.drFee || 0 }}</td>
+                    <td class="px-6 py-4">{{ is(item?.isChamberDoctor) }}</td>
+                    <td class="px-6 py-4">{{ is(item?.takeCom) }}</td>
+                    <td class="px-6 py-4">
+                      @if (isEdit()) {
+                        <button
+                          class="text-orange-50 bg-orange-400 hover:bg-orange-500 px-2 py-1 rounded cursor-pointer mr-1 transition-colors"
+                          (click)="onUpdate(item)"
+                          title="Edit"
+                        >
+                          <fa-icon [icon]="faPencil"></fa-icon>
+                        </button>
+                      }
+                      @if (isDelete()) {
+                        <button
+                          class="text-rose-50 bg-rose-600 hover:bg-rose-700 px-2 py-1 rounded cursor-pointer transition-colors"
+                          (click)="onDelete(item?.id)"
+                          title="Delete"
+                        >
+                          <fa-icon [icon]="faXmark"></fa-icon>
+                        </button>
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          }
+        </div>
       </div>
     </div>
-  </section>
+  } @else {
+    <div class="max-w-8xl mx-auto relative">
+      <!-- Doctor Entry Form -->
+      <div
+        class="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-950 transition-all"
+      >
+        <!-- Form Header -->
+        <div class="bg-blue-300 dark:bg-blue-800 h-2 rounded-t-lg transition-all"></div>
+        <div class="p-6">
+          <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-50 transition-all">
+              Doctor Form
+            </h2>
+            <button
+              class="text-rose-50 bg-rose-600 hover:bg-rose-700 px-1 py-0.5 rounded cursor-pointer"
+              (click)="onToggleList()"
+            >
+              <fa-icon [icon]="faXmark"></fa-icon>
+            </button>
+          </div>
+
+          <!-- Form Fields -->
+          <form (submit)="onSubmit($event)" class="space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
+              <!-- Doctor Name -->
+              <div>
+                <div class="relative pb-2">
+                  <input
+                    #inputRef
+                    id="name"
+                    type="text"
+                    [formField]="form.name"
+                    autocomplete="none"
+                    class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer dark:text-gray-50!"
+                    placeholder=""
+                    (keydown.enter)="handleEnterKey($event, 0)"
+                  />
+                  <label
+                    for="name"
+                    class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-neutral-primary dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                    >Doctor Name</label
+                  >
+                </div>
+              </div>
+
+              <!-- Contact No -->
+              <div>
+                <div class="relative pb-2">
+                  <input
+                    #inputRef
+                    id="contactNo"
+                    type="text"
+                    [formField]="form.contactNo"
+                    autocomplete="none"
+                    class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer dark:text-gray-50!"
+                    placeholder=""
+                    (keydown.enter)="handleEnterKey($event, 2)"
+                  />
+                  <label
+                    for="contactNo"
+                    class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-neutral-primary dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                    >Contact No.</label
+                  >
+                </div>
+              </div>
+
+              <!-- Doctor Fee -->
+              <div>
+                <div class="relative pb-2">
+                  <input
+                    #inputRef
+                    id="drFee"
+                    type="number"
+                    [formField]="form.drFee"
+                    autocomplete="none"
+                    class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer dark:text-gray-50!"
+                    placeholder=""
+                    (keydown.enter)="handleEnterKey($event, 3)"
+                  />
+                  <label
+                    for="drFee"
+                    class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-neutral-primary dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                    >Doctor Fee</label
+                  >
+                </div>
+              </div>
+
+              <!-- Take Commission -->
+              <div>
+                <div class="relative pb-2">
+                  <select
+                    #inputRef
+                    id="takeCom"
+                    [formField]="form.takeCom"
+                    (keydown.enter)="handleEnterKey($event, 4)"
+                    class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer dark:text-gray-50!"
+                  >
+                    @for (option of takeComOptions; track $index) {
+                      <option [value]="option.id" class="capitalize dark:bg-gray-700">
+                        {{ option.name }}
+                      </option>
+                    }
+                  </select>
+                  <label
+                    for="takeCom"
+                    class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-neutral-primary dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                    >Take Commission</label
+                  >
+                </div>
+              </div>
+
+              <!-- Is Chamber Doctor -->
+              <div>
+                <div class="relative pb-2">
+                  <select
+                    #inputRef
+                    id="isChamberDoctor"
+                    [formField]="form.isChamberDoctor"
+                    (keydown.enter)="handleEnterKey($event, 5)"
+                    class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer dark:text-gray-50!"
+                  >
+                    @for (option of isChamberOptions; track $index) {
+                      <option [value]="option.id" class="capitalize dark:bg-gray-700">
+                        {{ option.name }}
+                      </option>
+                    }
+                  </select>
+                  <label
+                    for="isChamberDoctor"
+                    class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-neutral-primary dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                    >Is Chamber Doctor</label
+                  >
+                </div>
+              </div>
+
+              <!-- Address -->
+              <div class="lg:col-span-2">
+                <div class="relative pb-2">
+                  <textarea
+                    #inputRef
+                    id="address"
+                    [formField]="form.address"
+                    rows="3"
+                    class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer dark:text-gray-50"
+                    placeholder=""
+                    (keydown.enter)="handleEnterKey($event, 1)"
+                  ></textarea>
+                  <label
+                    for="address"
+                    class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-neutral-primary dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                    >Address</label
+                  >
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="flex gap-2 lg:col-span-2">
+                <input
+                  #inputRef
+                  type="submit"
+                  [value]="isSubmitted() ? 'Submitting ...' : selected() ? 'Update' : 'Save'"
+                  [disabled]="form().invalid() || isSubmitted()"
+                  class="text-gray-50 bg-linear-to-r from-emerald-400 via-emerald-500 to-emerald-600 hover:bg-linear-to-br focus:ring-1 focus:outline-none focus:ring-emerald-300 shadow-lg shadow-emerald-500/50 font-medium rounded text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full disabled:cursor-not-allowed disabled:opacity-50"
+                  (keydown.enter)="handleEnterKey($event, 6)"
+                />
+                <button
+                  type="button"
+                  (click)="onToggleList()"
+                  class="text-gray-50 bg-linear-to-r from-red-400 via-red-500 to-red-600 hover:bg-linear-to-br focus:ring-1 focus:outline-none focus:ring-red-300 shadow-lg shadow-red-500/50 font-medium rounded text-sm px-5 py-2.5 text-center me-2 mb-2 h-10"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  }
 } @else {
   <p class="text-3xl font-bold text-center p-10 text-red-600">
     You don't have permission to view this page.
   </p>
-}
-@if (success()) {
-  <app-toast-success [title]="success()"></app-toast-success>
 }
