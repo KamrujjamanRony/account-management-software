@@ -20,12 +20,25 @@ export class DoctorFeeService {
     );
   }
 
-  addDoctorFee(model: any): Observable<any> {
+  add(model: any): Observable<any> {
     return this.apiCall<any>('', 'post', model);
   }
 
-  getAllDoctorFees(): Observable<any> {
-    return this.apiCall<any>('/SearchDoctorFee', 'post', {});
+  search(search: string = '', fromDate: string = '', toDate: string = ''): Observable<any> {
+    const body = {
+      ...search && { search },
+      ...fromDate && { fromDate },
+      ...toDate && { toDate }
+    };
+    return this.apiCall<any>('/Search', 'post', body);
+  }
+
+  update(id: any, updateRequest: any): Observable<any> {
+    return this.apiCall<any>(`/${id}`, 'put', updateRequest);
+  }
+
+  delete(id: any): Observable<any> {
+    return this.apiCall<any>(`/${id}`, 'delete');
   }
 
   getFilteredDoctorFee(fromDate: any, toDate: any, nextFlowDate: any): Observable<any> {
@@ -36,38 +49,4 @@ export class DoctorFeeService {
   getDoctorFee(id: any): Observable<any> {
     return this.apiCall<any>(`/GetDoctorNextFlowDateSearch?doctorId=${id}`, 'get');
   }
-
-  updateDoctorFee(id: any, updateRequest: any): Observable<any> {
-    return this.apiCall<any>(`/EditDoctorFee/${id}`, 'put', updateRequest);
-  }
-
-  deleteDoctorFee(id: any): Observable<any> {
-    return this.apiCall<any>(`/DeleteDoctorFee?id=${id}`, 'post', {});
-  }
-
-
-
-  // rootUrl = 'http://192.168.0.138/hms/api/DoctorFee'
-
-  // getAllDoctorFees(): Observable<any[]> {
-  //   return this.http.post<any[]>(this.rootUrl + '/SearchDoctorFee', {});
-  // }
-
-  // getFilteredDoctorFee(fromDate: any, toDate: any, nextFlowDate: any): Observable<any> {
-  //   console.log(fromDate, toDate, nextFlowDate)
-  //   const endPoint = nextFlowDate ? `nextFlowDate=${nextFlowDate}` : `fromDate=${fromDate}&toDate=${toDate ? toDate : fromDate}`;
-  //   return this.http.post<any>(`${this.rootUrl}/GetDoctorNextFlowDateSearch?${endPoint}`, {});
-  // }
-
-  // getDoctorFee(id: any): Observable<any> {
-  //   return this.http.get<any>(`${this.rootUrl}/GetDoctorNextFlowDateSearch?doctorId=${id}`);
-  // }
-
-  // updateDoctorFee(id: any, updateDoctorFeeRequest: any | FormData): Observable<any> {
-  //   return this.http.put<any>(`${this.rootUrl}/EditDoctorFee/${id}`, updateDoctorFeeRequest);
-  // }
-
-  // deleteDoctorFee(id: any): Observable<any> {
-  //   return this.http.post<any>(`${this.rootUrl}/DeleteDoctorFee?id=${id}`, {});
-  // }
 }
