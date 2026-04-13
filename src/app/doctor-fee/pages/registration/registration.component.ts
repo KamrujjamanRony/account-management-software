@@ -1,278 +1,214 @@
-import { CommonModule, DatePipe } from '@angular/common';
-import { Component, ElementRef, inject, QueryList, signal, ViewChild, ViewChildren } from '@angular/core';
-import { FormControl, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
-import { ToastSuccessComponent } from '../../../shared/components/toasts/toast-success/toast-success.component';
-import { FieldComponent } from '../../../shared/components/field/field.component';
-import { SearchComponent } from '../../../shared/components/svg/search/search.component';
+import { Component, computed, ElementRef, inject, signal, ViewChild, ViewChildren, QueryList } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { DatePipe } from '@angular/common';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faPencil, faXmark, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { form, required, FormField, maxLength } from '@angular/forms/signals';
 import { PatientService } from '../../services/patient.service';
-import { DataFetchService } from '../../../shared/services/useDataFetch';
+import { PermissionS } from '../../../settings/services/permission-s';
+import { ToastService } from '../../../utils/toast/toast.service';
+import { ConfirmService } from '../../../utils/confirm/confirm.service';
 import { AuthService } from '../../../settings/services/auth.service';
-import { AllSvgComponent } from "../../../shared/components/svg/all-svg/all-svg.component";
 
 @Component({
   selector: 'app-registration',
-  standalone: true,
-  imports: [ReactiveFormsModule, SearchComponent, ToastSuccessComponent, CommonModule, FieldComponent, AllSvgComponent],
+  imports: [FormsModule, FormField, FontAwesomeModule],
   templateUrl: './registration.component.html',
-  styleUrl: './registration.component.css'
+  styleUrl: './registration.component.css',
 })
 export class RegistrationComponent {
-  fb = inject(NonNullableFormBuilder);
-  private patientService = inject(PatientService);
-  private authService = inject(AuthService);
-  dataFetchService = inject(DataFetchService);
-  filteredPatientList = signal<any[]>([]);
-  private searchQuery$ = new BehaviorSubject<string>('');
-  isLoading$: Observable<any> | undefined;
-  hasError$: Observable<any> | undefined;
-  options: any[] = [{ id: '', name: 'Select Sex' }, { id: 'Male', name: 'Male' }, { id: 'Female', name: 'Female' }, { id: 'Others', name: 'Others' }];
-  selectedPatient: any;
-
-  highlightedIndex: number = -1;
-  highlightedTr: number = -1;
-
-  success = signal<any>("");
-  isView = signal<boolean>(false);
-  isInsert = signal<boolean>(false);
-  isEdit = signal<boolean>(false);
-  isDelete = signal<boolean>(false);
-  today = new Date();
-  @ViewChildren('inputRef') inputRefs!: QueryList<ElementRef>;
+  faPencil = faPencil;
+  faXmark = faXmark;
+  faMagnifyingGlass = faMagnifyingGlass;
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
-  isSubmitted = false;
-  isSubmitting = signal<boolean>(false);
-  form = this.fb.group({
-    regNo: [{ value: '', disabled: true }],
-    name: ['', [Validators.required]],
-    contactNo: ['', [Validators.required]],
-    fatherName: [''],
-    motherName: [''],
-    sex: ['', [Validators.required]],
-    dob: ['', [Validators.required]],
-    nid: [''],
-    address: [''],
-    remarks: [''],
-    postedBy: [this.authService.getUser()?.username || ''],
-    entryDate: [this.today, [Validators.required]],
+  @ViewChildren('inputRef') inputRefs!: QueryList<ElementRef>;
+
+  /* ---------------- DI ---------------- */
+  private patientService = inject(PatientService);
+  private permissionService = inject(PermissionS);
+  private toast = inject(ToastService);
+  private confirm = inject(ConfirmService);
+  private authService = inject(AuthService);
+
+  /* ---------------- SIGNAL STATE ---------------- */
+  patients = signal<any[]>([]);
+  searchQuery = signal('');
+
+  isView = signal(false);
+  isInsert = signal(false);
+  isEdit = signal(false);
+  isDelete = signal(false);
+  showList = signal(true);
+
+  filteredPatientList = computed(() => {
+    const query = this.searchQuery().toLowerCase();
+    return this.patients()
+      .filter(p =>
+        String(p.name ?? '').toLowerCase().includes(query) ||
+        String(p.contactNo ?? '').toLowerCase().includes(query) ||
+        String(p.regNo ?? '').toLowerCase().includes(query)
+      );
   });
 
-  transform(value: any, args: any = 'dd/MM/yyyy'): any {
-    if (!value) return null;
-    const datePipe = new DatePipe('en-US');
-    return datePipe.transform(value, args);
+  selected = signal<any>(null);
+  isLoading = signal(false);
+  hasError = signal(false);
+  isSubmitted = signal(false);
+
+  options: any[] = [
+    { id: '', name: 'Select Sex' },
+    { id: 'Male', name: 'Male' },
+    { id: 'Female', name: 'Female' },
+    { id: 'Others', name: 'Others' },
+  ];
+
+  /* ---------------- FORM MODEL ---------------- */
+  model = signal({
+    regNo: '',
+    name: '',
+    contactNo: '',
+    fatherName: '',
+    motherName: '',
+    sex: '',
+    dob: '',
+    nid: '',
+    address: '',
+    remarks: '',
+    postedBy: this.authService.getUser()?.username || '',
+    entryDate: new Date().toISOString(),
+  });
+
+  /* ---------------- SIGNAL FORM ---------------- */
+  form = form(this.model, (s) => {
+    required(s.name, { message: 'Name is required' });
+    required(s.contactNo, { message: 'Contact No. is required' });
+    maxLength(s.contactNo, 11, { message: 'Contact No. cannot exceed 11 characters' });
+    required(s.sex, { message: 'Sex is required' });
+    required(s.dob, { message: 'Date of Birth is required' });
+  });
+
+  /* ---------------- LIFECYCLE ---------------- */
+  ngOnInit(): void {
+    this.loadPatients();
+    this.loadPermissions();
+    setTimeout(() => this.searchInput?.nativeElement.focus(), 0);
   }
 
-  ngOnInit() {
-    this.onLoadPatients();
-    this.isView.set(this.checkPermission("Registration", "View"));
-    this.isInsert.set(this.checkPermission("Registration", "Insert"));
-    this.isEdit.set(this.checkPermission("Registration", "Edit"));
-    this.isDelete.set(this.checkPermission("Registration", "Delete"));
-
-    // Focus on the search input when the component is initialized
-    setTimeout(() => {
-      this.searchInput.nativeElement.focus();
-    }, 0); // Use setTimeout to ensure the DOM is ready
+  /* ---------------- LOADERS ---------------- */
+  loadPermissions() {
+    this.isView.set(this.permissionService.hasPermission('Registration'));
+    this.isInsert.set(this.permissionService.hasPermission('Registration', 'Insert'));
+    this.isEdit.set(this.permissionService.hasPermission('Registration', 'Edit'));
+    this.isDelete.set(this.permissionService.hasPermission('Registration', 'Delete'));
   }
 
-
-  checkPermission(moduleName: string, permission: string) {
-    const modulePermission = this.authService.getUser()?.userMenu?.find((module: any) => module?.menuName?.toLowerCase() === moduleName.toLowerCase());
-    if (modulePermission) {
-      const permissionValue = modulePermission.permissions.find((perm: any) => perm.toLowerCase() === permission.toLowerCase());
-      if (permissionValue) {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      return false;
-    }
-  }
-
-  onLoadPatients() {
-    const { data$, isLoading$, hasError$ } = this.dataFetchService.fetchData(this.patientService.getAllPatients());
-    data$.subscribe(data => {
-      this.filteredPatientList.set(data.sort((a: any, b: any) => {
-        const dateA = new Date(a.entryDate).getTime();
-        const dateB = new Date(b.entryDate).getTime();
-        return dateB - dateA;
-      }))
+  loadPatients() {
+    this.isLoading.set(true);
+    this.hasError.set(false);
+    this.patientService.getAllPatients().subscribe({
+      next: (data) => {
+        this.patients.set(data.sort((a: any, b: any) => {
+          const dateA = new Date(a.entryDate).getTime();
+          const dateB = new Date(b.entryDate).getTime();
+          return dateB - dateA;
+        }));
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.hasError.set(true);
+        this.isLoading.set(false);
+      },
     });
-    this.isLoading$ = isLoading$;
-    this.hasError$ = hasError$;
-    // Combine the original data stream with the search query to create a filtered list
-    combineLatest([
-      data$,
-      this.searchQuery$
-    ]).pipe(
-      map(([data, query]) =>
-        data.filter((patientData: any) =>
-          patientData.name?.toLowerCase().includes(query) ||
-          patientData.contactNo?.includes(query) ||
-          patientData.regNo?.includes(query)
-        )
-      )
-    ).subscribe(filteredData => this.filteredPatientList.set(filteredData));
   }
 
-  // Method to filter Patient list based on search query
-  onSearchPatient(event: Event) {
-    const query = (event.target as HTMLInputElement).value.toLowerCase();
-    this.searchQuery$.next(query);
+  /* ---------------- SEARCH ---------------- */
+  onSearch(event: Event) {
+    this.searchQuery.set((event.target as HTMLInputElement).value.trim());
   }
 
-  // Simplified method to get form controls
-  getControl(controlName: string): FormControl {
-    return this.form.get(controlName) as FormControl;
-  }
-
-
-  handleEnterKey(event: Event, currentIndex: number) {
-    const keyboardEvent = event as KeyboardEvent;
+  /* ---------------- SUBMIT ---------------- */
+  onSubmit(event: Event) {
     event.preventDefault();
-    const allInputs = this.inputRefs.toArray();
-    const inputs = allInputs.filter((i: any) => !i.nativeElement.disabled);
-
-    if (currentIndex + 1 < inputs.length) {
-      inputs[currentIndex + 1].nativeElement.focus();
-    } else {
-      this.onSubmit(keyboardEvent);
+    if (!this.form().valid()) {
+      this.toast.warning('Form is Invalid! Please fill Contact No, Name, Sex, Date of Birth.', 'bottom-right', 5000);
+      return;
     }
-  }
-
-  // Handle key navigation in the search input
-  handleSearchKeyDown(event: KeyboardEvent) {
-    if (this.filteredPatientList().length === 0) {
-      return; // Exit if there are no items to navigate
-    }
-
-    if (event.key === 'Tab') {
-      event.preventDefault();
-      const inputs = this.inputRefs.toArray();
-      inputs[0].nativeElement.focus();
-    } else if (event.key === 'ArrowDown') {
-      event.preventDefault(); // Prevent default scrolling behavior
-      this.highlightedTr = (this.highlightedTr + 1) % this.filteredPatientList().length;
-    } else if (event.key === 'ArrowUp') {
-      event.preventDefault(); // Prevent default scrolling behavior
-      this.highlightedTr =
-        (this.highlightedTr - 1 + this.filteredPatientList().length) % this.filteredPatientList().length;
-    } else if (event.key === 'Enter') {
-      event.preventDefault(); // Prevent form submission
-
-      // Call onUpdate for the currently highlighted item
-      if (this.highlightedTr !== -1) {
-        const selectedItem = this.filteredPatientList()[this.highlightedTr];
-        this.onUpdate(selectedItem);
-        this.highlightedTr = -1;
-      }
-    }
-  }
-
-  onSubmit(e: Event) {
-    this.isSubmitted = true;
-    this.isSubmitting.set(true);
-    this.form.get('regNo')?.enable();
-    if (this.form.valid) {
-      // console.log(this.form.value);
-      if (this.selectedPatient) {
-        this.patientService.updatePatient(this.selectedPatient.id, this.form.value)
-          .subscribe({
-            next: (response) => {
-              if (response !== null && response !== undefined) {
-                this.success.set("Patient successfully updated!");
-                const rest = this.filteredPatientList().filter(p => p.id !== response.id)
-                this.filteredPatientList.set([response, ...rest])
-                this.formReset(e);
-                this.isSubmitted = false;
-                this.selectedPatient = null;
-                setTimeout(() => {
-                  this.success.set("");
-                }, 3000);
-              }
-
-            },
-            error: (error) => {
-              console.error('Error register:', error);
-            }
-          });
-      } else {
-        this.patientService.addPatient(this.form.value)
-          .subscribe({
-            next: (response) => {
-              if (response !== null && response !== undefined) {
-                this.success.set("Patient successfully added!");
-                this.filteredPatientList.set([response, ...this.filteredPatientList()])
-                this.formReset(e);
-                this.isSubmitted = false;
-                setTimeout(() => {
-                  this.success.set("");
-                }, 3000);
-              }
-
-            },
-            error: (error) => {
-              console.error('Error register:', error);
-            }
-          });
-      }
-    } else {
-      alert('Form is invalid! Please Fill Contact No, Name, Sex, Date of Birth and Address.');
-    }
-
-    this.isSubmitting.set(false);
-    this.form.get('regNo')?.disable();
-  }
-
-  onUpdate(data: any) {
-    this.selectedPatient = data;
-    this.form.patchValue({
-      regNo: data?.regNo,
-      name: data?.name,
-      contactNo: data?.contactNo,
-      fatherName: data?.fatherName,
-      motherName: data?.motherName,
-      sex: data?.sex,
-      dob: this.transform(data?.dob, 'yyyy-MM-dd'),
-      nid: data?.nid,
-      address: data?.address,
-      remarks: data?.remarks,
-      postedBy: data?.postedBy,
-      entryDate: data?.entryDate,
+    this.isSubmitted.set(true);
+    const payload = this.form().value();
+    const request$ = this.selected()
+      ? this.patientService.updatePatient(this.selected().id, payload)
+      : this.patientService.addPatient(payload);
+    request$.subscribe({
+      next: (response) => {
+        if (response) {
+          if (this.selected()) {
+            const rest = this.patients().filter(p => p.id !== response.id);
+            this.patients.set([response, ...rest]);
+          } else {
+            this.patients.set([response, ...this.patients()]);
+          }
+          this.onToggleList();
+          this.toast.success('Saved successfully!', 'bottom-right', 5000);
+        }
+      },
+      error: (error) => {
+        this.toast.danger('Save unsuccessful!', 'bottom-left', 3000);
+        console.error('Error submitting:', error);
+        this.isSubmitted.set(false);
+      },
     });
+  }
 
-    // Focus the 'Name' input field after patching the value
+  /* ---------------- UPDATE ---------------- */
+  onUpdate(data: any) {
+    this.selected.set(data);
+    this.model.update(current => ({
+      ...current,
+      regNo: data?.regNo ?? '',
+      name: data?.name ?? '',
+      contactNo: data?.contactNo ?? '',
+      fatherName: data?.fatherName ?? '',
+      motherName: data?.motherName ?? '',
+      sex: data?.sex ?? '',
+      dob: this.transform(data?.dob, 'yyyy-MM-dd') ?? '',
+      nid: data?.nid ?? '',
+      address: data?.address ?? '',
+      remarks: data?.remarks ?? '',
+      postedBy: data?.postedBy ?? '',
+      entryDate: data?.entryDate ?? '',
+    }));
+    this.showList.set(false);
     setTimeout(() => {
       const inputs = this.inputRefs.toArray();
-      inputs[0].nativeElement.focus();
-    }, 0); // Delay to ensure the DOM is updated
-
-    // Reset the highlighted row
-    this.highlightedIndex = -1;
+      inputs[0]?.nativeElement.focus();
+    }, 0);
   }
 
-  onDelete(id: any) {
-    if (confirm("Are you sure you want to delete?")) {
-      this.patientService.deletePatient(id).subscribe(data => {
-        if (data.id) {
-          this.success.set("Doctor fee deleted successfully!");
-          this.filteredPatientList.set(this.filteredPatientList().filter(d => d.id !== id));
-          setTimeout(() => {
-            this.success.set("");
-          }, 3000);
-        } else {
-          console.error('Error deleting doctor fee:', data);
-        }
+  /* ---------------- DELETE ---------------- */
+  async onDelete(id: any) {
+    const ok = await this.confirm.confirm({
+      message: 'Are you sure you want to delete this patient?',
+      confirmText: "Yes, I'm sure",
+      cancelText: 'No, cancel',
+      variant: 'danger',
+    });
+    if (ok) {
+      this.patientService.deletePatient(id).subscribe({
+        next: () => {
+          this.patients.update(list => list.filter(i => i.id !== id));
+          this.toast.success('Patient deleted successfully!', 'bottom-right', 5000);
+        },
+        error: (error) => {
+          this.toast.danger('Delete unsuccessful!', 'bottom-left', 3000);
+          console.error('Error deleting:', error);
+        },
       });
     }
-
   }
 
-  formReset(e: Event): void {
-    e.preventDefault();
-    this.form.reset({
+  /* ---------------- RESET ---------------- */
+  formReset() {
+    this.model.set({
       regNo: '',
       name: '',
       contactNo: '',
@@ -284,10 +220,32 @@ export class RegistrationComponent {
       address: '',
       remarks: '',
       postedBy: this.authService.getUser()?.username || '',
-      entryDate: this.today
+      entryDate: new Date().toISOString(),
     });
-    this.isSubmitted = false;
-    this.selectedPatient = null;
+    this.selected.set(null);
+    this.isSubmitted.set(false);
+    this.form().reset();
   }
 
+  onToggleList() {
+    this.showList.update(s => !s);
+    this.formReset();
+  }
+
+  /* ---------------- UTILITIES ---------------- */
+  transform(value: any, args: any = 'dd/MM/yyyy'): any {
+    if (!value) return null;
+    const datePipe = new DatePipe('en-US');
+    return datePipe.transform(value, args);
+  }
+
+  handleEnterKey(event: Event, currentIndex: number) {
+    event.preventDefault();
+    const inputs = this.inputRefs.toArray();
+    if (currentIndex + 1 < inputs.length) {
+      inputs[currentIndex + 1].nativeElement.focus();
+    } else {
+      this.onSubmit(event);
+    }
+  }
 }
