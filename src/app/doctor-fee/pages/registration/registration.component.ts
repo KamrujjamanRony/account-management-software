@@ -1,4 +1,4 @@
-import { Component, computed, ElementRef, inject, signal, ViewChild, ViewChildren, QueryList } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, signal, ViewChild, ViewChildren, QueryList } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -15,6 +15,7 @@ import { AuthService } from '../../../settings/services/auth.service';
   imports: [FormsModule, FormField, FontAwesomeModule],
   templateUrl: './registration.component.html',
   styleUrl: './registration.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistrationComponent {
   faPencil = faPencil;

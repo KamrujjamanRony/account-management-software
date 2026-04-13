@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -13,7 +13,8 @@ import { AuthService } from '../../../../settings/services/auth.service';
   selector: 'app-income-expense-statement',
   imports: [CommonModule, FormsModule],
   templateUrl: './income-expense-statement.component.html',
-  styleUrl: './income-expense-statement.component.css'
+  styleUrl: './income-expense-statement.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class IncomeExpenseStatementComponent {
   private accountingReportsService = inject(AccountingReportsService);

@@ -1,11 +1,12 @@
-import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+﻿import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-asset-view-modal',
   imports: [CommonModule],
   templateUrl: './asset-view-modal.component.html',
-  styleUrl: './asset-view-modal.component.css'
+  styleUrl: './asset-view-modal.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AssetViewModalComponent {
   @Input() asset: any = null;

@@ -1,8 +1,7 @@
-import { Component } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'app-down-arrow',
-  standalone: true,
   imports: [],
   template: `
   <svg
@@ -28,7 +27,8 @@ import { Component } from '@angular/core';
                 ></path>
               </g>
             </svg>
-  `
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DownArrowComponent {
 

@@ -1,4 +1,4 @@
-import { Component, computed, ElementRef, inject, signal, ViewChild } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -20,10 +20,10 @@ import { AuthService } from '../../../../settings/services/auth.service';
 
 @Component({
   selector: 'app-account-list-entry',
-  standalone: true,
   imports: [CommonModule, FormsModule, FormField, FontAwesomeModule, TreeNodeComponent],
   templateUrl: './account-list-entry.component.html',
-  styleUrls: ['./account-list-entry.component.css']
+  styleUrls: ['./account-list-entry.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountListEntryComponent {
   // Icons

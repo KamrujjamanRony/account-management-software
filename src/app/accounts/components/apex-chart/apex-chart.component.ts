@@ -1,11 +1,12 @@
-import { Component, ElementRef, ViewChild, Input } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, Input } from '@angular/core';
 import ApexCharts from 'apexcharts';
 
 @Component({
   selector: 'app-apex-chart',
   imports: [],
   templateUrl: './apex-chart.component.html',
-  styleUrl: './apex-chart.component.css'
+  styleUrl: './apex-chart.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ApexChartComponent {
   @ViewChild('chart', { static: true }) chartElement!: ElementRef;

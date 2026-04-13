@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, ElementRef, inject, signal, viewChildren } from '@angular/core';
+﻿import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, signal, viewChildren } from '@angular/core';
 import { FormControl, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FieldComponent } from "../../../shared/components/field/field.component";
 
@@ -7,7 +7,8 @@ import { FieldComponent } from "../../../shared/components/field/field.component
   selector: 'app-outdoor-bill',
   imports: [ReactiveFormsModule, CommonModule, FieldComponent],
   templateUrl: './outdoor-bill.component.html',
-  styleUrl: './outdoor-bill.component.css'
+  styleUrl: './outdoor-bill.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OutdoorBillComponent {
   fb = inject(NonNullableFormBuilder);

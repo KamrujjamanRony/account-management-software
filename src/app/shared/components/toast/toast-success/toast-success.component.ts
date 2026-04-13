@@ -1,11 +1,11 @@
-import { Component, Input } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-toast-success',
-  standalone: true,
   imports: [],
   templateUrl: './toast-success.component.html',
-  styleUrl: './toast-success.component.css'
+  styleUrl: './toast-success.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ToastSuccessComponent {
   @Input() title = '';

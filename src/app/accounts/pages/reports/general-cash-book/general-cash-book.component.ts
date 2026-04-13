@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AccountingReportsService } from '../../../services/accounting-reports.service';
 import { DataFetchService } from '../../../../shared/services/useDataFetch';
@@ -8,7 +8,8 @@ import { AuthService } from '../../../../settings/services/auth.service';
   selector: 'app-general-cash-book',
   imports: [],
   templateUrl: './general-cash-book.component.html',
-  styleUrl: './general-cash-book.component.css'
+  styleUrl: './general-cash-book.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GeneralCashBookComponent {
   private accountingReportsService = inject(AccountingReportsService);

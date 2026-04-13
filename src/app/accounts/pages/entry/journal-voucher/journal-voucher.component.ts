@@ -1,5 +1,5 @@
-import { CommonModule, DatePipe } from '@angular/common';
-import { Component, ElementRef, inject, signal, viewChildren } from '@angular/core';
+﻿import { CommonModule, DatePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, signal, viewChildren } from '@angular/core';
 import { FieldComponent } from '../../../../shared/components/field/field.component';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AllSvgComponent } from '../../../../shared/components/svg/all-svg/all-svg.component';
@@ -19,7 +19,8 @@ import { AuthService } from '../../../../settings/services/auth.service';
   selector: 'app-journal-voucher',
   imports: [CommonModule, FieldComponent, ReactiveFormsModule, AllSvgComponent, FormsModule],
   templateUrl: './journal-voucher.component.html',
-  styleUrl: './journal-voucher.component.css'
+  styleUrl: './journal-voucher.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JournalVoucherComponent {
   fb = inject(FormBuilder);

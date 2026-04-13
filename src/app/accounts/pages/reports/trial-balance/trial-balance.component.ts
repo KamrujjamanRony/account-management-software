@@ -1,5 +1,5 @@
-import { CommonModule, DatePipe } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+﻿import { CommonModule, DatePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import jsPDF from 'jspdf';
@@ -13,7 +13,8 @@ import { AuthService } from '../../../../settings/services/auth.service';
   selector: 'app-trial-balance',
   imports: [FormsModule, CommonModule],
   templateUrl: './trial-balance.component.html',
-  styleUrl: './trial-balance.component.css'
+  styleUrl: './trial-balance.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TrialBalanceComponent {
   private accountingReportsService = inject(AccountingReportsService);

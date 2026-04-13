@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-toast',
-  standalone: true,
   imports: [ToastModule],
   template: `<p-toast></p-toast>`,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ToastComponent { }

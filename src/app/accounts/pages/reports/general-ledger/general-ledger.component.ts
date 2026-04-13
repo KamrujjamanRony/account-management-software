@@ -1,5 +1,5 @@
-import { CommonModule, DatePipe } from '@angular/common';
-import { Component, ElementRef, inject, signal, viewChild } from '@angular/core';
+﻿import { CommonModule, DatePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import jsPDF from 'jspdf';
@@ -15,7 +15,8 @@ import { AuthService } from '../../../../settings/services/auth.service';
   selector: 'app-general-ledger',
   imports: [FormsModule, CommonModule, SearchComponent],
   templateUrl: './general-ledger.component.html',
-  styleUrl: './general-ledger.component.css'
+  styleUrl: './general-ledger.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GeneralLedgerComponent {
   private accountingReportsService = inject(AccountingReportsService);

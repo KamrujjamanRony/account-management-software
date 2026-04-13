@@ -37,7 +37,7 @@
                 name="isChamber"
                 [(ngModel)]="isChamber"
                 (change)="loadDoctors()"
-                class="bg-neutral-secondary-medium border border-default-medium text-sm rounded-base focus:ring-brand focus:border-brand px-3 py-2.5 shadow-xs"
+                class="bg-neutral-secondary-medium border border-default-medium text-sm rounded-base focus:ring-brand focus:border-brand px-3 py-2.5 shadow-xs min-w-24"
               >
                 @for (item of isChamberOptions; track item.id) {
                   <option [value]="item.id">
@@ -50,7 +50,7 @@
                 name="takeCom"
                 [(ngModel)]="takeCom"
                 (change)="loadDoctors()"
-                class="bg-neutral-secondary-medium border border-default-medium text-sm rounded-base focus:ring-brand focus:border-brand px-3 py-2.5 shadow-xs"
+                class="bg-neutral-secondary-medium border border-default-medium text-sm rounded-base focus:ring-brand focus:border-brand px-3 py-2.5 shadow-xs min-w-32"
               >
                 @for (item of takeComOptions; track item.id) {
                   <option [value]="item.id">
@@ -58,7 +58,7 @@
                   </option>
                 }
               </select>
-              @if (!isInsert()) {
+              @if (isInsert()) {
                 <button
                   type="button"
                   (click)="showList.set(false)"

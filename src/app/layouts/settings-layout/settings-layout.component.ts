@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { SettingsSidebarComponent } from "../../settings/components/settings-sidebar/settings-sidebar.component";
 import { AuthService } from '../../settings/services/auth.service';
@@ -10,7 +10,8 @@ import { Breadcrumb } from "../../utils/breadcrumb/breadcrumb";
   selector: 'app-settings-layout',
   imports: [RouterOutlet, RouterLink, SettingsSidebarComponent, ThemeToggle, Breadcrumb],
   templateUrl: './settings-layout.component.html',
-  styleUrl: './settings-layout.component.css'
+  styleUrl: './settings-layout.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingsLayoutComponent {
   private authService = inject(AuthService);

@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DataFetchService } from '../../../../shared/services/useDataFetch';
 import { Observable } from 'rxjs';
@@ -15,7 +15,8 @@ import { AuthService } from '../../../../settings/services/auth.service';
   selector: 'app-transactions',
   imports: [FormsModule, Selector2Component, CommonModule],
   templateUrl: './transactions.component.html',
-  styleUrl: './transactions.component.css'
+  styleUrl: './transactions.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TransactionsComponent {
   private accountListService = inject(AccountListService);

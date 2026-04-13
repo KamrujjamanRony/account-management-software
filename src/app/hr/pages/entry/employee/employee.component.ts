@@ -1,5 +1,5 @@
-import { CommonModule, DatePipe } from '@angular/common';
-import { Component, ElementRef, inject, signal, viewChild, viewChildren } from '@angular/core';
+﻿import { CommonModule, DatePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, signal, viewChild, viewChildren } from '@angular/core';
 import { FormControl, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { ToastSuccessComponent } from '../../../../shared/components/toasts/toast-success/toast-success.component';
@@ -13,7 +13,8 @@ import { DataService } from '../../../../shared/services/data.service';
   selector: 'app-employee',
   imports: [CommonModule, ToastSuccessComponent, FieldComponent, SearchComponent, ReactiveFormsModule],
   templateUrl: './employee.component.html',
-  styleUrl: './employee.component.css'
+  styleUrl: './employee.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EmployeeComponent {
   fb = inject(NonNullableFormBuilder);
@@ -96,7 +97,7 @@ export class EmployeeComponent {
   }
 
   onLoadEmployee() {
-    const { data$, isLoading$, hasError$ } = this.dataFetchService.fetchData(this.employeeService.getEmployee(""));
+    const { data$, isLoading$, hasError$ } = this.dataFetchService.fetchData(this.employeeService.search(""));
 
     this.isLoading$ = isLoading$;
     this.hasError$ = hasError$;

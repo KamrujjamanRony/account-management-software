@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ConfirmService } from './confirm.service';
 
 @Component({
@@ -6,6 +6,7 @@ import { ConfirmService } from './confirm.service';
   imports: [],
   templateUrl: './confirm.html',
   styleUrl: './confirm.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Confirm {
   readonly confirm = inject(ConfirmService);

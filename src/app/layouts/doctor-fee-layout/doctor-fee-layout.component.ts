@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { DoctorFeeSidebarComponent } from "../../doctor-fee/components/doctor-fee-sidebar/doctor-fee-sidebar.component";
 import { AuthService } from '../../settings/services/auth.service';
@@ -10,7 +10,8 @@ import { Breadcrumb } from "../../utils/breadcrumb/breadcrumb";
   selector: 'app-doctor-fee-layout',
   imports: [RouterOutlet, RouterLink, DoctorFeeSidebarComponent, ThemeToggle, Breadcrumb],
   templateUrl: './doctor-fee-layout.component.html',
-  styleUrl: './doctor-fee-layout.component.css'
+  styleUrl: './doctor-fee-layout.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DoctorFeeLayoutComponent {
   private authService = inject(AuthService);

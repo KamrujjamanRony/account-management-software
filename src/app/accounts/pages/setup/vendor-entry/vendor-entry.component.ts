@@ -1,4 +1,4 @@
-import { Component, computed, ElementRef, inject, signal, ViewChild } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faPencil, faXmark, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
@@ -14,7 +14,8 @@ import { AuthService } from '../../../../settings/services/auth.service';
   selector: 'app-vendor-entry',
   imports: [FormsModule, FormField, FontAwesomeModule],
   templateUrl: './vendor-entry.component.html',
-  styleUrls: ['./vendor-entry.component.css']
+  styleUrls: ['./vendor-entry.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VendorEntryComponent {
   faPencil = faPencil;

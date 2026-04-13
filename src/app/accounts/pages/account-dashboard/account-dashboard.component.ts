@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -16,7 +16,8 @@ import { AuthService } from '../../../settings/services/auth.service';
   selector: 'app-account-dashboard',
   imports: [CommonModule, FormsModule, ApexChartComponent],
   templateUrl: './account-dashboard.component.html',
-  styleUrl: './account-dashboard.component.css'
+  styleUrl: './account-dashboard.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountDashboardComponent {
   private accountingReportsService = inject(AccountingReportsService);

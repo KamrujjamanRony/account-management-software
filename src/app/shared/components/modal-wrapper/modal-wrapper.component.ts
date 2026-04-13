@@ -1,11 +1,11 @@
-import { Component, input, output } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
 @Component({
   selector: 'ModalWrapper',
-  standalone: true,
   imports: [],
   templateUrl: './modal-wrapper.component.html',
-  styleUrl: './modal-wrapper.component.css'
+  styleUrl: './modal-wrapper.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ModalWrapperComponent {
   readonly title = input.required<any>();

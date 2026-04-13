@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HrSidebarComponent } from "../../hr/components/hr-sidebar/hr-sidebar.component";
 import { AuthService } from '../../settings/services/auth.service';
@@ -7,7 +7,8 @@ import { AuthService } from '../../settings/services/auth.service';
   selector: 'app-hr-layout',
   imports: [RouterOutlet, HrSidebarComponent],
   templateUrl: './hr-layout.component.html',
-  styleUrl: './hr-layout.component.css'
+  styleUrl: './hr-layout.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HrLayoutComponent {
   private authService = inject(AuthService);

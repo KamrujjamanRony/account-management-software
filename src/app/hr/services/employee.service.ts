@@ -23,8 +23,8 @@ export class EmployeeService {
     return this.apiCall<void>('', 'post', model);
   }
 
-  getEmployee(query: string): Observable<any> {
-    return this.apiCall<any>(`/SearchEmployee`, 'post', {
+  search(query: string): Observable<any> {
+    return this.apiCall<any>(`/Search`, 'post', {
       "search": query
     });
   }

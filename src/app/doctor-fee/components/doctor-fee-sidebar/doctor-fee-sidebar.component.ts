@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AllSvgComponent } from '../../../shared/components/svg/all-svg/all-svg.component';
 import { CommonModule } from '@angular/common';
@@ -7,7 +7,8 @@ import { CommonModule } from '@angular/common';
   selector: 'app-doctor-fee-sidebar',
   imports: [RouterLink, RouterLinkActive, AllSvgComponent, CommonModule],
   templateUrl: './doctor-fee-sidebar.component.html',
-  styleUrl: './doctor-fee-sidebar.component.css'
+  styleUrl: './doctor-fee-sidebar.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DoctorFeeSidebarComponent {
   sidebarData = signal<any[]>([

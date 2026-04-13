@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { RouterLink } from "@angular/router";
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { 
@@ -25,6 +25,7 @@ import { AuthService } from '../../../settings/services/auth.service';
   imports: [RouterLink, FontAwesomeModule, CommonModule],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Sidebar {
   menuList = input.required<MenuItemM[] | undefined>();

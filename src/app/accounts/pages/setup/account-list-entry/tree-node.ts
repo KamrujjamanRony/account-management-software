@@ -1,11 +1,10 @@
-import { Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faChevronRight, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-tree-node',
-  standalone: true,
   imports: [CommonModule, FontAwesomeModule],
   template: `
     <li class="node" [class.collapsed]="isCollapsed()[node().id]">
@@ -64,7 +63,8 @@ import { faChevronRight, faChevronDown } from '@fortawesome/free-solid-svg-icons
       list-style-type: none;
       margin: 4px 0;
     }
-  `]
+  `],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TreeNodeComponent {
   node = input.required<any>();

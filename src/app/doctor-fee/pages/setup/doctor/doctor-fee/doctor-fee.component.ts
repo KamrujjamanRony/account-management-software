@@ -1,4 +1,4 @@
-import { Component, computed, ElementRef, inject, QueryList, signal, ViewChild, ViewChildren } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, QueryList, signal, ViewChild, ViewChildren } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import jsPDF from 'jspdf';
@@ -23,7 +23,8 @@ import { faPencil, faXmark, faMagnifyingGlass, faPrint } from '@fortawesome/free
   imports: [FormsModule, FormField, ModalWrapperComponent, FontAwesomeModule],
   providers: [DatePipe],
   templateUrl: './doctor-fee.component.html',
-  styleUrl: './doctor-fee.component.css'
+  styleUrl: './doctor-fee.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DoctorFeeComponent {
   faPencil = faPencil;
@@ -174,7 +175,7 @@ export class DoctorFeeComponent {
     this.isSubmitted.set(true);
 
     const formValue = this.form().value();
-    const todayDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd')!;
+    const todayDate = new Date().toISOString();
     const payload = {
       ...formValue,
       amount: Number(formValue.amount),
@@ -241,7 +242,7 @@ export class DoctorFeeComponent {
       remarks: data?.remarks ?? '',
       postBy: data?.postBy ?? '',
       nextFlowDate: formattedDate,
-      entryDate: data?.entryDate ? data.entryDate.split('T')[0] : '',
+      entryDate: data?.entryDate ? data.entryDate : '',
     }));
 
     this.isPatientEnable = false;
@@ -488,10 +489,10 @@ export class DoctorFeeComponent {
 
     // Set initial margins and page dimensions
     const pageSizeWidth = 80;
-    const pageSizeHeight = 80;
+    const pageSizeHeight = 100;
     const marginLeft = 10; // Left margin
     const marginTopStart = 10; // Starting top margin
-    const marginBottom = -10; // Bottom margin
+    const marginBottom = 0; // Bottom margin
     const marginRight = 10; // Right margin
 
     // Initialize jsPDF with A7 size
@@ -537,7 +538,7 @@ export class DoctorFeeComponent {
         `Amount: ${entry.amount?.toFixed(0) || 'N/A'} Tk`,
         `Discount: ${entry.discount?.toFixed(0) || 'N/A'} Tk`,
         `Entry Date: ${entry.entryDate
-          ? this.transform(entry.entryDate, 'dd/MM/yyyy')
+          ? this.transform(entry.entryDate.split("T")[0], 'dd/MM/yyyy')
           : 'N/A'
         }`,
         `Entry Time: ${entry.entryDate

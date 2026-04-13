@@ -1,5 +1,5 @@
-import { CommonModule, DatePipe } from '@angular/common';
-import { Component, ElementRef, inject, signal, viewChildren } from '@angular/core';
+﻿import { CommonModule, DatePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, signal, viewChildren } from '@angular/core';
 import { FieldComponent } from '../../../../shared/components/field/field.component';
 import { FormControl, FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AllSvgComponent } from '../../../../shared/components/svg/all-svg/all-svg.component';
@@ -17,7 +17,8 @@ import { AuthService } from '../../../../settings/services/auth.service';
   selector: 'app-expense-voucher',
   imports: [CommonModule, FieldComponent, ReactiveFormsModule, AllSvgComponent, FormsModule, SelectorComponent],
   templateUrl: './expense-voucher.component.html',
-  styleUrl: './expense-voucher.component.css'
+  styleUrl: './expense-voucher.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExpenseVoucherComponent {
   fb = inject(NonNullableFormBuilder);

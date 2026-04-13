@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter, withHashLocation, withPreloading } from '@angular/router';
 
 import { routes } from './app.routes';
@@ -13,6 +13,7 @@ import { CookieService } from 'ngx-cookie-service';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
+    provideZonelessChangeDetection(),
     provideRouter(routes, withHashLocation(), withPreloading(CustomPreLoadingStrategy)),
     provideHttpClient(withInterceptors([authInterceptor])),
     CookieService,

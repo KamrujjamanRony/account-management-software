@@ -1,10 +1,11 @@
-import { Component, ElementRef, ViewChild, Input, AfterViewInit } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, Input, AfterViewInit } from '@angular/core';
 import ApexCharts from 'apexcharts';
 
 @Component({
   selector: 'app-apex-chart-2',
   templateUrl: './apex-chart-2.component.html',
-  styleUrls: ['./apex-chart-2.component.css']
+  styleUrls: ['./apex-chart-2.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ApexChart2Component implements AfterViewInit {
   @ViewChild('chart2', { static: true }) chartElement!: ElementRef;

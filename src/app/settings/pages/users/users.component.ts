@@ -1,330 +1,251 @@
-import { Component, ElementRef, inject, signal, viewChildren, viewChild } from '@angular/core';
-import { FormControl, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
-import { DataFetchService } from '../../../shared/services/useDataFetch';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faPencil, faXmark, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { form, required, FormField } from '@angular/forms/signals';
 import { UserAccessTreeComponent } from '../../components/user-access-tree/user-access-tree.component';
-import { FieldComponent } from '../../../shared/components/field/field.component';
-import { SearchComponent } from '../../../shared/components/svg/search/search.component';
 import { UserService } from '../../services/user.service';
 import { MenuService } from '../../services/menu.service';
-import { EmployeeService } from '../../../hr/services/employee.service';
-import { ToastService } from '../../../shared/components/primeng/toast/toast.service';
+// import { EmployeeService } from '../../../hr/services/employee.service';
+import { PermissionS } from '../../services/permission-s';
+import { ToastService } from '../../../utils/toast/toast.service';
+import { ConfirmService } from '../../../utils/confirm/confirm.service';
 import { AuthService } from '../../services/auth.service';
-import { AllSvgComponent } from "../../../shared/components/svg/all-svg/all-svg.component";
 
 @Component({
   selector: 'app-users',
-  imports: [ReactiveFormsModule, UserAccessTreeComponent, FieldComponent, SearchComponent, CommonModule, AllSvgComponent],
+  imports: [FormsModule, FormField, FontAwesomeModule, UserAccessTreeComponent],
   templateUrl: './users.component.html',
-  styleUrl: './users.component.css'
+  styleUrl: './users.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UsersComponent {
-  fb = inject(NonNullableFormBuilder);
+  faPencil = faPencil;
+  faXmark = faXmark;
+  faMagnifyingGlass = faMagnifyingGlass;
+
+  /* ---------------- DI ---------------- */
   private userService = inject(UserService);
-  private dataFetchService = inject(DataFetchService);
   private menuService = inject(MenuService);
-  private employeeService = inject(EmployeeService);
-  private toastService = inject(ToastService);
+  // private employeeService = inject(EmployeeService);
+  private permissionService = inject(PermissionS);
+  private toast = inject(ToastService);
+  private confirm = inject(ConfirmService);
   private authService = inject(AuthService);
-  isView = signal<boolean>(false);
-  isInsert = signal<boolean>(false);
-  isEdit = signal<boolean>(false);
-  isDelete = signal<boolean>(false);
-  filteredUserList = signal<any[]>([]);
+
+  /* ---------------- SIGNAL STATE ---------------- */
+  users = signal<any[]>([]);
+  searchQuery = signal('');
   employeeOption = signal<any[]>([]);
-  highlightedTr: number = -1;
-  selectedUser: any;
-
-  private searchQuery$ = new BehaviorSubject<string>('');
   userAccessTree = signal<any[]>([]);
-  isLoading$: Observable<any> | undefined;
-  hasError$: Observable<any> | undefined;
-  readonly inputRefs = viewChildren<ElementRef>('inputRef');
-  readonly searchInput = viewChild.required<ElementRef<HTMLInputElement>>('searchInput');
-  isSubmitted = false;
+  menuPermissions = signal<any[]>([]);
 
-  form = this.fb.group({
-    userName: ['', [Validators.required]],
-    password: [''],
-    eId: null,
-    isActive: [true],
-    menuPermissions: [['']],
+  isView = signal(false);
+  isInsert = signal(false);
+  isEdit = signal(false);
+  isDelete = signal(false);
+  showList = signal(true);
+
+  filteredUserList = computed(() => {
+    const query = this.searchQuery().toLowerCase();
+    return this.users().filter(data =>
+      String(data.userName ?? '').toLowerCase().includes(query)
+    );
   });
 
-  ngOnInit(): void {
-    this.onLoadTreeData("");
+  selected = signal<any>(null);
+  isLoading = signal(false);
+  hasError = signal(false);
+  isSubmitted = signal(false);
 
-    this.onLoadUsers();
+  /* ---------------- FORM MODEL ---------------- */
+  model = signal({
+    userName: '',
+    password: '',
+    eId: '' as string,
+    isActive: true,
+  });
 
-    this.onLoadEmployee("");
-    this.isView.set(this.checkPermission("User", "View"));
-    this.isInsert.set(this.checkPermission("User", "Insert"));
-    this.isEdit.set(this.checkPermission("User", "Edit"));
-    this.isDelete.set(this.checkPermission("User", "Delete"));
+  /* ---------------- SIGNAL FORM ---------------- */
+  form = form(this.model, (schemaPath) => {
+    required(schemaPath.userName, { message: 'Username is required' });
+  });
 
-    // Focus on the search input when the component is initialized
-    setTimeout(() => {
-      const inputs = this.inputRefs();
-      inputs[0]?.nativeElement.focus();
-    }, 10);
+  /* ---------------- LIFECYCLE ---------------- */
+  ngOnInit() {
+    this.loadUsers();
+    // this.loadEmployees();
+    this.loadTreeData('');
+    this.loadPermissions();
   }
 
-  onLoadEmployee(eId: any) {
-    this.employeeService.getEmployee(eId).subscribe((data) => {
-      this.employeeOption.set(data.map((item: any) => {
-        return { value: item.eId, label: item.eName }
-      }))
+  /* ---------------- LOADERS ---------------- */
+  loadPermissions() {
+    this.isView.set(this.permissionService.hasPermission('User'));
+    this.isInsert.set(this.permissionService.hasPermission('User', 'Insert'));
+    this.isEdit.set(this.permissionService.hasPermission('User', 'Edit'));
+    this.isDelete.set(this.permissionService.hasPermission('User', 'Delete'));
+  }
+
+  loadUsers() {
+    this.isLoading.set(true);
+    this.hasError.set(false);
+
+    this.userService.getUser('').subscribe({
+      next: (data) => {
+        this.users.set(data);
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.hasError.set(true);
+        this.isLoading.set(false);
+      }
     });
   }
 
+  // loadEmployees() {
+  //   this.employeeService.search('').subscribe((data) => {
+  //     this.employeeOption.set(data.map((item: any) => ({
+  //       value: item.eId,
+  //       label: item.eName
+  //     })));
+  //   });
+  // }
 
-  checkPermission(moduleName: string, permission: string) {
-    const modulePermission = this.authService.getUser()?.userMenu?.find((module: any) => module?.menuName?.toLowerCase() === moduleName.toLowerCase());
-    if (modulePermission) {
-      const permissionValue = modulePermission.permissions.find((perm: any) => perm.toLowerCase() === permission.toLowerCase());
-      if (permissionValue) {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      return false;
-    }
+  loadTreeData(userId: any) {
+    this.menuService.generateTreeData(userId).subscribe((data) => {
+      this.userAccessTree.set(data);
+    });
+  }
+
+  /* ---------------- SEARCH ---------------- */
+  onSearch(event: Event) {
+    this.searchQuery.set((event.target as HTMLInputElement).value.trim());
   }
 
   onDisplayEmployee(eId: any) {
     return eId ? this.employeeOption().find(item => item?.value === eId)?.label : '';
   }
 
-  onLoadTreeData(userId: any) {
-    this.menuService.generateTreeData(userId).subscribe((data) => {
-      this.userAccessTree.set(data);
-    });
+  /* ---------------- FIELD HELPERS ---------------- */
+  setEmployee(event: Event) {
+    const value = (event.target as HTMLSelectElement).value;
+    this.model.update(m => ({ ...m, eId: value || '' }));
   }
 
-  onLoadUsers() {
-    const { data$, isLoading$, hasError$ } = this.dataFetchService.fetchData(this.userService.getUser(""));     // ToDo: user data request due
-
-    this.isLoading$ = isLoading$;
-    this.hasError$ = hasError$;
-    // Combine the original data stream with the search query to create a filtered list
-    combineLatest([
-      data$,
-      this.searchQuery$
-    ]).pipe(
-      map(([data, query]) =>
-        data.filter((UserData: any) =>
-          UserData.userName?.toLowerCase().includes(query)
-        )
-      )
-    ).subscribe(filteredData => {
-      // filteredData.shift();                   // todo: remove first element of user list
-      this.filteredUserList.set(filteredData)
-    });
+  setIsActive(value: boolean) {
+    this.model.update(m => ({ ...m, isActive: value }));
   }
 
-  // Method to filter User list based on search query
-  onSearchUser(event: Event) {
-    const query = (event.target as HTMLInputElement).value.toLowerCase();
-    this.searchQuery$.next(query);
+  savePermissions() {
+    const selectedNodes = this.userAccessTree();
+    this.menuPermissions.set(selectedNodes);
   }
 
-  // Simplified method to get form controls
-  getControl(controlName: string): FormControl {
-    return this.form.get(controlName) as FormControl;
-  }
-
-
-  handleEnterKey(event: Event, currentIndex: number) {
-    const keyboardEvent = event as KeyboardEvent;
+  /* ---------------- SUBMIT ---------------- */
+  onSubmit(event: Event) {
     event.preventDefault();
-    const allInputs = this.inputRefs();
-    const inputs = allInputs.filter((i: any) => !i.nativeElement.disabled);
 
-    if (currentIndex + 1 < inputs.length) {
-      inputs[currentIndex + 1].nativeElement.focus();
-    } else {
-      this.onSubmit(keyboardEvent);
-    }
-  }
-
-  handleSearchKeyDown(event: KeyboardEvent) {
-    if (this.filteredUserList().length === 0) {
-      return; // Exit if there are no items to navigate
+    if (!this.form().valid()) {
+      this.toast.warning('Form is invalid! Please fill all required fields.', 'bottom-right', 5000);
+      return;
     }
 
-    if (event.key === 'Tab') {
-      event.preventDefault();
-      const inputs = this.inputRefs();
-      inputs[0].nativeElement.focus();
-    } else if (event.key === 'ArrowDown') {
-      event.preventDefault(); // Prevent default scrolling behavior
-      this.highlightedTr = (this.highlightedTr + 1) % this.filteredUserList().length;
-    } else if (event.key === 'ArrowUp') {
-      event.preventDefault(); // Prevent default scrolling behavior
-      this.highlightedTr =
-        (this.highlightedTr - 1 + this.filteredUserList().length) % this.filteredUserList().length;
-    } else if (event.key === 'Enter') {
-      event.preventDefault(); // Prevent form submission
+    this.isSubmitted.set(true);
+    this.savePermissions();
 
-      // Call onUpdate for the currently highlighted item
-      if (this.highlightedTr !== -1) {
-        const selectedItem = this.filteredUserList()[this.highlightedTr];
-        this.onUpdate(selectedItem);
-        this.highlightedTr = -1;
+    const payload = {
+      ...this.form().value(),
+      eId: this.model().eId || null,
+      isActive: this.model().isActive,
+      menuPermissions: this.menuPermissions(),
+    };
+
+    const request$ = this.selected()
+      ? this.userService.updateUser(this.selected().id, payload)
+      : this.userService.addUser(payload);
+
+    request$.subscribe({
+      next: (response) => {
+        console.log(response);
+        if (response !== null && response !== undefined) {
+          this.loadUsers();
+          this.onToggleList();
+          this.toast.success(
+            response.message,
+            'bottom-right', 5000
+          );
+        }
+      },
+      error: (error) => {
+        console.error('Error:', error);
+        if (error.error?.message || error.error?.title) {
+          this.toast.danger(`${error.error.status} : ${error.error.message || error.error.title}`, 'bottom-right', 5000);
+        }
+        this.isSubmitted.set(false);
       }
-    }
+    });
   }
 
-  onSubmit(e: Event) {
-    this.isSubmitted = true;
-    if (this.form.valid) {
-      this.savePermissions();
-      if (this.selectedUser) {
-        this.userService.updateUser(this.selectedUser.id, this.form.value)
-          .subscribe({
-            next: (response) => {
-              if (response !== null && response !== undefined) {
-                this.toastService.showMessage('success', 'Successful', 'User successfully updated!');
-                this.onLoadUsers();
-                this.isSubmitted = false;
-                this.selectedUser = null;
-                this.formReset(e);
-              }
-
-            },
-            error: (error) => {
-              console.error('Error register:', error);
-              if (error.error.message || error.error.title) {
-                this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message || error.error.title}`);
-              }
-            }
-          });
-      } else {
-        this.userService.addUser(this.form.value)
-          .subscribe({
-            next: (response) => {
-              if (response !== null && response !== undefined) {
-                this.toastService.showMessage('success', 'Successful', 'User successfully added!');
-                this.onLoadUsers();
-                this.isSubmitted = false;
-                this.formReset(e);
-              }
-
-            },
-            error: (error) => {
-              console.error('Error add user:', error);
-              if (error.error.message || error.error.title) {
-                this.toastService.showMessage('error', 'Error', `${error.error.status} : ${error.error.message || error.error.title}`);
-              }
-            }
-          });
-      }
-    } else {
-      this.toastService.showMessage('warn', 'Warning', 'Form is invalid! Please Fill All Recommended Field!');
-    }
-  }
-
+  /* ---------------- UPDATE ---------------- */
   onUpdate(data: any) {
-    this.onLoadTreeData(data.id);
-    this.selectedUser = data;
-    this.form.patchValue({
-      userName: data?.userName,
-      password: data?.password,
-      eId: data?.eId,
-      isActive: data?.isActive,
-      menuPermissions: data?.menuPermissions,
+    this.selected.set(data);
+    this.loadTreeData(data.id);
+    this.model.update(current => ({
+      ...current,
+      userName: data?.userName ?? '',
+      password: data?.password ?? '',
+      eId: data?.eId ?? '',
+      isActive: data?.isActive ?? true,
+    }));
+    this.menuPermissions.set(data?.menuPermissions ?? []);
+    this.showList.set(false);
+  }
+
+  /* ---------------- DELETE ---------------- */
+  async onDelete(id: any) {
+    const ok = await this.confirm.confirm({
+      message: 'Are you sure you want to delete this user?',
+      confirmText: "Yes, I'm sure",
+      cancelText: 'No, cancel',
+      variant: 'danger',
     });
 
-    // Focus the 'userName' input field after patching the value
-    setTimeout(() => {
-      const inputs = this.inputRefs();
-      inputs[0].nativeElement.focus();
-    }, 0); // Delay to ensure the DOM is updated
-  }
-
-  onDelete(id: any) {
-    if (confirm("Are you sure you want to delete?")) {
-      this.userService.deleteUser(id).subscribe(data => {
-        if (data.id) {
-          this.toastService.showMessage('success', 'Successful', 'User deleted successfully!');
-          this.filteredUserList.set(this.filteredUserList().filter(d => d.id !== id));
-        } else {
-          console.error('Error deleting User:', data);
-          this.toastService.showMessage('error', 'Error Deleting', data.message);
+    if (ok) {
+      this.userService.deleteUser(id).subscribe({
+        next: (data) => {
+          if (data.id) {
+            this.users.update(list => list.filter(i => i.id !== id));
+            this.toast.success('User deleted successfully!', 'bottom-right', 5000);
+          } else {
+            this.toast.danger('Error deleting user!', 'bottom-right', 3000);
+          }
+        },
+        error: (error) => {
+          this.toast.danger('Error deleting user!', 'bottom-right', 3000);
+          console.error('Error deleting user:', error);
         }
       });
     }
   }
 
-  formReset(e: Event): void {
-    e.preventDefault();
-    this.form.reset({
+  /* ---------------- RESET ---------------- */
+  formReset() {
+    this.model.set({
       userName: '',
       password: '',
-      eId: null,
+      eId: '',
       isActive: true,
-      menuPermissions: [''],
     });
-    this.onLoadTreeData("");
-    this.isSubmitted = false;
-    this.selectedUser = null;
+    this.menuPermissions.set([]);
+    this.selected.set(null);
+    this.isSubmitted.set(false);
+    this.form().reset();
+    this.loadTreeData('');
   }
 
-  // User Accessibility Code Start----------------------------------------------------------------
-
-  savePermissions() {
-    // const selectedNodes = this.getSelectedNodes(this.userAccessTree());
-    const selectedNodes = this.userAccessTree();
-    // console.log('Selected Access:', selectedNodes);
-    this.form.patchValue({ menuPermissions: selectedNodes });
+  onToggleList() {
+    this.showList.set(true);
+    this.formReset();
   }
-
-  private getSelectedNodes(nodes: any[]): any[] {
-    return nodes.reduce((acc: any[], node: any) => {
-      // Recursively update the isSelected property of parent nodes
-      this.updateParentSelection(node);
-
-      // Include node if it is selected or has selected children
-      if (node.isSelected || (node.children && node.children.some((child: any) => child.isSelected))) {
-        const selectedPermissions = node.permissionsKey
-          ?.filter((p: any) => p.isSelected)
-          .map((p: any) => p.permission);
-
-        acc.push({
-          menuId: node.id,
-          PermissionKey: selectedPermissions || [], // Include empty array if no permissions
-        });
-      }
-
-      // Flatten selected children into the same array
-      if (node.children) {
-        acc.push(...this.getSelectedNodes(node.children));
-      }
-
-      return acc;
-    }, []);
-  }
-
-  private updateParentSelection(node: any): boolean {
-    // Check if the node has children
-    if (node.children && node.children.length > 0) {
-      // console.log('Processing node:', node.menuName, 'isSelected:', node.isSelected);
-
-      // Recursively update the isSelected property of children
-      const anyChildSelected = node.children.some((child: any) => this.updateParentSelection(child));
-      // console.log('Any child selected for node', node.menuName, ':', anyChildSelected);
-
-      // Update the current node's isSelected property based on its children
-      node.isSelected = anyChildSelected || node.isSelected;
-      // console.log('Updated node', node.menuName, 'isSelected:', node.isSelected);
-
-      return node.isSelected;
-    }
-    return node.isSelected;
-  }
-
-  // User Accessibility Code End----------------------------------------------------------------
-
 }

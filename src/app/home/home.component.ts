@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../settings/services/auth.service';
 import { DataService } from '../shared/services/data.service';
@@ -7,7 +7,8 @@ import { DataService } from '../shared/services/data.service';
   selector: 'app-home',
   imports: [RouterLink],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  styleUrl: './home.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent {
   private dataService = inject(DataService);

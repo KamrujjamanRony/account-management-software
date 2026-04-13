@@ -1,11 +1,11 @@
-import { Component, input } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 @Component({
   selector: 'Field',
-  standalone: true,
   imports: [],
   templateUrl: './field.component.html',
-  styleUrl: './field.component.css'
+  styleUrl: './field.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FieldComponent {
   readonly label = input<string>('');

@@ -1,4 +1,4 @@
-import { Component, computed, ElementRef, inject, signal, ViewChild } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { 
@@ -27,6 +27,7 @@ import { CommonModule } from '@angular/common';
   imports: [FormsModule, FormField, FontAwesomeModule, CommonModule],
   templateUrl: './asset-description.html',
   styleUrl: './asset-description.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AssetDescription {
   // Icons

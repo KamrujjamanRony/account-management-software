@@ -1,11 +1,11 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'confirm-modal',
-  standalone: true,
   imports: [],
   templateUrl: './confirm-modal.component.html',
-  styleUrl: './confirm-modal.component.css'
+  styleUrl: './confirm-modal.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConfirmModalComponent {
   @Input() title!: any;

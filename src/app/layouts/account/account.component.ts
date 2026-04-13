@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { AccountSidebarComponent } from '../../accounts/components/account-sidebar/account-sidebar.component';
 import { AuthService } from '../../settings/services/auth.service';
@@ -13,7 +13,8 @@ import { Breadcrumb } from "../../utils/breadcrumb/breadcrumb";
   selector: 'app-account',
   imports: [RouterOutlet, ThemeToggle, Sidebar, Breadcrumb, RouterLink],
   templateUrl: './account.component.html',
-  styleUrl: './account.component.css'
+  styleUrl: './account.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountComponent {
   private authService = inject(AuthService);

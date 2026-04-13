@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'app-theme-toggle',
   imports: [],
   templateUrl: './theme-toggle.html',
   styleUrl: './theme-toggle.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ThemeToggle {
   ngOnInit() {

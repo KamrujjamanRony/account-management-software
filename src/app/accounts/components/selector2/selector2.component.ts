@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, Input, signal, SimpleChanges, input, output } from '@angular/core';
+﻿import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Input, signal, SimpleChanges, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AllSvgComponent } from '../../../shared/components/svg/all-svg/all-svg.component';
 
@@ -7,7 +7,8 @@ import { AllSvgComponent } from '../../../shared/components/svg/all-svg/all-svg.
   selector: 'selector2',
   imports: [CommonModule, FormsModule, AllSvgComponent],
   templateUrl: './selector2.component.html',
-  styleUrl: './selector2.component.css'
+  styleUrl: './selector2.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Selector2Component {
   readonly placeholder = input<string>('Select an option');

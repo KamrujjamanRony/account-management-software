@@ -1,8 +1,7 @@
-import { Component } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'app-search',
-  standalone: true,
   imports: [],
   template: `
   <svg
@@ -20,7 +19,8 @@ import { Component } from '@angular/core';
                 d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
               />
             </svg>
-  `
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SearchComponent {
 

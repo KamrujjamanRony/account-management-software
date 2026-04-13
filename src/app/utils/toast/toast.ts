@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+﻿import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ToastService } from './toast.service';
 import { ToastM, ToastPosition } from './toast.model';
 
@@ -8,6 +8,7 @@ import { ToastM, ToastPosition } from './toast.model';
     imports: [CommonModule],
     templateUrl: './toast.html',
     styleUrl: './toast.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Toast {
   public toastService = inject(ToastService);

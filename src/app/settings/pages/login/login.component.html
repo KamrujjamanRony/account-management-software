@@ -1,62 +1,80 @@
-<section class="flex justify-center items-center h-screen bg-teal-100 login text-black">
+<section class="flex justify-center items-center h-screen login text-black dark:text-gray-50">
   @if (!loading()) {
     <div
-      class="w-full max-w-sm p-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm sm:p-6 md:p-8"
+      class="w-full max-w-sm p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg sm:p-6 md:p-8 transition-all"
     >
-      <form class="space-y-6" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <form class="space-y-6" (submit)="onSubmit($event)">
         <div class="w-full flex flex-col justify-center items-center">
           <img src="logo.png" alt="logo" class="w-32" />
-          <h2 class="font-extrabold text-green-600 uppercase">
+          <h2 class="font-extrabold text-blue-600 dark:text-blue-400 uppercase">
             {{ name() }}
           </h2>
         </div>
         <!-- userName -->
         <div>
-          <label for="userName" class="block mb-2 text-sm font-medium">Your username</label>
-          <input
-            type="userName"
-            name="userName"
-            id="userName"
-            [formControl]="getControl('userName')"
-            class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-            [class.invalid]="
-              (getControl('userName').invalid && getControl('userName').touched) || isSubmitted
-            "
-            placeholder="username"
-            autocomplete="off"
-            required
-          />
+          @let userName = form.userName();
+          @let userNameError = userName.invalid() && userName.touched();
+          <div class="relative pb-2">
+            <input
+              id="userName"
+              type="text"
+              [formField]="form.userName"
+              autocomplete="off"
+              class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer dark:text-gray-50!"
+              placeholder=""
+            />
+            <label
+              for="userName"
+              class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-white dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+              >Username</label
+            >
+          </div>
+          @if (userNameError) {
+            <ul class="-mt-2 mb-2">
+              @for (error of userName.errors(); track error) {
+                <li class="text-sm text-red-600">{{ error.message }}</li>
+              }
+            </ul>
+          }
         </div>
         <!-- password -->
         <div>
-          <label for="password" class="block mb-2 text-sm font-medium capitalize"
-            >Your password</label
-          >
-          <input
-            type="password"
-            name="password"
-            id="password"
-            [formControl]="getControl('password')"
-            placeholder="••••••••"
-            class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-            [class.invalid]="
-              (getControl('password').invalid && getControl('password').touched) || isSubmitted
-            "
-            autocomplete="off"
-            required
-          />
+          @let password = form.password();
+          @let passwordError = password.invalid() && password.touched();
+          <div class="relative pb-2">
+            <input
+              id="password"
+              type="password"
+              [formField]="form.password"
+              autocomplete="off"
+              class="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-base border border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer dark:text-gray-50!"
+              placeholder=""
+            />
+            <label
+              for="password"
+              class="absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-white dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+              >Password</label
+            >
+          </div>
+          @if (passwordError) {
+            <ul class="-mt-2 mb-2">
+              @for (error of password.errors(); track error) {
+                <li class="text-sm text-red-600">{{ error.message }}</li>
+              }
+            </ul>
+          }
         </div>
-        <button
+        <input
           type="submit"
-          class="w-full text-gray-50 btn focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-        >
-          Login to your account
-        </button>
+          [value]="isSubmitted() ? 'Logging in...' : 'Login to your account'"
+          [disabled]="isSubmitted()"
+          class="w-full text-gray-50 bg-linear-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-linear-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center cursor-pointer disabled:opacity-50"
+        />
       </form>
     </div>
   } @else {
     <div class="flex justify-center items-center h-full">
-      <div class="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+      <div class="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
     </div>
   }
 </section>

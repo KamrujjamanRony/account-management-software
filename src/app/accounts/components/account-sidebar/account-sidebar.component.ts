@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AllSvgComponent } from '../../../shared/components/svg/all-svg/all-svg.component';
@@ -7,7 +7,8 @@ import { AllSvgComponent } from '../../../shared/components/svg/all-svg/all-svg.
   selector: 'app-account-sidebar',
   imports: [RouterLink, AllSvgComponent, CommonModule],
   templateUrl: './account-sidebar.component.html',
-  styleUrl: './account-sidebar.component.css'
+  styleUrl: './account-sidebar.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountSidebarComponent {
 

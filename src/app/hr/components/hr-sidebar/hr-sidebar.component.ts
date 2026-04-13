@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { AllSvgComponent } from "../../../shared/components/svg/all-svg/all-svg.component";
 import { RouterLink } from '@angular/router';
 
@@ -6,7 +6,8 @@ import { RouterLink } from '@angular/router';
   selector: 'app-hr-sidebar',
   imports: [AllSvgComponent, RouterLink],
   templateUrl: './hr-sidebar.component.html',
-  styleUrl: './hr-sidebar.component.css'
+  styleUrl: './hr-sidebar.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HrSidebarComponent {
 
