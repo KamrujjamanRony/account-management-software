@@ -1,11 +1,11 @@
 import { Component, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AllSvgComponent } from '../../../shared/components/svg/all-svg/all-svg.component';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-doctor-fee-sidebar',
-  imports: [RouterLink, AllSvgComponent, CommonModule],
+  imports: [RouterLink, RouterLinkActive, AllSvgComponent, CommonModule],
   templateUrl: './doctor-fee-sidebar.component.html',
   styleUrl: './doctor-fee-sidebar.component.css'
 })
