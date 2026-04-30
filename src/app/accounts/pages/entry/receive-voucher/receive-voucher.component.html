@@ -1,20 +1,92 @@
 @if (isView()) {
-  <section class="flex flex-col gap-5">
-    @if (isInsert()) {
-      <div class="w-full border mb-10">
-        <h1 class="text-xl md:text-3xl font-bold text-teal-500 underline text-center mb-5">
-          Receive Voucher Form
-        </h1>
-        <div class="flex gap-2">
-          <form [formGroup]="form" (ngSubmit)="onSubmit($event)" class="w-full mx-auto px-2">
-            <div class="flex gap-2">
-              <!-- voucherDate -->
-              <Field label="Voucher Date" class="w-1/2">
+  <section class="flex flex-col gap-6">
+    @if (isInsert() && !showList()) {
+      <header
+        class="flex flex-col gap-1 border-l-4 border-emerald-500 bg-neutral-secondary-medium/40 px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <div>
+          <h1 class="text-lg font-semibold text-body sm:text-xl">Receive Voucher</h1>
+          <p class="text-xs text-body/60 sm:text-sm">
+            Record an incoming receipt with one or more income lines.
+          </p>
+        </div>
+        <button
+          type="button"
+          aria-label="Close form"
+          (click)="onToggleList()"
+          class="inline-flex h-9 w-9 items-center justify-center self-end rounded-lg border border-rose-200 bg-rose-50 text-rose-700 transition-all hover:bg-rose-100 focus:outline-none focus:ring-2 focus:ring-rose-300/40 sm:self-auto"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="h-4 w-4"
+            aria-hidden="true"
+          >
+            <path d="M18 6 6 18"></path>
+            <path d="m6 6 12 12"></path>
+          </svg>
+        </button>
+      </header>
+      <form [formGroup]="form" (ngSubmit)="onSubmit($event)" class="flex flex-col gap-4" novalidate>
+        <div class="grid grid-cols-1 gap-4">
+          <!-- Voucher Information -->
+          <div
+            class="flex w-full flex-col gap-4 rounded-2xl border border-default-medium bg-neutral-primary p-4 shadow-sm sm:p-5"
+          >
+            <header
+              class="flex items-center justify-between gap-3 border-b border-default-medium pb-3"
+            >
+              <div class="flex items-center gap-3">
+                <span
+                  class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600"
+                  aria-hidden="true"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="h-5 w-5"
+                  >
+                    <path d="M12 5v14"></path>
+                    <path d="m19 12-7 7-7-7"></path>
+                  </svg>
+                </span>
+                <div>
+                  <h2 class="text-sm font-semibold text-body sm:text-base">Voucher Information</h2>
+                  <p class="text-xs text-body/60">Header details for this receipt</p>
+                </div>
+              </div>
+              @if (selectedVoucher) {
+                <span
+                  class="rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-amber-700"
+                >
+                  Editing
+                </span>
+              } @else {
+                <span
+                  class="rounded-full bg-emerald-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-emerald-700"
+                >
+                  New
+                </span>
+              }
+            </header>
+
+            <div class="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-2">
+              <Field label="Voucher Date">
                 <input
                   #inputRef
                   type="date"
                   [formControl]="getControl('voucherDate')"
-                  class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+                  class="peer block w-full appearance-none border-0 border-b-2 border-gray-300 bg-transparent px-0 py-2.5 text-sm focus:border-teal-600 focus:outline-none focus:ring-0"
                   [class.invalid]="
                     (getControl('voucherDate').invalid && getControl('voucherDate').touched) ||
                     isSubmitted
@@ -24,366 +96,575 @@
                   required
                 />
               </Field>
-              <!-- payTo -->
-              <Field label="Pay To" class="w-1/2">
+              <Field label="Pay To">
                 <input
                   #inputRef
                   type="text"
                   [formControl]="getControl('payTo')"
-                  class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+                  class="peer block w-full appearance-none border-0 border-b-2 border-gray-300 bg-transparent px-0 py-2.5 text-sm focus:border-teal-600 focus:outline-none focus:ring-0"
                   placeholder=""
                   (keydown.enter)="handleEnterKey($event, 1)"
                 />
               </Field>
-            </div>
-            <!-- vendorId -->
-            <Field label="Vendor">
-              <select
-                #inputRef
-                name="vendorId"
-                [formControl]="getControl('vendorId')"
-                placeholder=""
-                (keydown.enter)="handleEnterKey($event, 2)"
-                class="block py-2.5 px-2 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
-              >
-                <option value="" class="capitalize dark:bg-gray-900" disabled>Select Option</option>
-                @for (option of vendorIdOption(); track $index) {
-                  <option [value]="option?.id" class="capitalize dark:bg-gray-900">
-                    {{ option?.text }}
-                  </option>
-                }
-              </select>
-            </Field>
-            <!-- accountBankCashId -->
-            <Field label="Bank/Cash">
-              <select
-                #inputRef
-                name="accountBankCashId"
-                [formControl]="getControl('accountBankCashId')"
-                placeholder=""
-                (keydown.enter)="handleEnterKey($event, 3)"
-                class="block py-2.5 px-2 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
-                [class.invalid]="
-                  (getControl('accountBankCashId').invalid &&
-                    getControl('accountBankCashId').touched) ||
-                  isSubmitted
-                "
-                required
-              >
-                <option value="" class="capitalize dark:bg-gray-900" disabled>Select Option</option>
-                @for (option of accountBankCashIdOption(); track $index) {
-                  <option [value]="option?.id" class="capitalize dark:bg-gray-900">
-                    {{ option?.text }}
-                  </option>
-                }
-              </select>
-            </Field>
-            <!-- remarks -->
-            <Field label="remarks">
-              <input
-                #inputRef
-                type="text"
-                [formControl]="getControl('remarks')"
-                class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
-                placeholder=""
-                (keydown.enter)="handleEnterKey($event, 4)"
-              />
-            </Field>
-
-            <div class="flex gap-2">
-              <!-- Save -->
-              @if (isSubmitting()) {
-                <div
-                  class="text-gray-50 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 hover:bg-linear-to-br focus:ring-1 focus:outline-none focus:ring-yellow-300 shadow-lg shadow-yellow-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
-                >
-                  Processing...
-                </div>
-              } @else {
-                <input
-                  type="submit"
-                  [value]="selectedVoucher ? 'Update Voucher' : 'Save Voucher'"
-                  class="text-gray-50 bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-linear-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 shadow-lg shadow-teal-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
-                />
-              }
-
-              <button
-                (click)="resetForm($event)"
-                class="text-gray-50 bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-linear-to-br focus:ring-1 focus:outline-none focus:ring-red-300 shadow-lg shadow-red-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10"
-              >
-                Clear
-              </button>
-            </div>
-          </form>
-
-          <form class="w-full" [formGroup]="addVoucherForm" (ngSubmit)="addData()">
-            <div class="px-2">
-              <!-- headId -->
-              <Field label="Head">
-                <selector
-                  [placeholder]="'Select Head'"
-                  [selectedId]="addVoucherForm.value.headId ?? null"
-                  [options]="headIdOption()"
-                  (selectionChange)="onHeadSelected($event)"
-                ></selector>
-              </Field>
-              <Field label="Head" hidden>
+              <Field label="Vendor" class="sm:col-span-2">
                 <select
                   #inputRef
-                  formControlName="headId"
+                  name="vendorId"
+                  [formControl]="getControl('vendorId')"
                   placeholder=""
-                  class="block py-2.5 px-2 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
-                  [class.invalid]="
-                    (getControl('voucherDate').invalid && getControl('voucherDate').touched) ||
-                    isSubmitted
-                  "
-                  (input)="onHeadChanged($event)"
-                  (keydown.enter)="handleEnterKey($event, 5)"
-                  required
+                  (keydown.enter)="handleEnterKey($event, 2)"
+                  class="peer block w-full appearance-none border-0 border-b-2 border-gray-300 bg-transparent px-2 py-2.5 text-sm capitalize focus:border-teal-600 focus:outline-none focus:ring-0"
                 >
-                  <option value="" class="capitalize dark:bg-gray-900">Select Option</option>
-                  @for (option of headIdOption(); track $index) {
+                  <option value="" class="capitalize dark:bg-gray-900" disabled>
+                    Select Option
+                  </option>
+                  @for (option of vendorIdOption(); track $index) {
                     <option [value]="option?.id" class="capitalize dark:bg-gray-900">
                       {{ option?.text }}
                     </option>
                   }
                 </select>
               </Field>
-              <!-- subHeadId -->
-              @if (subHeadIdOption().length > 0) {
-                <Field label="Sub Head">
-                  <select
-                    #inputRef
-                    formControlName="subHeadId"
-                    placeholder=""
-                    class="block py-2.5 px-2 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
-                    (keydown.enter)="handleEnterKey($event, 6)"
-                    [disabled]="subHeadIdOption().length === 0"
-                  >
-                    <option value="" class="capitalize dark:bg-gray-900">Select Option</option>
-                    @for (option of subHeadIdOption(); track $index) {
-                      <option [value]="option?.id" class="capitalize dark:bg-gray-900">
-                        {{ option?.text }}
-                      </option>
-                    }
-                  </select>
-                </Field>
-              } @else {
-                <Field label="Sub Head">
-                  <select
-                    placeholder=""
-                    class="block py-2.5 px-2 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer capitalize"
-                    [disabled]="subHeadIdOption().length === 0"
-                  ></select>
-                </Field>
-              }
-
-              <!-- creditAmount -->
-              <Field label="Credit/In Amount">
-                <input
+              <Field label="Bank/Cash" class="sm:col-span-2">
+                <select
                   #inputRef
-                  type="number"
-                  formControlName="creditAmount"
-                  class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+                  name="accountBankCashId"
+                  [formControl]="getControl('accountBankCashId')"
                   placeholder=""
-                  (keydown.enter)="handleEnterKey($event, 7)"
-                />
+                  (keydown.enter)="handleEnterKey($event, 3)"
+                  class="peer block w-full appearance-none border-0 border-b-2 border-gray-300 bg-transparent px-2 py-2.5 text-sm capitalize focus:border-teal-600 focus:outline-none focus:ring-0"
+                  [class.invalid]="
+                    (getControl('accountBankCashId').invalid &&
+                      getControl('accountBankCashId').touched) ||
+                    isSubmitted
+                  "
+                  required
+                >
+                  <option value="" class="capitalize dark:bg-gray-900" disabled>
+                    Select Option
+                  </option>
+                  @for (option of accountBankCashIdOption(); track $index) {
+                    <option [value]="option?.id" class="capitalize dark:bg-gray-900">
+                      {{ option?.text }}
+                    </option>
+                  }
+                </select>
               </Field>
-              <!-- remarks -->
-              <Field label="remarks">
+              <Field label="Remarks" class="sm:col-span-2">
                 <input
                   #inputRef
                   type="text"
-                  formControlName="remarks"
-                  class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-teal-600 peer"
+                  [formControl]="getControl('remarks')"
+                  class="peer block w-full appearance-none border-0 border-b-2 border-gray-300 bg-transparent px-0 py-2.5 text-sm focus:border-teal-600 focus:outline-none focus:ring-0"
                   placeholder=""
-                  (keydown.enter)="handleEnterKey($event, 8)"
+                  (keydown.enter)="handleEnterKey($event, 4)"
                 />
               </Field>
             </div>
-            <div class="mx-2">
-              <button
-                #inputRef
-                (keydown.enter)="handleEnterKey($event, 9)"
-                class="text-gray-50 bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-linear-to-br focus:ring-1 focus:outline-none focus:ring-teal-300 shadow-lg shadow-teal-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-10 w-full"
-                type="button"
-                (click)="addData()"
-              >
-                {{ selectedVoucherDetails ? 'Update' : 'Add' }} Voucher Detail
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    }
-    @if (dataArray.length > 0) {
-      <div class="w-full border mb-10 px-3 max-h-[98vh] overflow-scroll">
-        <h1 class="text-xl md:text-3xl font-bold text-teal-500 underline text-center">
-          Receive Voucher Details List
-        </h1>
+          </div>
 
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
-          <table class="w-full text-sm text-left rtl:text-right mt-2">
-            <thead class="text-sm text-gray-50 capitalize bg-teal-800">
-              <tr>
-                <th scope="col" class="p-1">head</th>
-                <th scope="col" class="p-1">subHead</th>
-                <th scope="col" class="p-1">Amount</th>
-                <th scope="col" class="p-1">remarks</th>
-                <th scope="col" class="px-1 py-3">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (item of dataArray; track $index) {
-                <tr
-                  id="row-{{ $index }}"
-                  class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
+          <!-- Receipt Lines (FormArray) -->
+          <div
+            class="flex w-full flex-col gap-3 rounded-2xl border border-default-medium bg-neutral-primary p-4 shadow-sm sm:p-5"
+          >
+            <header
+              class="flex flex-col gap-1 border-b border-default-medium pb-3 sm:flex-row sm:items-center sm:justify-between"
+            >
+              <div class="flex items-center gap-3">
+                <span
+                  class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600"
+                  aria-hidden="true"
                 >
-                  <td class="p-1 capitalize">
-                    {{ displayHead(item?.headId) }}
-                  </td>
-                  <td class="p-1 capitalize">
-                    {{ displayHead(item?.subHeadId) }}
-                  </td>
-                  <td class="p-1">
-                    {{ item?.creditAmount }}
-                  </td>
-                  <td class="p-1">
-                    {{ item?.remarks }}
-                  </td>
-                  <td class="flex gap-1">
-                    <button
-                      class="text-orange-50 bg-orange-400 hover:bg-orange-500 p-1 rounded"
-                      (click)="editData($index)"
-                    >
-                      <app-all-svg icon="pencil" />
-                    </button>
-                    <button
-                      class="text-rose-50 bg-rose-600 hover:bg-rose-700 px-2 py-[1px] rounded"
-                      (click)="deleteData($index)"
-                    >
-                      X
-                    </button>
-                  </td>
-                </tr>
-              } @empty {
-                <tr>
-                  <td colspan="6" class="text-center">No data found</td>
-                </tr>
-              }
-              <tr
-                id="row-last"
-                class="bg-teal-200 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer font-bold"
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="h-5 w-5"
+                  >
+                    <path d="M12 2v20"></path>
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                  </svg>
+                </span>
+                <div>
+                  <h2 class="text-sm font-semibold text-body sm:text-base">Receipt Lines</h2>
+                  <p class="text-xs text-body/60">Add one or more income heads with amounts</p>
+                </div>
+              </div>
+              <span
+                class="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700"
               >
-                <td class="p-1 capitalize">
-                  {{ bankOrCash }}
-                </td>
-                <td class="p-1 capitalize"></td>
-                <td class="p-1">
-                  {{ totalAmount }}
-                </td>
-                <td class="p-1"></td>
-                <td class="flex gap-1"></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    } @else {
-      <div class="w-full border mb-10 px-3 max-h-[98vh] overflow-scroll">
-        <h1 class="text-xl md:text-3xl font-bold text-teal-500 underline text-center">
-          Receive Voucher List
-        </h1>
+                <span
+                  class="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-emerald-600 px-1.5 text-[10px] font-bold text-white"
+                  >{{ voucherDetailsArray.length }}</span
+                >
+                line(s)
+              </span>
+            </header>
 
-        <div class="flex justify-end gap-1">
-          <input
-            type="date"
-            id="fromDate"
-            [(ngModel)]="fromDate"
-            (change)="onDateChange()"
-            class="border border-gray-500 rounded-md px-5 py-2"
-          />
-          <input
-            type="date"
-            id="toDate"
-            [(ngModel)]="toDate"
-            (change)="onDateChange()"
-            class="border border-gray-500 rounded-md px-5 py-2"
-          />
+            <div formArrayName="voucherDetails" class="flex flex-col gap-3">
+              @for (line of voucherDetailsArray.controls; track $index; let i = $index) {
+                <div
+                  [formGroupName]="i"
+                  class="grid grid-cols-1 gap-3 rounded-xl border border-default-medium bg-neutral-secondary-medium/30 p-3 md:grid-cols-12"
+                >
+                  <div class="md:col-span-4">
+                    <label
+                      class="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-body/60"
+                      >Head</label
+                    >
+                    <selector
+                      [placeholder]="'Select Head'"
+                      [selectedId]="line.value.headId ?? null"
+                      [options]="headIdOption()"
+                      (selectionChange)="onLineHeadSelected(i, $event)"
+                    ></selector>
+                  </div>
+                  <div class="md:col-span-3">
+                    <label
+                      class="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-body/60"
+                      >Sub Head</label
+                    >
+                    <select
+                      formControlName="subHeadId"
+                      class="block w-full appearance-none rounded-md border border-default-medium bg-neutral-primary px-2 py-2 text-sm capitalize focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-300/30"
+                      [disabled]="subHeadOptionsAt(i).length === 0"
+                    >
+                      <option value="" class="capitalize dark:bg-gray-900">—</option>
+                      @for (option of subHeadOptionsAt(i); track option.id) {
+                        <option [value]="option.id" class="capitalize dark:bg-gray-900">
+                          {{ option.text }}
+                        </option>
+                      }
+                    </select>
+                  </div>
+                  <div class="md:col-span-2">
+                    <label
+                      class="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-body/60"
+                      >Amount</label
+                    >
+                    <input
+                      type="number"
+                      formControlName="creditAmount"
+                      class="block w-full rounded-md border border-default-medium bg-neutral-primary px-2 py-2 text-right font-mono text-sm focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-300/30"
+                      placeholder="0.00"
+                      step="0.01"
+                      min="0"
+                    />
+                  </div>
+                  <div class="md:col-span-2">
+                    <label
+                      class="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-body/60"
+                      >Remarks</label
+                    >
+                    <input
+                      type="text"
+                      formControlName="remarks"
+                      class="block w-full rounded-md border border-default-medium bg-neutral-primary px-2 py-2 text-sm focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-300/30"
+                      placeholder=""
+                    />
+                  </div>
+                  <div class="flex items-end justify-end md:col-span-1">
+                    <button
+                      type="button"
+                      aria-label="Remove line"
+                      (click)="removeLine(i)"
+                      class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-rose-200 bg-rose-50 text-rose-700 transition-all hover:bg-rose-100 focus:outline-none focus:ring-2 focus:ring-rose-300/40"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="h-4 w-4"
+                        aria-hidden="true"
+                      >
+                        <path d="M3 6h18"></path>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+                        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              } @empty {
+                <p
+                  class="rounded-xl border border-dashed border-default-medium bg-neutral-secondary-medium/20 px-4 py-6 text-center text-sm text-body/60"
+                >
+                  No receipt lines yet. Click <strong>Add Line</strong> to start.
+                </p>
+              }
+            </div>
+
+            <div class="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <button
+                type="button"
+                (click)="addLine()"
+                class="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-4 text-sm font-semibold text-emerald-700 transition-all hover:bg-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-300/40"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="h-4 w-4"
+                  aria-hidden="true"
+                >
+                  <path d="M12 5v14"></path>
+                  <path d="M5 12h14"></path>
+                </svg>
+                Add Line
+              </button>
+              @if (voucherDetailsArray.length > 0) {
+                <div
+                  class="flex items-center justify-between gap-3 rounded-lg bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-900"
+                >
+                  <span class="text-xs uppercase tracking-wider text-emerald-700">
+                    {{ bankOrCashLabel || 'Total' }}
+                  </span>
+                  <span class="font-mono text-base">{{ totalAmount | number: '1.2-2' }}</span>
+                </div>
+              }
+            </div>
+
+            <footer
+              class="flex flex-col-reverse items-stretch gap-2 border-t border-default-medium pt-3 sm:flex-row sm:items-center sm:justify-end"
+            >
+              <button
+                type="button"
+                (click)="resetForm($event)"
+                class="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-5 text-sm font-semibold text-rose-600 transition-all hover:bg-rose-100 focus:outline-none focus:ring-2 focus:ring-rose-300/40"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="h-4 w-4"
+                  aria-hidden="true"
+                >
+                  <path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path>
+                  <path d="M3 3v5h5"></path>
+                </svg>
+                Clear
+              </button>
+              @if (isSubmitting()) {
+                <button
+                  type="button"
+                  disabled
+                  class="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-linear-to-r from-amber-400 to-amber-500 px-5 text-sm font-semibold text-white shadow-md shadow-amber-500/25 sm:min-w-50"
+                >
+                  <svg
+                    class="h-4 w-4 animate-spin"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <circle
+                      class="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      stroke-width="4"
+                    ></circle>
+                    <path
+                      class="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                    ></path>
+                  </svg>
+                  Processing…
+                </button>
+              } @else {
+                <button
+                  type="submit"
+                  class="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-linear-to-r from-emerald-500 to-emerald-600 px-5 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 transition-all hover:from-emerald-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-400/40 sm:min-w-50"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="h-4 w-4"
+                    aria-hidden="true"
+                  >
+                    @if (selectedVoucher) {
+                      <path d="M20 6 9 17l-5-5"></path>
+                    } @else {
+                      <path
+                        d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"
+                      ></path>
+                      <path d="M17 21v-8H7v8"></path>
+                      <path d="M7 3v5h8"></path>
+                    }
+                  </svg>
+                  {{ selectedVoucher ? 'Update Voucher' : 'Save Voucher' }}
+                </button>
+              }
+            </footer>
+          </div>
         </div>
+      </form>
+    }
+    @if (showList()) {
+      <!-- Voucher History -->
+      <div
+        class="w-full overflow-hidden rounded-2xl border border-default-medium bg-neutral-primary shadow-sm"
+      >
+        <header
+          class="flex flex-col gap-3 border-b border-default-medium bg-neutral-secondary-medium/40 px-4 py-3 lg:flex-row lg:items-center lg:justify-between"
+        >
+          <div class="flex items-center gap-3">
+            <div>
+              <h2 class="text-base font-semibold text-body">Receive Voucher History</h2>
+              <p class="text-xs text-body/60">Filter and review past receipts</p>
+            </div>
+            @if (isInsert()) {
+              <button
+                type="button"
+                (click)="showList.set(false)"
+                class="inline-flex h-10 items-center gap-2 rounded-lg bg-linear-to-r from-emerald-500 to-emerald-600 px-4 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 transition-all hover:from-emerald-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-400/40"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="h-4 w-4"
+                  aria-hidden="true"
+                >
+                  <path d="M12 5v14"></path>
+                  <path d="M5 12h14"></path>
+                </svg>
+                Add Voucher
+              </button>
+            }
+          </div>
+          <div class="flex flex-wrap items-end gap-2">
+            <label class="flex flex-col">
+              <span class="mb-1 text-[10px] font-semibold uppercase tracking-wider text-body/60"
+                >From</span
+              >
+              <input
+                type="date"
+                id="fromDate"
+                [(ngModel)]="fromDate"
+                (change)="onDateChange()"
+                class="h-10 rounded-lg border border-default-medium bg-neutral-primary px-3 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-300/30"
+              />
+            </label>
+            <label class="flex flex-col">
+              <span class="mb-1 text-[10px] font-semibold uppercase tracking-wider text-body/60"
+                >To</span
+              >
+              <input
+                type="date"
+                id="toDate"
+                [(ngModel)]="toDate"
+                (change)="onDateChange()"
+                class="h-10 rounded-lg border border-default-medium bg-neutral-primary px-3 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-300/30"
+              />
+            </label>
+            <button
+              type="button"
+              (click)="onDateChange()"
+              class="inline-flex h-10 items-center gap-2 rounded-lg bg-linear-to-r from-emerald-500 to-emerald-600 px-4 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 transition-all hover:from-emerald-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-400/40"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="h-4 w-4"
+                aria-hidden="true"
+              >
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.3-4.3"></path>
+              </svg>
+              Search
+            </button>
+            <button
+              type="button"
+              (click)="generatePDF()"
+              class="inline-flex h-10 items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-4 text-sm font-semibold text-emerald-700 transition-all hover:bg-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-300/40"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="h-4 w-4"
+                aria-hidden="true"
+              >
+                <path d="M6 9V2h12v7"></path>
+                <path
+                  d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"
+                ></path>
+                <rect x="6" y="14" width="12" height="8"></rect>
+              </svg>
+              Print
+            </button>
+          </div>
+        </header>
         @if (isLoading$ | async) {
-          <p class="text-3xl font-bold text-center p-10 text-teal-600">Loading ...</p>
+          <div class="flex flex-col items-center justify-center gap-3 p-10 text-body/60">
+            <svg
+              class="h-8 w-8 animate-spin text-emerald-500"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+              ></path>
+            </svg>
+            <p class="text-sm">Loading vouchers…</p>
+          </div>
         } @else if (hasError$ | async) {
-          <p class="text-3xl font-bold text-center p-10 text-red-600">
+          <p class="p-10 text-center text-sm font-semibold text-rose-600">
             There was an error loading data.
           </p>
         } @else if (filteredVoucherList().length === 0) {
-          <p class="text-3xl font-bold text-center p-10 text-orange-600">Data is Empty.</p>
+          <div class="flex flex-col items-center justify-center gap-2 p-12 text-body/60">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="h-10 w-10"
+              aria-hidden="true"
+            >
+              <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+              <path d="M3 9h18"></path>
+              <path d="M9 3v18"></path>
+            </svg>
+            <p class="text-sm font-medium">No vouchers found for the selected filters.</p>
+          </div>
         } @else {
-          <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
-            <table class="w-full text-sm text-left rtl:text-right mt-2">
-              <thead class="text-sm text-gray-50 uppercase bg-teal-800">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+              <thead
+                class="bg-neutral-secondary-medium/60 text-xs uppercase tracking-wider text-body/70"
+              >
                 <tr>
-                  <th scope="col" class="p-1">voucherNo</th>
-                  <th scope="col" class="p-1">voucherDate</th>
-                  <th scope="col" class="p-1">Cash/Bank</th>
-                  <th scope="col" class="p-1">particular</th>
-                  <th scope="col" class="p-1">pay To</th>
-                  <th scope="col" class="p-1">amount</th>
-                  <th scope="col" class="p-1">remarks</th>
-                  <th scope="col" class="p-1">PostBy</th>
+                  <th scope="col" class="px-4 py-3 font-semibold">Voucher No</th>
+                  <th scope="col" class="px-4 py-3 font-semibold">Date</th>
+                  <th scope="col" class="px-4 py-3 font-semibold">Cash/Bank</th>
+                  <th scope="col" class="px-4 py-3 font-semibold">Particular</th>
+                  <th scope="col" class="px-4 py-3 font-semibold">Pay To</th>
+                  <th scope="col" class="px-4 py-3 text-right font-semibold">Amount</th>
+                  <th scope="col" class="px-4 py-3 font-semibold">Remarks</th>
+                  <th scope="col" class="px-4 py-3 font-semibold">Post By</th>
                   @if (isEdit() || isDelete()) {
-                    <th scope="col" class="px-1">Action</th>
+                    <th scope="col" class="px-4 py-3 text-right font-semibold">Action</th>
                   }
                 </tr>
               </thead>
-              <tbody>
+              <tbody class="divide-y divide-default-medium">
                 @for (item of filteredVoucherList(); track $index) {
-                  <tr
-                    id="row-{{ $index }}"
-                    class="bg-teal-50 border-b hover:bg-teal-600 hover:text-gray-50 cursor-pointer"
-                  >
-                    <td class="p-1 capitalize">
-                      {{ item?.voucherNo }}
+                  <tr id="row-{{ $index }}" class="transition-colors hover:bg-emerald-50/50">
+                    <td class="px-4 py-2 font-mono text-body">{{ item?.voucherNo }}</td>
+                    <td class="px-4 py-2 text-body/80">{{ transform(item?.voucherDate) }}</td>
+                    <td class="px-4 py-2 capitalize text-body/80">{{ item?.accountBankName }}</td>
+                    <td class="px-4 py-2 text-body/80">{{ item?.particular }}</td>
+                    <td class="px-4 py-2 text-body/80">{{ item?.payTo }}</td>
+                    <td class="px-4 py-2 text-right font-mono font-semibold text-body">
+                      {{ item?.amount | number: '1.2-2' }}
                     </td>
-                    <td class="p-1 capitalize">
-                      {{ transform(item?.voucherDate) }}
-                    </td>
-                    <td class="p-1">
-                      {{ item?.accountBankName }}
-                    </td>
-                    <td class="p-1">
-                      {{ item?.particular }}
-                    </td>
-                    <td class="p-1">
-                      {{ item?.payTo }}
-                    </td>
-                    <td class="p-1">
-                      {{ item?.amount }}
-                    </td>
-                    <td class="p-1">
-                      {{ item?.remarks }}
-                    </td>
-                    <td class="p-1">
-                      {{ item?.postBy }}
-                    </td>
-                    <td class="flex gap-1">
-                      @if (isEdit()) {
-                        <button
-                          class="text-orange-50 bg-orange-400 hover:bg-orange-500 p-1 rounded"
-                          (click)="onUpdate(item)"
-                        >
-                          <app-all-svg icon="pencil" />
-                        </button>
-                      }
-                      @if (isDelete()) {
-                        <button
-                          class="text-rose-50 bg-rose-600 hover:bg-rose-700 px-2 py-[1px] rounded"
-                          (click)="onDelete(item?.id)"
-                        >
-                          X
-                        </button>
-                      }
-                    </td>
+                    <td class="px-4 py-2 text-body/70">{{ item?.remarks }}</td>
+                    <td class="px-4 py-2 text-body/70">{{ item?.postBy }}</td>
+                    @if (isEdit() || isDelete()) {
+                      <td class="px-4 py-2">
+                        <div class="flex justify-end gap-1">
+                          @if (isEdit()) {
+                            <button
+                              type="button"
+                              aria-label="Edit voucher"
+                              class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-amber-200 bg-amber-50 text-amber-700 transition-all hover:bg-amber-100 focus:outline-none focus:ring-2 focus:ring-amber-300/40"
+                              (click)="onUpdate(item)"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class="h-4 w-4"
+                                aria-hidden="true"
+                              >
+                                <path d="M12 20h9"></path>
+                                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+                              </svg>
+                            </button>
+                          }
+                          @if (isDelete()) {
+                            <button
+                              type="button"
+                              aria-label="Delete voucher"
+                              class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-rose-200 bg-rose-50 text-rose-700 transition-all hover:bg-rose-100 focus:outline-none focus:ring-2 focus:ring-rose-300/40"
+                              (click)="onDelete(item?.id)"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class="h-4 w-4"
+                                aria-hidden="true"
+                              >
+                                <path d="M3 6h18"></path>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                              </svg>
+                            </button>
+                          }
+                        </div>
+                      </td>
+                    }
                   </tr>
                 }
               </tbody>

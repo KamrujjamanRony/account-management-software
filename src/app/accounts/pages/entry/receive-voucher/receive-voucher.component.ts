@@ -1,10 +1,12 @@
 ﻿import { CommonModule, DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, ElementRef, inject, signal, viewChildren } from '@angular/core';
 import { FieldComponent } from '../../../../shared/components/field/field.component';
-import { FormControl, FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AllSvgComponent } from '../../../../shared/components/svg/all-svg/all-svg.component';
 import { DataFetchService } from '../../../../shared/services/useDataFetch';
 import { Observable } from 'rxjs';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import { SelectorComponent } from '../../../components/selector/selector.component';
 import { AccountListService } from '../../../services/account-list.service';
 import { VendorService } from '../../../services/vendor.service';
@@ -15,7 +17,7 @@ import { AuthService } from '../../../../settings/services/auth.service';
 
 @Component({
   selector: 'app-receive-voucher',
-  imports: [CommonModule, FieldComponent, ReactiveFormsModule, AllSvgComponent, FormsModule, SelectorComponent],
+  imports: [CommonModule, FieldComponent, ReactiveFormsModule, FormsModule, SelectorComponent],
   templateUrl: './receive-voucher.component.html',
   styleUrl: './receive-voucher.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,26 +34,21 @@ export class ReceiveVoucherComponent {
   isInsert = signal<boolean>(false);
   isEdit = signal<boolean>(false);
   isDelete = signal<boolean>(false);
+  showList = signal<boolean>(true);
   dataFetchService = inject(DataFetchService);
   filteredVoucherList = signal<any[]>([]);
   highlightedTr: number = -1;
   selectedVoucher: any;
-  selectedVoucherDetails: any;
-  selectedVoucherDetailsIndex: any;
   accountBankCashIdOption = signal<any[]>([]);
   vendorIdOption = signal<any[]>([]);
   headIdOption = signal<any[]>([]);
-  subHeadIdOption = signal<any[]>([]);
   allOption = signal<any[]>([]);
   fromDate = signal<any>('');
   toDate = signal<any>('');
   isSubmitting = signal<boolean>(false);
   date: any = new Date();
   todayDate: any;
-  dataArray: any[] = [];
-  totalAmount: number = 0;
-  bankOrCash: string = "";
-  selectedValue: any = "";
+  subHeadOptionsByIndex = signal<Record<number, { id: any; text: string }[]>>({});
 
   isLoading$: Observable<any> | undefined;
   hasError$: Observable<any> | undefined;
@@ -153,87 +150,66 @@ export class ReceiveVoucherComponent {
     amount: [''],
     particular: [''],
     remarks: [''],
-    postBy: [this.authService.getUser()?.username || '']
+    postBy: [this.authService.getUser()?.username || ''],
+    voucherDetails: this.fb.array<FormGroup>([])
   });
 
-  addVoucherForm = this.fb.group({
-    id: [""],
-    headId: ["", Validators.required],
-    subHeadId: [""],
-    voucherId: [""],
-    debitAmount: [''],
-    creditAmount: [''],
-    remarks: [''],
-  });
+  get voucherDetailsArray(): FormArray<FormGroup> {
+    return this.form.get('voucherDetails') as FormArray<FormGroup>;
+  }
 
-  addData() {
-    if (this.selectedVoucher && this.dataArray.length > 0 && !this.selectedVoucherDetails) {
-      this.toastService.showMessage('warn', 'Warning', "You don't add a Voucher details in editing mode!");
+  createLine(initial?: any): FormGroup {
+    return this.fb.group({
+      id: [initial?.id ?? ''],
+      headId: [initial?.headId ?? '', Validators.required],
+      subHeadId: [initial?.subHeadId ?? ''],
+      voucherId: [initial?.voucherId ?? ''],
+      creditAmount: [initial?.creditAmount ?? null, [Validators.required, Validators.min(0.01)]],
+      remarks: [initial?.remarks ?? '']
+    });
+  }
+
+  addLine(): void {
+    this.voucherDetailsArray.push(this.createLine());
+  }
+
+  removeLine(index: number): void {
+    this.voucherDetailsArray.removeAt(index);
+    const map = { ...this.subHeadOptionsByIndex() };
+    delete map[index];
+    const reindexed: Record<number, { id: any; text: string }[]> = {};
+    Object.keys(map).map(k => Number(k)).sort((a, b) => a - b).forEach((k, i) => { reindexed[i] = map[k]; });
+    this.subHeadOptionsByIndex.set(reindexed);
+  }
+
+  subHeadOptionsAt(index: number): { id: any; text: string }[] {
+    return this.subHeadOptionsByIndex()[index] ?? [];
+  }
+
+  onLineHeadSelected(index: number, selected: any): void {
+    const group = this.voucherDetailsArray.at(index);
+    group.patchValue({ headId: selected?.id ?? '', subHeadId: '' });
+    if (!selected?.id) {
+      const map = { ...this.subHeadOptionsByIndex() };
+      map[index] = [];
+      this.subHeadOptionsByIndex.set(map);
       return;
     }
+    this.accountListService.getAccountList({ headId: selected.id, allbyheadId: selected.id }).subscribe(data => {
+      const opts = data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() }));
+      const map = { ...this.subHeadOptionsByIndex() };
+      map[index] = opts;
+      this.subHeadOptionsByIndex.set(map);
+    });
+  }
+
+  get totalAmount(): number {
+    return this.voucherDetailsArray.controls.reduce((sum, ctrl) => sum + (Number(ctrl.value.creditAmount) || 0), 0);
+  }
+
+  get bankOrCashLabel(): string {
     const cashId = this.form.value.accountBankCashId;
-    if (this.addVoucherForm.valid && this.addVoucherForm.value.headId && cashId) {
-      if (!this.addVoucherForm.value.creditAmount) {
-        this.toastService.showMessage('warn', 'Warning', 'Amount Must Be Gater Than 0');
-        return;
-      }
-      const headId = this.addVoucherForm.value.headId;
-      let children = [];
-      this.accountListService.getAccountList({
-        "allbyheadId": +headId,
-        "accountGroup": [
-          "Income"
-        ]
-      }).subscribe(accountData => {
-        children = accountData.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() }))
-        if (children.length > 0 && !this.addVoucherForm.value.subHeadId) {
-          this.toastService.showMessage('warn', 'Warning', 'Head is Not Valid Form Voucher Details');
-          return;
-        }
-        const data = this.addVoucherForm.value;
-        const addData = { ...data, headId: Number(data.headId), subHeadId: data.subHeadId ? Number(data.subHeadId) : null, debitAmount: data.debitAmount ? Number(data.debitAmount) : null }
-        if (this.selectedVoucherDetails) {
-          this.dataArray[this.selectedVoucherDetailsIndex] = addData;
-          this.selectedVoucherDetails = null;
-          this.selectedVoucherDetailsIndex = null;
-        } else {
-          this.dataArray.push(addData);
-        }
-        this.addVoucherForm.reset();
-        this.bankOrCash = this.accountBankCashIdOption().find((a: any) => a.id == cashId)?.text;
-        this.totalAmount = this.dataArray.reduce((prev, data) => prev + data.creditAmount, 0);
-      });
-
-    } else {
-      this.toastService.showMessage('warn', 'Warning', 'Form is invalid! Please Fill All Requirement Field.');
-    }
-  }
-
-  editData(index: number) {
-    this.selectedVoucherDetails = this.dataArray[index];
-    this.selectedVoucherDetailsIndex = index;
-    this.addVoucherForm.patchValue({
-      id: this.selectedVoucherDetails?.id,
-      headId: this.selectedVoucherDetails?.headId,
-      subHeadId: this.selectedVoucherDetails?.subHeadId,
-      voucherId: this.selectedVoucherDetails?.voucherId,
-      debitAmount: this.selectedVoucherDetails?.debitAmount,
-      creditAmount: this.selectedVoucherDetails?.creditAmount,
-      remarks: this.selectedVoucherDetails?.remarks,
-    });
-    const subHeadIdReq = {
-      "headId": this.addVoucherForm.value.headId,
-      "allbyheadId": this.addVoucherForm.value.headId
-    };
-    this.accountListService.getAccountList(subHeadIdReq).subscribe(data => {
-      this.subHeadIdOption.set(data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() })))
-      this.totalAmount = this.dataArray.reduce((prev, data) => prev + data.creditAmount, 0);
-    });
-  }
-
-  deleteData(index: number) {
-    this.dataArray.splice(index, 1);
-    this.totalAmount = this.dataArray.reduce((prev, data) => prev + data.creditAmount, 0);
+    return this.accountBankCashIdOption().find((a: any) => a.id == cashId)?.text ?? '';
   }
 
   onUpdate(data: any) {
@@ -252,51 +228,56 @@ export class ReceiveVoucherComponent {
       postBy: data?.postBy
     });
     this.selectedVoucher = data;
-    // const rest = data.voucherDetailDto.pop();
-    this.dataArray = data.voucherDetailDto.map((data: any) => {//+
-      return {
-        id: data.id,
-        voucherId: data.voucherId,
-        headId: data.headId,
-        subHeadId: data.subHeadId,
-        debitAmount: data.debitAmount,
-        creditAmount: data.creditAmount,
-        remarks: data.remarks
-      };
+    this.voucherDetailsArray.clear();
+    this.subHeadOptionsByIndex.set({});
+    (data.voucherDetailDto ?? []).forEach((line: any, i: number) => {
+      this.voucherDetailsArray.push(this.createLine(line));
+      if (line?.headId) {
+        this.accountListService.getAccountList({ headId: line.headId, allbyheadId: line.headId }).subscribe(d => {
+          const opts = d.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() }));
+          const map = { ...this.subHeadOptionsByIndex() };
+          map[i] = opts;
+          this.subHeadOptionsByIndex.set(map);
+        });
+      }
     });
-    const cashId = this.form.value.accountBankCashId;
-    this.bankOrCash = this.accountBankCashIdOption().find((a: any) => a.id == cashId)?.text;
-    this.totalAmount = this.dataArray.reduce((prev, data) => prev + data.creditAmount, 0);
 
-    // Focus the 'Name' input field after patching the value
     setTimeout(() => {
       const inputs = this.inputRefs();
-      inputs[0].nativeElement.focus();
-    }, 0); // Delay to ensure the DOM is updated
+      inputs[0]?.nativeElement.focus();
+    }, 0);
+    this.showList.set(false);
   }
 
   onSubmit(e: Event) {
     this.isSubmitted = true;
-    // console.log(this.form.value);
-    if (this.form.valid && this.dataArray.length > 0) {
+    const lines = this.voucherDetailsArray.value as any[];
+    if (this.form.valid && lines.length > 0 && this.voucherDetailsArray.valid) {
       this.isSubmitting.set(true);
-      const restData = this.form.value;
+      const { voucherDetails: _omit, ...restData } = this.form.value as any;
       const voucherFormData = { ...restData, accountBankCashId: Number(restData.accountBankCashId), vendorId: restData.vendorId ? Number(restData.vendorId) : null, amount: this.totalAmount }
-      // console.log(this.form.value);
+      const normalizedLines = lines.map((data: any) => ({
+        id: data.id || undefined,
+        voucherId: data.voucherId || undefined,
+        headId: Number(data.headId),
+        subHeadId: data.subHeadId ? Number(data.subHeadId) : null,
+        debitAmount: 0,
+        creditAmount: data.creditAmount ? Number(data.creditAmount) : 0,
+        remarks: data.remarks
+      }));
       if (this.selectedVoucher) {
-        const editData = { ...voucherFormData, editVoucherDetailDto: this.dataArray };
-        // console.log(editData, this.selectedVoucher.id)
+        const editData = { ...voucherFormData, editVoucherDetailDto: normalizedLines };
         this.voucherService.updateVoucher(this.selectedVoucher.id, editData)
           .subscribe({
             next: (response) => {
               if (response !== null && response !== undefined) {
                 this.toastService.showMessage('success', 'Successful', "Voucher successfully updated!");
                 const rest = this.filteredVoucherList().filter(d => d.id !== response.id);
-                const updatedData = response.voucherDetailDto.splice(-1);
                 this.filteredVoucherList.set([...rest, response]);
                 this.isSubmitted = false;
                 this.selectedVoucher = null;
                 this.resetForm(e);
+                this.showList.set(true);
                 this.isSubmitting.set(false);
               }
 
@@ -308,30 +289,18 @@ export class ReceiveVoucherComponent {
             }
           });
       } else {
-        const remarks = this.dataArray.map((data) => {
-          return data.subHeadId ? this.displayHead(data.subHeadId) : this.displayHead(data.headId)
-        })
-        const createVoucherDetailDto = this.dataArray.map((data) => {
-          return {
-            headId: data.headId,
-            subHeadId: data.subHeadId,
-            debitAmount: data.debitAmount || 0,
-            creditAmount: data.creditAmount || 0,
-            remarks: data.remarks
-          }
-        })
+        const remarks = normalizedLines.map((data) => data.subHeadId ? this.displayHead(data.subHeadId) : this.displayHead(data.headId));
+        const createVoucherDetailDto = normalizedLines.map(({ id: _i, voucherId: _v, ...rest }) => rest);
         const addData = { ...voucherFormData, particular: remarks.join(','), createVoucherDetailDto };
         this.voucherService.addVoucher(addData)
           .subscribe({
             next: (response: any) => {
-              // console.log(response)
               if (response !== null && response !== undefined) {
                 this.toastService.showMessage('success', 'Successful', "Voucher successfully added!");
-                this.dataArray = [];
-                const updatedData = response.voucherDetailDto.splice(-1);
                 this.filteredVoucherList.set([...this.filteredVoucherList(), response])
                 this.isSubmitted = false;
                 this.resetForm(e);
+                this.showList.set(true);
                 this.isSubmitting.set(false);
               }
 
@@ -366,20 +335,26 @@ export class ReceiveVoucherComponent {
     }
   }
 
-  resetForm(e: Event) {
-    e.preventDefault();
+  resetForm(e?: Event) {
+    e?.preventDefault();
+    this.voucherDetailsArray.clear();
+    this.subHeadOptionsByIndex.set({});
     this.form.reset();
     const today = new Date();
     this.form.patchValue({
+      transactionType: 'Receipt',
       voucherDate: today.toISOString().split('T')[0],
       postBy: this.authService.getUser()?.username || ''
     });
-    this.addVoucherForm.reset();
     this.selectedVoucher = null;
     this.isSubmitted = false;
-    this.totalAmount = 0;
-    this.dataArray = [];
-    this.selectedVoucherDetails = null;
+  }
+
+  onToggleList() {
+    this.showList.update(s => !s);
+    if (this.showList()) {
+      this.resetForm();
+    }
   }
 
   // Simplified method to get form controls
@@ -389,13 +364,6 @@ export class ReceiveVoucherComponent {
 
 
   // Utility methods----------------------------------------------------------------------
-
-  onHeadSelected(selected: any): void {
-    // console.log('Selected :', selected);
-    this.addVoucherForm.patchValue({
-      headId: selected?.id
-    });
-  }
 
   focusFirstInput() {
     const inputs = this.inputRefs();
@@ -408,34 +376,12 @@ export class ReceiveVoucherComponent {
     return this.allOption().find((option: any) => option.id == id)?.text ?? "";
   }
 
-  onHeadChanged(e: Event) {
-    e.preventDefault();
-    const selectElement = e.target as HTMLSelectElement;
-    const selectedValue = selectElement.value;
-    this.subHeadIdOption.set([]);
-
-    const subHeadIdReq = {
-      "headId": +selectedValue,
-      "allbyheadId": +selectedValue
-    };
-    this.accountListService.getAccountList(subHeadIdReq).subscribe(data => {
-      this.subHeadIdOption.set(data.map((c: any) => ({ id: c.id, text: c.subHead.toLowerCase() })))
-      // console.log(this.subHeadIdOption())
-    });
-  }
-
-
   handleEnterKey(event: Event, currentIndex: number) {
-    const keyboardEvent = event as KeyboardEvent;
     event.preventDefault();
     const allInputs = this.inputRefs();
     const inputs = allInputs.filter((i: any) => !i.nativeElement.disabled);
-
     if (currentIndex + 1 < inputs.length) {
       inputs[currentIndex + 1].nativeElement.focus();
-    } else {
-      this.addData();
-      inputs[5].nativeElement.focus();
     }
   }
 
@@ -444,6 +390,61 @@ export class ReceiveVoucherComponent {
     if (!value) return null;
     const datePipe = new DatePipe('en-US');
     return datePipe.transform(value, args);
+  }
+
+  generatePDF() {
+    const pageSizeWidth = 148; // A5 width
+    const pageSizeHeight = 210; // A5 height
+    const marginLeft = 8;
+    const marginRight = 8;
+    let marginTop = 10;
+    const marginBottom = 8;
+
+    const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a5' });
+    const centerX = doc.internal.pageSize.getWidth() / 2;
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(13);
+    doc.text('Receive Voucher Report', centerX, marginTop, { align: 'center' });
+    marginTop += 5;
+
+    doc.setFontSize(9);
+    if (this.fromDate()) {
+      const dateRange = `From: ${this.transform(this.fromDate())} to: ${this.toDate() ? this.transform(this.toDate()) : this.transform(this.fromDate())}`;
+      doc.text(dateRange, centerX, marginTop, { align: 'center' });
+      marginTop += 4;
+    }
+
+    const list = this.filteredVoucherList();
+    const dataRows = list.map((data: any) => [
+      this.transform(data?.voucherDate),
+      data?.voucherNo || '',
+      data?.accountBankName || '',
+      data?.receiveFrom || '',
+      data?.particular || '',
+      (Number(data?.amount) || 0).toFixed(2),
+    ]);
+    const total = list.reduce((acc: number, c: any) => acc + (Number(c?.amount) || 0), 0);
+
+    autoTable(doc, {
+      head: [['Date', 'No.', 'Cash/Bank', 'Receive From', 'Particular', 'Amount']],
+      body: dataRows,
+      foot: [['', '', '', '', 'Total', total.toFixed(2)]],
+      theme: 'grid',
+      startY: marginTop + 1,
+      styles: { textColor: 0, cellPadding: 1.2, lineColor: 0, fontSize: 7, valign: 'middle', halign: 'center' },
+      headStyles: { fillColor: [102, 255, 102], textColor: 0, lineWidth: 0.2, lineColor: 0, fontStyle: 'bold' },
+      footStyles: { fillColor: [102, 255, 255], textColor: 0, lineWidth: 0.2, lineColor: 0, fontStyle: 'bold', halign: 'right' },
+      columnStyles: { 4: { halign: 'left' }, 5: { halign: 'right' } },
+      margin: { top: marginTop, left: marginLeft, right: marginRight },
+      didDrawPage: () => {
+        doc.setFontSize(7);
+        doc.text('', pageSizeWidth - marginRight - 10, pageSizeHeight - marginBottom, { align: 'right' });
+      },
+    });
+
+    const pdfOutput = doc.output('blob');
+    window.open(URL.createObjectURL(pdfOutput));
   }
 
 }
